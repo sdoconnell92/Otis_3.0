@@ -1,0 +1,399 @@
+#tag Class
+Protected Class Base
+	#tag Method, Flags = &h0
+		Sub BeginTransaction()
+		  
+		  dim sql as string
+		  dim db as SQLiteDatabase = app.db
+		  
+		  If db <> Nil Then
+		    sql = "Begin Transaction;"
+		    db.SQLExecute(sql)
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub CommitTransaction()
+		  
+		  dim sql as string
+		  dim db as SQLiteDatabase = app.db
+		  
+		  If db <> Nil Then
+		    sql = "Commit;"
+		    db.SQLExecute(sql)
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub Delete()
+		  dim sql as string
+		  dim db as SQLiteDatabase = app.db
+		  dim ps as SQLitePreparedStatement
+		  
+		  BeforeDelete
+		  
+		  sql = "Delete From " + ProvideTableName + " Where uuid = ? ;"
+		  
+		  BeginTransaction
+		  
+		  ps = db.Prepare(sql)
+		  ps.BindType(0,SQLitePreparedStatement.SQLITE_TEXT)
+		  ps.bind(0,suuid)
+		  
+		  ps.SQLExecute
+		  If db.Error Then
+		    ErrManage("ActiveRecordBase.Delete", "Could not delete record: " + db.ErrorMessage )
+		    RollbackTransaction
+		    Return
+		  End If
+		  
+		  CommitTransaction
+		  
+		  AfterDelete
+		  
+		  Return
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub Insert()
+		  
+		  dim sql as string
+		  dim db as SQLiteDatabase = app.db
+		  dim ps as SQLitePreparedStatement
+		  
+		  BeforeCreate
+		  
+		  
+		  dim sColumns as string = ProvideColumnNames
+		  dim sTypes as string = ProvideColumnTypes
+		  dim arsColumns() as string = Split( sColumns,"," )
+		  dim arsTypes() as string = Split( sTypes,"," )
+		  
+		  sql = "Insert Into " + ProvideTableName + " (" + sColumns + ") Values("
+		  
+		  dim arsPlaceHolders() as string
+		  For i1 as integer = 0 To arsColumns.Ubound
+		    arsPlaceHolders.Append("?")
+		  Next
+		  dim sPlaceHolders as string = Join(arsPlaceHolders,",")
+		  
+		  sql = sql + sPlaceHolders + ");"
+		  
+		  
+		  BeginTransaction
+		  
+		  ps = db.Prepare(sql)
+		  
+		  // Set bind types
+		  For i1 as integer = 0 To arsTypes.Ubound
+		    Select Case arsTypes(i1)
+		    Case "text"
+		      ps.Bind(i1,SQLitePreparedStatement.SQLITE_TEXT)
+		    Case "integer"
+		      ps.Bind(i1,SQLitePreparedStatement.SQLITE_INTEGER)
+		    Case "int64"
+		      ps.Bind(i1,SQLitePreparedStatement.SQLITE_INT64)
+		    Case "Boolean"
+		      ps.Bind(i1,SQLitePreparedStatement.SQLITE_BOOLEAN)
+		    End Select
+		  Next
+		  
+		  // BInd values
+		  Bind(ps)
+		  
+		  // Execute
+		  ps.SQLExecute
+		  If db.Error Then
+		    ErrManage("ActiveRecordBase.Insert", "Could not insert record: " + db.ErrorMessage )
+		    RollbackTransaction
+		    Return
+		  End If
+		  
+		  CommitTransaction
+		  
+		  AfterCreate
+		  
+		  Return
+		  
+		  
+		  
+		  
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function isNew() As Boolean
+		  If suuid <> "" Then
+		    Return False
+		  Else
+		    Return True
+		  End If
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub RollbackTransaction()
+		  
+		  dim sql as string
+		  dim db as SQLiteDatabase = app.db
+		  
+		  If db <> Nil Then
+		    sql = "Rollback;"
+		    db.SQLExecute(sql)
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Save()
+		  BeforeSave
+		  If isNew Then
+		    
+		    Insert
+		  Else
+		    
+		    Update
+		  End If
+		  AfterSave
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub Update()
+		  dim sql as string
+		  dim db as SQLiteDatabase = app.db
+		  
+		  If Not CheckIsModified Then
+		    Return
+		  End If
+		  
+		  BeforeUpdate
+		  
+		  sql = "Update " + ProvideTableName + " Set "
+		  
+		  dim sColumns as string = ProvideColumnNames
+		  dim sTypes as string = ProvideColumnTypes
+		  dim arsColumns() as string = Split( sColumns,"," )
+		  dim arsTypes() as string = Split( sTypes,"," )
+		  
+		  // Filter out non modified columns
+		  For i1 as integer = arsColumns.Ubound DownTo 0
+		    dim sColumn as string = arsColumns(i1)
+		    dim sType as string = arsTypes(i1)
+		    arsColumns.Remove(i1)
+		    arsTypes.Remove(i1)
+		  Next
+		  
+		  sColumns = Join( arsColumns, "," )
+		  sTypes = Join( arsTypes, "," )
+		  
+		  // Combine the column names and place holders into pairs ex. fieldname = ?
+		  dim sSetPairs() as string
+		  For i1 as integer = 0 To arsColumns.Ubound
+		    dim s1 as string = arsColumns(i1) + " = ?"
+		    sSetPairs.Append(s1)
+		  Next
+		  
+		  // Now combine and add to sql
+		  sql = sql + Join(sSetPairs, ", ") + " Where uuid = ? ;"
+		  
+		  BeginTransaction
+		  
+		  // Perpare the statement
+		  dim ps as SQLitePreparedStatement = db.prepare(sql)
+		  
+		  // Set bind types
+		  For i1 as integer = 0 To arsTypes.Ubound
+		    Select Case arsTypes(i1)
+		    Case "text"
+		      ps.Bind(i1,SQLitePreparedStatement.SQLITE_TEXT)
+		    Case "integer"
+		      ps.Bind(i1,SQLitePreparedStatement.SQLITE_INTEGER)
+		    Case "int64"
+		      ps.Bind(i1,SQLitePreparedStatement.SQLITE_INT64)
+		    Case "Boolean"
+		      ps.Bind(i1,SQLitePreparedStatement.SQLITE_BOOLEAN)
+		    End Select
+		  Next
+		  
+		  // Send to table class to bind field values
+		  Bind(ps,arsColumns)
+		  
+		  // Bind the uuid
+		  ps.BindType(arsColumns.Ubound + 1, SQLitePreparedStatement.SQLITE_TEXT)
+		  ps.Bind(arsColumns.Ubound + 1, suuid)
+		  
+		  // Execute the sql
+		  ps.SQLExecute
+		  If db.Error Then
+		    ErrManage("ActiveRecordBase.Update", "Could not update record: " + db.ErrorMessage)
+		    RollbackTransaction
+		    Return
+		  End If
+		  
+		  CommitTransaction
+		  
+		  AfterUpdate
+		  
+		  Return
+		End Sub
+	#tag EndMethod
+
+
+	#tag Hook, Flags = &h0
+		Event AfterCreate()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event AfterDelete()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event AfterSave()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event AfterUpdate()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event BeforeCreate()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event BeforeDelete()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event BeforeSave()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event BeforeUpdate()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event Bind(ByRef ps as SQLitePreparedStatement, arsColumns() as string)
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event CheckIsModified() As Boolean
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event ProvideColumnNames() As String
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event ProvideColumnTypes() As String
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event ProvideTableName() As String
+	#tag EndHook
+
+
+	#tag Property, Flags = &h1
+		Protected dictSavedValues As Dictionary
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		ipkid As Int64
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected oChangeDescription As JSONItem
+	#tag EndProperty
+
+	#tag Property, Flags = &h1
+		Protected sModifiedFields() As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		srow_created As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		srow_modified As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		srow_username As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		suuid As String
+	#tag EndProperty
+
+
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="-2147483648"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ipkid"
+			Group="Behavior"
+			Type="Int64"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="srow_created"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="srow_modified"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="srow_username"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="suuid"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+	#tag EndViewBehavior
+End Class
+#tag EndClass

@@ -1,0 +1,254 @@
+#tag Class
+Protected Class ActiveRecordBase
+Inherits DataFile.Base
+	#tag Event
+		Sub AfterDelete()
+		  
+		  
+		  If oChangeDescription <> Nil Then
+		    // Store the Change Description in the local sync database
+		    osm.StoreSync(oChangeDescription)
+		  End If
+		  
+		  PostDelete
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Sub AfterSave()
+		  
+		  If oChangeDescription <> Nil Then
+		    // Store the Change Description in the local sync database
+		    osm.StoreSync(oChangeDescription)
+		  End If
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Sub BeforeCreate()
+		  dim randomizer as New Random
+		  
+		  // Create new uuid and pkid
+		  suuid = GetNewUUID
+		  ipkid = randomizer.LessThan(999999999)
+		  
+		  // create and modified dates
+		  dim d1 as new date
+		  me.srow_created = d1.SQLDateTime
+		  me.srow_modified = d1.SQLDateTime
+		  
+		  // username
+		  me.srow_username = UserInfo.Username
+		  
+		  // Trigger Pre Create Event 
+		  PreInsert
+		  
+		  If CheckIsModified Then
+		    
+		    // Get the values of all changed fields
+		    Dim oJSON as New JSONItem
+		    oJSON.Value("Fields") = ProvideFieldValues
+		    
+		    // Get the table name
+		    Dim TableName as string = ProvideTableName
+		    
+		    // Compile into a json item
+		    dim StatementType as string = "Insert"
+		    oJSON.Value("StatementType") = StatementType
+		    oJSON.Value("TableName") = TableName
+		    oChangeDescription = oJSON
+		    
+		  Else 
+		    
+		    // No changes made so we set the changes description to nil
+		    oChangeDescription = Nil
+		    
+		  End If
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Sub BeforeDelete()
+		  Dim StatementType as string
+		  dim n1 as integer
+		  
+		  
+		  
+		  Dim oJSON as New JSONItem
+		  
+		  // Get the table name
+		  Dim TableName as string = ProvideTableName
+		  
+		  // Compile into a json item
+		  StatementType = "Delete"
+		  oJSON.Value("StatementType") = StatementType
+		  oJSON.Value("TableName") = TableName
+		  oJSON.Value("uuid") = suuid
+		  oChangeDescription = oJSON
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Sub BeforeUpdate()
+		  Dim StatementType as string
+		  dim n1 as integer
+		  
+		  
+		  
+		  // MODIFIED VALUES
+		  // row username
+		  me.srow_username = UserInfo.Username
+		  
+		  // modified date
+		  dim d1 as new date
+		  me.srow_modified = d1.SQLDateTime
+		  
+		  If CheckIsModified Then
+		    
+		    // Get the values of all changed fields
+		    Dim oJSON as New JSONItem
+		    dim j2 as New JSONItem
+		    j2 = ProvideFieldValues
+		    
+		    // Launch our PreUpdate definition
+		    PreUpdate
+		    
+		    // Grab the uuid value and put it in the fields value
+		    oJSON.Value("Fields") = j2
+		    
+		    
+		    // Get the table name
+		    Dim TableName as string = ProvideTableName
+		    
+		    // Compile into a json item
+		    StatementType = "Update"
+		    oJSON.Value("StatementType") = StatementType
+		    oJSON.Value("TableName") = TableName
+		    oJSON.Value("uuid") = suuid
+		    oChangeDescription = oJSON
+		    
+		  Else 
+		    
+		    // No changes made so we set the changes description to nil
+		    oChangeDescription = Nil
+		    
+		  End If
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Function CheckIsModified() As Boolean
+		  Return CheckIsModified
+		End Function
+	#tag EndEvent
+
+	#tag Event
+		Function ProvideTableName() As String
+		  Return ProvideTableName
+		End Function
+	#tag EndEvent
+
+
+	#tag Hook, Flags = &h0
+		Event CheckIsModified() As Boolean
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event PostDelete()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event PostInsert()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event PostUpdate()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event PreDelete()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event PreInsert()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event PreUpdate()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event ProvideFieldValues() As JSONItem
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event ProvideTableName() As String
+	#tag EndHook
+
+
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="-2147483648"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ipkid"
+			Group="Behavior"
+			Type="Int64"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="srow_created"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="srow_modified"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="srow_username"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="suuid"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+	#tag EndViewBehavior
+End Class
+#tag EndClass

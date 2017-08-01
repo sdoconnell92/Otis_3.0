@@ -1,0 +1,540 @@
+#tag Class
+Protected Class tbl_maintenance_logs
+Inherits DataFile.ActiveRecordBase
+	#tag Event
+		Sub Bind(ByRef ps as SQLitePreparedStatement, arsColumns() as string)
+		  
+		  ps.Bind(0,me.ipkid)
+		  ps.Bind(1,me.suuid)
+		  ps.Bind(2,me.srow_created)
+		  ps.Bind(3,me.srow_modified)
+		  ps.Bind(4,me.srow_username)
+		  ps.Bind(5,me.sfkinventory)
+		  ps.Bind(6,me.sentry_date)
+		  ps.Bind(7,me.sexit_date)
+		  ps.Bind(8,me.sdue_date)
+		  ps.Bind(9,me.swork_cost)
+		  ps.Bind(10,me.swork_summary)
+		  ps.Bind(11,me.swork_description)
+		  ps.Bind(12,me.swork_comments)
+		  ps.Bind(13,me.swork_type)
+		  ps.Bind(14,me.swork_done_by)
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Function CheckIsModified() As Boolean
+		  Return isModfied
+		End Function
+	#tag EndEvent
+
+	#tag Event
+		Function ProvideColumnNames() As String
+		  Return sColumnNames
+		End Function
+	#tag EndEvent
+
+	#tag Event
+		Function ProvideColumnTypes() As String
+		  Return sColumnTypes
+		End Function
+	#tag EndEvent
+
+	#tag Event
+		Function ProvideFieldValues() As JSONItem
+		  Return GetMyFieldValues
+		End Function
+	#tag EndEvent
+
+	#tag Event
+		Function ProvideTableName() As String
+		  Return sTableName
+		End Function
+	#tag EndEvent
+
+
+	#tag Method, Flags = &h0
+		Function DeleteOK(Byref sError as string) As Boolean
+		  //Add your delete Validation here
+		  
+		  //Use sError to provide feedback to the user.
+		  //Example:
+		  //sError = "This Record cannot be deleted because xyz"
+		  
+		  
+		  
+		  Return true
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Shared Function FindByID(sID as string) As DataFile.tbl_events
+		  dim sql as string
+		  dim db as SQLiteDatabase = app.db
+		  
+		  sql = "Select * From " + sTableName + " Where uuid = ?;"
+		  
+		  dim ps as SQLitePreparedStatement = db.Prepare(sql)
+		  
+		  ps.BindType(0,SQLitePreparedStatement.SQLITE_TEXT)
+		  ps.Bind(0,sID)
+		  
+		  dim rs as RecordSet = ps.SQLSelect
+		  If db.Error Then
+		    ErrManage("FindByID","Could not get record: " + db.ErrorMessage)
+		  End If
+		  
+		  dim oRecord as New DataFile.tbl_events
+		  oRecord.LoadRecord(rs)
+		  
+		  Return oRecord
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetMyFieldValues(UnModifiedFields as Boolean = False) As JSONItem
+		  dim fieldvaluedict as Dictionary
+		  
+		  fieldvaluedict = LoadValuesToDict
+		  
+		  IF UnModifiedFields Then
+		    
+		    Return ConvertDictToJSON( fieldvaluedict )
+		    
+		  Else
+		    
+		    // Check if record is modifed and load the modified field names into variable
+		    If isModfied Then
+		      
+		      For Each vKey as Variant in fieldvaluedict.Keys
+		        dim sKey as string = str( vKey )
+		        
+		        If sModifiedFields.IndexOf( sKey ) = -1 Then
+		          fieldvaluedict.Remove(vKey)
+		        End If
+		        
+		      Next
+		      
+		      Return ConvertDictToJSON( fieldvaluedict )
+		      
+		    End If
+		    
+		  END IF
+		  
+		  Return nil
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function isModfied() As Boolean
+		  dim bModified as Boolean
+		  dim dictCurrentValues as Dictionary = LoadValuesToDict
+		  
+		  redim sModifiedFields(-1)
+		  
+		  For Each vKey as Variant In dictCurrentValues.Keys
+		    
+		    If dictSavedValues.Value(vKey) <> dictCurrentValues.Value(vKey) Then
+		      sModifiedFields.Append( str(vKey) )
+		      bModified = True
+		    End If
+		    
+		  Next
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Shared Function List(sConditions as string = "", sOrderBy as string = "") As DataFile.tbl_events()
+		  dim db as SQLiteDatabase = app.db
+		  dim sql as String
+		  dim ps as SQLitePreparedStatement
+		  
+		  dim aro() as DataFile.tbl_events
+		  dim ars() as string
+		  
+		  ars.append( "Select * From " + sTableName )
+		  if sConditions.Trim <> "" then
+		    ars.Append( "Where " + sConditions )
+		  end if
+		  
+		  if sOrderBy.Trim <> "" then
+		    ars.Append( " Order By " + sOrderBy )
+		  else
+		    
+		  end if
+		  
+		  sql = Join( ars, " " ) + ";"
+		  dim rs as RecordSet = db.SQLSelect(sql)
+		  If db.Error Then
+		    ErrManage("tbl_events.List", "Could not get list of records: " + db.ErrorMessage )
+		    Return aro()
+		  End If
+		  
+		  do Until rs.EOF
+		    dim oRecord as New DataFile.tbl_events
+		    oRecord.LoadRecord(rs)
+		    
+		    aro.Append( oRecord )
+		    rs.MoveNext
+		  loop
+		  
+		  Return aro()
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Shared Function ListCount(sConditions as string = "") As integer
+		  dim db as SQLiteDatabase = app.db
+		  dim sql as String
+		  dim ps as SQLitePreparedStatement
+		  
+		  dim aro() as DataFile.tbl_events
+		  dim ars() as string
+		  
+		  ars.append( "Select count(uuid) as record_count From " + sTableName )
+		  if sConditions.Trim <> "" then
+		    ars.Append( "Where " + sConditions )
+		  end if
+		  
+		  sql = Join( ars, " " ) + ";"
+		  dim rs as RecordSet = db.SQLSelect(sql)
+		  If db.Error Then
+		    ErrManage("tbl_events.List", "Could not get list of records: " + db.ErrorMessage )
+		    Return 0
+		  End If
+		  
+		  dim iCount as integer = rs.Field("record_count").IntegerValue
+		  
+		  Return iCount
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Shared Function ListGrouped(sCriteria as string = "", sOrder as string = "", sGroupBy as String = "") As Dictionary
+		  dim jsMaster as New Dictionary
+		  dim oRecordList() as DataFile.tbl_events
+		  
+		  If sGroupBy = "" Then
+		    Return Nil
+		  End If
+		  
+		  // Lets get the complete list of records from the database
+		  oRecordList() = DataFile.tbl_events.List(sCriteria, sOrder)
+		  
+		  // now we need to loop through each one of the records and startp putting them in there place
+		  dim sGroupByList() as string = sGroupBy.split(", ")
+		  dim jsCurrent() as Dictionary
+		  dim idx_record as integer
+		  For Each oRecord as DataFile.tbl_events In oRecordList()
+		    
+		    jsCurrent.append( jsMaster)
+		    
+		    dim jsFieldValues as JSONItem = oRecord.GetMyFieldValues(True)
+		    
+		    
+		    For idx1 as integer = 0 To sGroupByList.Ubound
+		      
+		      dim sGroupField as string = sGroupByList(idx1)
+		      dim n3 as integer = jsCurrent.Ubound
+		      dim sGroupValue as String =  jsFieldValues.Value(sGroupField)
+		      
+		      // Check if this record fits into any existing groups
+		      dim sArray() as string
+		      for Each vKey as Variant In jsCurrent(n3).Keys
+		        sArray.Append( str( vKey ) )
+		      Next
+		      'If jsCurrent(n3).Keys.IndexOf( sGroupValue ) > -1 Then
+		      If sArray.IndexOf( sGroupValue ) > -1 THen
+		        ' there is a place for this record at this level
+		        
+		        ' now we check if the value of the current level group is a jsonitem, array, or s"none"
+		        If jsCurrent(n3).Value( sGroupValue ) IsA Dictionary Then
+		          ' we must dig depper into jsonitems
+		          
+		          jsCurrent.Append( jsCurrent(n3).Value( sGroupValue ) )
+		          Continue
+		          
+		        Elseif jsCurrent(n3).Value( sGroupValue ) IsA DataFile.tbl_events Then
+		          ' we can put the record here
+		          
+		        Else
+		          'ElseIf jsCurrent(n3).Value( sGroupValue ) IsA String THen
+		          
+		          #Pragma BreakOnExceptions Off
+		          Try
+		            // pull the array of records from the value
+		            dim oRecords() as DataFile.tbl_events
+		            oRecords() = jsCurrent(n3).Value(sGroupValue)
+		            oRecords.Append(oRecord)
+		            jsCurrent(n3).Value(sGroupValue) = oRecords
+		            Continue
+		          Exception
+		          End Try
+		          #Pragma BreakOnExceptions On
+		          
+		          If jsCurrent(n3).Value( sGroupValue ) = "none" THen
+		            
+		            // We need to check if this is the last group by field
+		            If idx1 = sGroupByList.Ubound Then
+		              // this is the last of the group by fields so we can put an array with this record in the value
+		              dim oRecords() as DataFile.tbl_events
+		              oRecords.Append( oRecord )
+		              jsCurrent(n3).Value( sGroupValue ) = oRecords
+		            Else
+		              // We still need to group by deeper
+		              // we will continue on the loop so as to advance the level of deepness by one group creating field
+		              jsCurrent(n3).Value( sGroupValue ) = New Dictionary
+		              jsCurrent.Append( jsCurrent(n3).Value( sGroupValue ) )
+		              Continue
+		            End If
+		          End If
+		          
+		        End If
+		        
+		      Else
+		        ' There is no place created for this record at this level
+		        
+		        // we will create a new key for this unique value and mark it as s"none" 
+		        jsCurrent(n3).Value( sGroupValue ) = "none"
+		        
+		        // Now we will continue on with our looping with the index backtracked so we will try to categorize this record with this new key created
+		        idx1 = idx1 - 1
+		        Continue
+		        
+		      End If
+		    Next
+		    
+		    ReDim jsCurrent(-1)
+		    idx_record = idx_record + 1
+		  Next
+		  
+		  Return jsMaster
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub LoadRecord(rs as RecordSet)
+		  
+		  me.ipkid = rs.Field("pkid").Int64Value
+		  me.suuid = rs.Field("uuid").StringValue
+		  me.srow_created = rs.Field("row_created").StringValue
+		  me.srow_modified = rs.Field("row_modified").StringValue
+		  me.srow_username = rs.Field("row_username").StringValue
+		  me.sfkinventory = rs.Field("fkinventory").StringValue
+		  me.sentry_date = rs.Field("entry_date").StringValue
+		  me.sexit_date = rs.Field("exit_date").StringValue
+		  me.sdue_date = rs.Field("due_date").StringValue
+		  me.swork_cost = rs.Field("work_cost").StringValue
+		  me.swork_summary = rs.Field("work_summary").StringValue
+		  me.swork_description = rs.Field("work_description").StringValue
+		  me.swork_comments = rs.Field("work_comments").StringValue
+		  me.swork_type = rs.Field("work_type").StringValue
+		  me.swork_done_by = rs.Field("work_done_by").StringValue
+		  
+		  dictSavedValues = LoadValuesToDict
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function LoadValuesToDict() As Dictionary
+		  dim dictRecord as New Dictionary
+		  
+		  dictRecord.Value("pkid") = ipkid
+		  dictRecord.Value("uuid") = suuid
+		  dictRecord.Value("row_created") = srow_created
+		  dictRecord.Value("row_modified") = srow_modified
+		  dictRecord.Value("row_username") = srow_username
+		  dictRecord.Value("fkinventory") = sfkinventory
+		  dictRecord.Value("entry_date") = sentry_date
+		  dictRecord.Value("exit_date") = sexit_date
+		  dictRecord.Value("due_date") = sdue_date
+		  dictRecord.Value("work_cost") = swork_cost
+		  dictRecord.Value("work_summary") = swork_summary
+		  dictRecord.Value("work_description") = swork_description
+		  dictRecord.Value("work_comments") = swork_comments
+		  dictRecord.Value("work_type") = swork_type
+		  dictRecord.Value("work_done_by") = swork_done_by
+		End Function
+	#tag EndMethod
+
+
+	#tag Property, Flags = &h0
+		sdue_date As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		sentry_date As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		sexit_date As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		sfkinventory As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		swork_comments As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		swork_cost As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		swork_description As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		swork_done_by As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		swork_summary As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		swork_type As String
+	#tag EndProperty
+
+
+	#tag Constant, Name = sColumnNames, Type = String, Dynamic = False, Default = \"", Scope = Public
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"pkid\x2Cuuid\x2Crow_created\x2Crow_modified\x2Crow_username\x2Cfkinventory\x2Centry_date\x2Cexit_date\x2Cdue_date\x2Cwork_cost\x2Cwork_summary\x2Cwork_description\x2Cwork_comments\x2Cwork_type\x2Cwork_done_by"
+	#tag EndConstant
+
+	#tag Constant, Name = sColumnTypes, Type = String, Dynamic = False, Default = \"", Scope = Public
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"integer\x2Ctext\x2Ctext\x2Ctext\x2Ctext\x2Ctext\x2Ctext\x2Ctext\x2Ctext\x2Ctext\x2Ctext\x2Ctext\x2Ctext\x2Ctext\x2Ctext"
+	#tag EndConstant
+
+	#tag Constant, Name = sTableName, Type = String, Dynamic = False, Default = \"", Scope = Public
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"tbl_maintenance_logs"
+	#tag EndConstant
+
+
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="2147483648"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="ipkid"
+			Group="Behavior"
+			Type="Int64"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="sdue_date"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="sentry_date"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="sexit_date"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="sfkinventory"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="srow_created"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="srow_modified"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="srow_username"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="suuid"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="swork_comments"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="swork_cost"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="swork_description"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="swork_done_by"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="swork_summary"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="swork_type"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+	#tag EndViewBehavior
+End Class
+#tag EndClass
