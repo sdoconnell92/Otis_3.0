@@ -47,7 +47,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   0
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Name"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -124,7 +123,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   2
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Manu."
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -201,7 +199,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   4
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Depart."
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -236,7 +233,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   5
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Model"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -355,7 +351,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   8
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Type"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -390,7 +385,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   9
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "SubCat."
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -425,7 +419,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   10
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Descrip."
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -460,7 +453,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   11
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Category"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -652,7 +644,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   16
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Time"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -687,7 +678,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   17
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Rate"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -722,7 +712,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   18
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Discount"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -757,7 +746,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   19
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Price"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -960,7 +948,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   24
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Quantity"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -995,7 +982,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   26
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Taxable"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -1104,7 +1090,6 @@ Begin ContainerControl contLIDetails
       Selectable      =   False
       TabIndex        =   28
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Stage"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -1191,13 +1176,8 @@ End
 		  tfStage.Text = oCurrentRecord.sli_stage
 		  chbTaxable.Value = oCurrentRecord.bli_taxable
 		  
-		  dim s2 as string
-		  s2 = oCurrentRecord.sli_discount
-		  If InStr( s2, "%" ) > 0 Then
-		    tfDiscount.Text = str( s2 )
-		  Else
-		    tfDiscount.Text = str( s2, modFieldFormatting.tbl_lineitems.li_discount )
-		  End If
+		  tfDiscount.Text = modFieldFormatting.FormatDiscountFields( oCurrentRecord.sli_discount )
+		  
 		  
 		End Sub
 	#tag EndMethod
@@ -1322,27 +1302,12 @@ End
 #tag Events tfDiscount
 	#tag Event
 		Sub LostFocus()
-		  dim s1 as string
 		  
-		  // pull string from field
-		  s1 = me.Text
-		  // format the string
-		  If InStr( s1, "%" ) > 0 Then
-		    s1 = s1
-		  Else
-		    s1 = Methods.StripNonDigitsDecimals( s1 )
-		  End If
-		  
-		  oCurrentRecord.sli_discount = me.Text
+		  oCurrentRecord.sli_discount = modFieldFormatting.DeFormatDiscountFields(me.Text)
 		  oCurrentRecord.Save
 		  
-		  dim s2 as string
-		  s2 = oCurrentRecord.sli_discount
-		  If InStr( s2, "%" ) > 0 Then
-		    me.Text = str( s2 )
-		  Else
-		    me.Text = str( s2, modFieldFormatting.tbl_eipl.discount )
-		  End If
+		  me.Text = modFieldFormatting.FormatDiscountFields(oCurrentRecord.sli_discount)
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents

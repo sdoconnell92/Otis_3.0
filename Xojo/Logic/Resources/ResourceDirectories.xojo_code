@@ -7,7 +7,7 @@ Protected Class ResourceDirectories
 		  
 		  
 		  RC = New ResourceClass
-		  RC.FilePath = SpecialFolder.ApplicationData.Child("otis_5.0")
+		  RC.FilePath = SpecialFolder.ApplicationData.Child("otis business management")
 		  If Not RC.Exists Then
 		    RC.FilePath.CreateAsFolder
 		  End If
@@ -44,8 +44,8 @@ Protected Class ResourceDirectories
 		  
 		  'RC = initialized_file
 		  RC = New ResourceClass
-		  RC.FilePath = info_folder.FilePath.Child("initialized.txt")
-		  initialized_file = RC
+		  RC.FilePath = info_folder.FilePath.Child("init_data_pull.txt")
+		  init_data_pull_file = RC
 		  
 		  RC = New ResourceClass
 		  RC.FilePath = info_folder.FilePath.Child("client_id.txt")
@@ -108,7 +108,7 @@ Protected Class ResourceDirectories
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		initialized_file As ResourceClass
+		init_data_pull_file As ResourceClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

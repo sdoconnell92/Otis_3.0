@@ -43,7 +43,6 @@ Begin ContainerControl contEI
       Scope           =   0
       TabIndex        =   2
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   22
       Value           =   1
       Visible         =   True
@@ -61,7 +60,6 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   355
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
          LastSearchValue =   ""
@@ -94,7 +92,6 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   475
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
          LastSearchValue =   ""
@@ -126,7 +123,6 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   181
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   343
          LockBottom      =   False
@@ -240,7 +236,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "EIPL Name"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -275,7 +270,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   4
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "EIPL Type"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -341,7 +335,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   6
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "Due Date"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -418,7 +411,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   8
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "Tax Rate"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -485,7 +477,6 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   120
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   262
          LockBottom      =   False
@@ -514,7 +505,6 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   181
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   343
          LockBottom      =   True
@@ -554,7 +544,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   12
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "Discounts"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -589,7 +578,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   1
-         TabStop         =   True
          Text            =   "EIPL Number"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -624,7 +612,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   13
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "EIPL Discount"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -691,7 +678,6 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   179
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   20
          LockBottom      =   True
@@ -731,7 +717,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   16
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "Contactables"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -766,7 +751,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   17
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "Payments"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -1016,13 +1000,15 @@ End
 		    End If
 		  Next
 		  
-		  dim s2 as string
-		  s2 = oCurrentRecord.sdiscount
-		  If InStr( s2, "%" ) > 0 Then
-		    tfEIPLDiscount.text = str( s2 )
-		  Else
-		    tfEIPLDiscount.text = str( s2, modFieldFormatting.tbl_eipl.discount )
-		  End If
+		  tfEIPLDiscount.Text = modFieldFormatting.FormatDiscountFields( oCurrentRecord.sdiscount )
+		  
+		  'dim s2 as string
+		  's2 = oCurrentRecord.sdiscount
+		  'If InStr( s2, "%" ) > 0 Then
+		  'tfEIPLDiscount.text = str( s2 )
+		  'Else
+		  'tfEIPLDiscount.text = str( s2, modFieldFormatting.tbl_eipl.discount )
+		  'End If
 		  
 		  // Dates Times
 		  dim dt1 as New Date
@@ -1349,22 +1335,11 @@ End
 #tag Events tfEIPLDiscount
 	#tag Event
 		Sub LostFocus()
-		  dim s1 as string
-		  If InStr( me.Text, "%" ) > 0 Then
-		    s1 = me.Text
-		  Else
-		    s1 = Methods.StripNonDigitsDecimals( me.Text )
-		  End If
-		  oCurrentRecord.sdiscount = s1
+		  
+		  oCurrentRecord.sdiscount = modFieldFormatting.DeFormatDiscountFields(me.Text)
 		  oCurrentRecord.Save
 		  
-		  dim s2 as string
-		  s2 = oCurrentRecord.sdiscount
-		  If InStr( s2, "%" ) > 0 Then
-		    me.Text = str( s2 )
-		  Else
-		    me.Text = str( s2, modFieldFormatting.tbl_eipl.discount )
-		  End If
+		  me.Text = modFieldFormatting.FormatDiscountFields(oCurrentRecord.sdiscount)
 		End Sub
 	#tag EndEvent
 #tag EndEvents

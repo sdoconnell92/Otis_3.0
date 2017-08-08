@@ -300,6 +300,7 @@ Protected Module OSM
 		    
 		    For i1 as integer = 0 To SQLArray.Ubound
 		      
+		      InitializationModule.sSecondaryProgressString = "Executing statement: " + i1.ToText + " of " + SQLArray.Ubound.ToText
 		      CurrentStatement = SQLArray(i1) + ";"
 		      
 		      db1.SQLExecute(CurrentStatement)
@@ -416,6 +417,7 @@ Protected Module OSM
 		  
 		  
 		  // Create sql
+		  InitializationModule.sSecondaryProgressString = "Recieving data rebuild script from remote server."
 		  dim sql as string
 		  Dim ps1 as PostgreSQLPreparedStatement
 		  sql = "Select * From public.create_full_sync_script();"
@@ -520,6 +522,7 @@ Protected Module OSM
 		  End If
 		  
 		  // Bind Values
+		  InitializationModule.sSecondaryProgressString = "Pushing local changes to remote database."
 		  ps1.bind(0,oCD)
 		  ps1.bind(1,oClientID)
 		  If db1.Error Then
@@ -549,6 +552,7 @@ Protected Module OSM
 		  End If
 		  
 		  // Pull the sql_script from the results
+		  InitializationModule.sSecondaryProgressString = "Pulling changes from remote database."
 		  dim sql_script as string
 		  sql_script = rs1.Field("run_sync").StringValue
 		  

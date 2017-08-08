@@ -1,6 +1,62 @@
 #tag Module
 Protected Module modFieldFormatting
 	#tag Method, Flags = &h1
+		Protected Function DeFormatDiscountFields(sRawValue as string) As String
+		  dim sDiscountAmount, sDiscountPercent as String
+		  dim arsDiscounts() as String
+		  
+		  arsDiscounts() = Split( sRawValue, ":" )
+		  For Each sDiscount as String In arsDiscounts()
+		    If InStr( sDiscount, "%" ) > 0 Then
+		      sDiscountPercent = Methods.StripNonDigitsDecimals( sDiscount )
+		    Else
+		      sDiscountAmount = Methods.StripNonDigitsDecimals( sDiscount )
+		    End If
+		  Next
+		  
+		  dim sReturn as String
+		  If sDiscountPercent <> "" And sDiscountAmount <> "" Then
+		    sReturn = sDiscountAmount + ":" + sDiscountPercent + "%"
+		  ElseIf sDiscountPercent <> "" Then
+		    sReturn = sDiscountPercent + "%"
+		  Else
+		    sReturn = sDiscountAmount
+		  End If
+		  
+		  Return sReturn
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function FormatDiscountFields(sRawValue as String) As String
+		  dim sDiscountAmount, sDiscountPercent, arsRaw() as String
+		  dim arsDisplay() as string
+		  
+		  arsRaw() = Split(sRawValue,":")
+		  
+		  For Each sDiscount as string In arsRaw()
+		    If InStr( sDiscount, "%" ) > 0 Then
+		      sDiscountPercent = Methods.StripNonDigitsDecimals(sDiscount)
+		    Else
+		      sDiscountAmount = Methods.StripNonDigitsDecimals(sDiscount)
+		    End If
+		  Next
+		  
+		  
+		  If val( sDiscountAmount ) <> 0 Then
+		    sDiscountAmount = str( sDiscountAmount, "\$###,###,###,###.00" )
+		    arsDisplay.Append( sDiscountAmount )
+		  End If
+		  If val( Methods.StripNonDigitsDecimals( sDiscountPercent ) ) <> 0 Then
+		    sDiscountPercent = str( sDiscountPercent, "###.###\%" )
+		    arsDisplay.Append( sDiscountPercent )
+		  End If
+		  
+		  Return Join( arsDisplay, ":" )
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function GetFormattingString(sFieldPath as String) As String
 		  
 		  dim sTableName, sFieldName, sArray() as String

@@ -365,10 +365,6 @@ Inherits DataFile.ActiveRecordBase
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		sfkconven As String
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		sindv_bus_ven As String
 	#tag EndProperty
 

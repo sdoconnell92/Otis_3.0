@@ -89,7 +89,6 @@ Begin ContainerControl contDiscountDetails
       Selectable      =   False
       TabIndex        =   1
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Group Name"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -124,7 +123,6 @@ Begin ContainerControl contDiscountDetails
       Selectable      =   False
       TabIndex        =   2
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Discount"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -220,7 +218,7 @@ End
 		  
 		  If oCurrentRecord <> Nil THen
 		    tfGroupName.Text = oCurrentRecord.sgroup_name
-		    tfGroupDiscount.Text = oCurrentRecord.sgroup_discount
+		    tfGroupDiscount.Text = modFieldFormatting.FormatDiscountFields( oCurrentRecord.sgroup_discount )
 		  End If
 		End Sub
 	#tag EndMethod
@@ -246,8 +244,10 @@ End
 	#tag Event
 		Sub LostFocus()
 		  
-		  oCurrentRecord.sgroup_discount = me.Text
+		  oCurrentRecord.sgroup_discount = modFieldFormatting.DeFormatDiscountFields(me.Text)
 		  oCurrentRecord.Save
+		  
+		  me.Text = modFieldFormatting.FormatDiscountFields(oCurrentRecord.sgroup_discount)
 		End Sub
 	#tag EndEvent
 #tag EndEvents

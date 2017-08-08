@@ -39,7 +39,6 @@ Begin ContainerControl contGroupDiscountList
       HasHeading      =   True
       Height          =   273
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   4
       LockBottom      =   True
@@ -145,7 +144,7 @@ End
 		      
 		      dim var1, var2 as Variant
 		      var1 = oDiscount.sgroup_name
-		      var2 = oDiscount.sgroup_discount
+		      var2 = modFieldFormatting.FormatDiscountFields( oDiscount.sgroup_discount )
 		      
 		      dim oRowtag as New lbRowTag
 		      oRowtag.uuid = oDiscount.suuid

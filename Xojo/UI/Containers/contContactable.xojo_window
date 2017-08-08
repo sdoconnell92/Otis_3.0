@@ -1194,7 +1194,7 @@ End
 	#tag Method, Flags = &h0
 		Sub LoadMe(suuid as String)
 		  dim oRecord as DataFile.tbl_contactables
-		  Break
+		  
 		  // load Event item record into oCurrentevent with the uuid passed
 		  oRecord = DataFile.tbl_contactables.FindByID(suuid)
 		  

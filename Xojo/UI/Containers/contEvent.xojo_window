@@ -47,7 +47,6 @@ Begin ContainerControl contEvent
       Selectable      =   False
       TabIndex        =   0
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Event Name"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -124,7 +123,6 @@ Begin ContainerControl contEvent
       Selectable      =   False
       TabIndex        =   2
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Accont Manager"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -201,7 +199,6 @@ Begin ContainerControl contEvent
       Selectable      =   False
       TabIndex        =   4
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Start"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -236,7 +233,6 @@ Begin ContainerControl contEvent
       Selectable      =   False
       TabIndex        =   6
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "End"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -271,7 +267,6 @@ Begin ContainerControl contEvent
       Selectable      =   False
       TabIndex        =   8
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Load-In"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -306,7 +301,6 @@ Begin ContainerControl contEvent
       Selectable      =   False
       TabIndex        =   10
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Load-Out"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -341,7 +335,6 @@ Begin ContainerControl contEvent
       Selectable      =   False
       TabIndex        =   12
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Details"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -730,7 +723,6 @@ Begin ContainerControl contEvent
       HasBackColor    =   False
       Height          =   182
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       LastSearchValue =   ""
       Left            =   102
@@ -772,7 +764,6 @@ Begin ContainerControl contEvent
       Selectable      =   False
       TabIndex        =   26
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Child Events"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -807,7 +798,6 @@ Begin ContainerControl contEvent
       Selectable      =   False
       TabIndex        =   27
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "New Item Postfix"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -915,7 +905,6 @@ Begin ContainerControl contEvent
       Selectable      =   False
       TabIndex        =   30
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Hide"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -1100,7 +1089,6 @@ Begin ContainerControl contEvent
       HasBackColor    =   False
       Height          =   133
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   412
       LockBottom      =   False
@@ -1162,7 +1150,6 @@ Begin ContainerControl contEvent
       HasBackColor    =   False
       Height          =   513
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       iStartingTop    =   0
       LastSearchValue =   ""
@@ -1244,6 +1231,7 @@ End
 		    Next
 		    
 		  Case "Create New"
+		    Break
 		    
 		    // Create a new record
 		    dim oNewRecord as New DataFile.tbl_contactables
@@ -1606,7 +1594,7 @@ End
 	#tag Method, Flags = &h0
 		Sub LoadEvent(suuid as string)
 		  dim oEvent as DataFile.tbl_events
-		  Break
+		  
 		  // load Event item record into oCurrentevent with the uuid passed
 		  oEvent = DataFile.tbl_events.FindByID(suuid)
 		  

@@ -63,7 +63,7 @@ Begin Window winSplash
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   257
+      Top             =   232
       Transparent     =   True
       Underline       =   False
       Visible         =   True
@@ -75,7 +75,7 @@ Begin Window winSplash
       DataField       =   ""
       DataSource      =   ""
       Enabled         =   True
-      Height          =   46
+      Height          =   21
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
@@ -97,7 +97,7 @@ Begin Window winSplash
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   304
+      Top             =   329
       Transparent     =   True
       Underline       =   False
       Visible         =   True
@@ -125,7 +125,7 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   5
       TabPanelIndex   =   0
-      Text            =   "App Description"
+      Text            =   "Business \r\nManagement \r\nSystem"
       TextAlign       =   0
       TextColor       =   &c00000000
       TextFont        =   "System"
@@ -159,7 +159,7 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   6
       TabPanelIndex   =   0
-      Text            =   "App Name"
+      Text            =   "Otis"
       TextAlign       =   0
       TextColor       =   &c00000000
       TextFont        =   "System"
@@ -199,6 +199,74 @@ Begin Window winSplash
       Visible         =   True
       Width           =   256
    End
+   Begin Label labLoadingProgress
+      AutoDeactivate  =   True
+      Bold            =   False
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   20
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      Multiline       =   False
+      Scope           =   0
+      Selectable      =   False
+      TabIndex        =   8
+      TabPanelIndex   =   0
+      Text            =   "Progress"
+      TextAlign       =   1
+      TextColor       =   &c00000000
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   268
+      Transparent     =   True
+      Underline       =   False
+      Visible         =   True
+      Width           =   465
+   End
+   Begin Label labSecondaryLoadingProgress
+      AutoDeactivate  =   True
+      Bold            =   False
+      DataField       =   ""
+      DataSource      =   ""
+      Enabled         =   True
+      Height          =   20
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   20
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      Multiline       =   False
+      Scope           =   0
+      Selectable      =   False
+      TabIndex        =   9
+      TabPanelIndex   =   0
+      Text            =   "Secondary Progress"
+      TextAlign       =   1
+      TextColor       =   &c00000000
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   290
+      Transparent     =   True
+      Underline       =   False
+      Visible         =   True
+      Width           =   465
+   End
 End
 #tag EndWindow
 
@@ -217,8 +285,11 @@ End
 
 	#tag Method, Flags = &h0
 		Sub HandleInitialize()
-		  App.Initialize
-		  self.close
+		  dim clInit as New AppInit
+		  clInit.Go
+		  
+		  'App.Initialize
+		  'self.close
 		End Sub
 	#tag EndMethod
 

@@ -118,9 +118,11 @@ Protected Class Base
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Sub Constructor()
+	#tag Method, Flags = &h0
+		Sub Constructor()
+		  
 		  dictSavedValues = New Dictionary
+		  UpdateSavedValues
 		End Sub
 	#tag EndMethod
 
@@ -304,6 +306,7 @@ Protected Class Base
 		    
 		  Next
 		  
+		  Return bModified
 		End Function
 	#tag EndMethod
 

@@ -267,6 +267,10 @@ Inherits DataFile.ActiveRecordBase
 
 
 	#tag Property, Flags = &h0
+		primary_contactable As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		sfk_child As String
 	#tag EndProperty
 

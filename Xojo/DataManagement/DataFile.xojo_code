@@ -41,8 +41,9 @@ Protected Module DataFile
 
 	#tag Method, Flags = &h0
 		Function ConnectDB() As SQLiteDatabase
+		  dim rd as New ResourceDirectories
 		  dim db as New SQLiteDatabase
-		  db.DatabaseFile = SpecialFolder.Desktop.Child("testdb.sqlite")
+		  db.DatabaseFile = rd.otis_data_file.FilePath
 		  
 		  If db.Connect THen
 		    Return db
@@ -110,36 +111,13 @@ Protected Module DataFile
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function GetNewUUID(minLen As Integer = 32, maxLen As Integer = 64, lowerc As Boolean = True, upperc As Boolean = True, numeric As Boolean = True, symbols As Boolean = True) As String
-		  _// Select Characters to pick from
-		  Dim sGrabBag As String
-		  If lowerc Then sGrabBag = sGrabBag + "abcdefghijklmnopqrstuvwxyz"
-		  If upperc Then sGrabBag = sGrabBag + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		  If numeric Then sGrabBag = sGrabBag + "1234567890"
-		  If symbols Then sGrabBag = sGrabBag + "!@#$%^&*()_-+"
+		Protected Function GetNewUUID() As String
+		  Dim crypt As New Chilkat.Crypt2
 		  
-		  // How many do we have?
-		  Dim iBagChars, iRandChar As Integer
-		  iBagChars = Len(sGrabBag)
+		  Dim uuid As String
+		  uuid = crypt.GenerateUuid()
 		  
-		  // Init rnd
-		  Dim oRand As New Random
-		  
-		  // Pick Length
-		  Dim iLength As Integer
-		  oRand.RandomizeSeed
-		  iLength = oRand.InRange(minLen, maxLen)
-		  
-		  // Pick iLength characters
-		  Dim sResult, sChar As String
-		  For i As Integer = 1 To iLength
-		    oRand.RandomizeSeed
-		    iRandChar = oRand.InRange(1, iBagChars)
-		    sChar = Mid(sGrabBag, iRandChar, 1)
-		    sResult = sResult + sChar
-		  Next i
-		  
-		  Return sResult
+		  Return uuid
 		End Function
 	#tag EndMethod
 
@@ -149,7 +127,7 @@ Protected Module DataFile
 		  dim EIPLNumber as integer
 		  
 		  
-		  If db1 <> Nil And Login.State = "Online" Then
+		  If db1 <> Nil And App.bOnline Then
 		    // we are online
 		    
 		    dim sql1 as string = "Select nextval('utility.seq_eipl_numbers');"

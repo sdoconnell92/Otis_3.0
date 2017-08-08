@@ -12,16 +12,33 @@ Protected Module modPriceCalculations
 		  iDiscountSum = retDict.Value("DiscountSum")
 		  iTaxSum = retDict.Value("TaxSum")
 		  
-		  // Calculate the after discount price
-		  iDiscount = val( Methods.StripNonDigitsDecimals( oEIPLRecord.sdiscount ) )
-		  If iDiscount = 0 Then
-		    'iAfterDiscount = iSubTotal
-		  ElseIf InStr( oEIPLRecord.sdiscount, "%") > 0 Then
-		    // the discount is a percent
-		    iDiscount = ( ( iDiscount / 100 ) * iSubTotal )
-		  Else
-		    // the discount is an amount
-		  End If
+		  dim iDiscountAmount, iDiscountPercent as Double
+		  dim sDiscountPercent, sDiscountAmount, arsDiscount() as String
+		  arsDiscount() = oEIPLRecord.sdiscount.Split(":")
+		  
+		  For i1 as integer = 0 To arsDiscount.Ubound
+		    dim sDiscount as string = arsDiscount(i1)
+		    If InStr( sDiscount , "%") > 0 Then
+		      ' discount is a percent
+		      iDiscountPercent = val( Methods.StripNonDigitsDecimals(sDiscount) ) /100
+		    Else
+		      iDiscountAmount = val( Methods.StripNonDigitsDecimals(sDiscount) )
+		    End If
+		  Next
+		  
+		  iDiscount = iDiscountPercent * iSubTotal
+		  iDiscount = iDiscount + iDiscountAmount
+		  
+		  '// Calculate the after discount price
+		  'iDiscount = val( Methods.StripNonDigitsDecimals( oEIPLRecord.sdiscount ) )
+		  'If iDiscount = 0 Then
+		  ''iAfterDiscount = iSubTotal
+		  'ElseIf InStr( oEIPLRecord.sdiscount, "%") > 0 Then
+		  '// the discount is a percent
+		  'iDiscount = ( ( iDiscount / 100 ) * iSubTotal )
+		  'Else
+		  '// the discount is an amount
+		  'End If
 		  
 		  // Calculate discount sum
 		  iDiscountSum = iDiscountSum + iDiscount
@@ -78,16 +95,33 @@ Protected Module modPriceCalculations
 		  iDiscountSum = retDict.Value("DiscountSum")
 		  iTaxSum = retDict.Value("TaxSum")
 		  
-		  // Calculate the after discount price
-		  iDiscount = val( Methods.StripNonDigitsDecimals( oEIPLRecord.sdiscount ) )
-		  If iDiscount = 0 Then
-		    'iAfterDiscount = iSubTotal
-		  ElseIf InStr( oEIPLRecord.sdiscount, "%") > 0 Then
-		    // the discount is a percent
-		    iDiscount = ( ( iDiscount / 100 ) * iSubTotal )
-		  Else
-		    // the discount is an amount
-		  End If
+		  dim iDiscountAmount, iDiscountPercent as Double
+		  dim sDiscountPercent, sDiscountAmount, arsDiscount() as String
+		  arsDiscount() = oEIPLRecord.sdiscount.Split(":")
+		  
+		  For i1 as integer = 0 To arsDiscount.Ubound
+		    dim sDiscount as string = arsDiscount(i1)
+		    If InStr( sDiscount , "%") > 0 Then
+		      ' discount is a percent
+		      iDiscountPercent = val( Methods.StripNonDigitsDecimals(sDiscount) ) /100
+		    Else
+		      iDiscountAmount = val( Methods.StripNonDigitsDecimals(sDiscount) )
+		    End If
+		  Next
+		  
+		  iDiscount = iDiscountPercent * iSubTotal
+		  iDiscount = iDiscount + iDiscountAmount
+		  
+		  '// Calculate the after discount price
+		  'iDiscount = val( Methods.StripNonDigitsDecimals( oEIPLRecord.sdiscount ) )
+		  'If iDiscount = 0 Then
+		  ''iAfterDiscount = iSubTotal
+		  'ElseIf InStr( oEIPLRecord.sdiscount, "%") > 0 Then
+		  '// the discount is a percent
+		  'iDiscount = ( ( iDiscount / 100 ) * iSubTotal )
+		  'Else
+		  '// the discount is an amount
+		  'End If
 		  
 		  // Calculate discount sum
 		  iDiscountSum = iDiscountSum + iDiscount
@@ -200,16 +234,32 @@ Protected Module modPriceCalculations
 		  
 		  For Each oDiscount as DataFile.tbl_group_discounts In aroDiscounts()
 		    
-		    // Put the group discount into a number variable
-		    dim iDiscount as Double = val( Methods.StripNonDigitsDecimals( oDiscount.sgroup_discount ) )
+		    dim iDiscountAmount, iDiscountPercent as Double
+		    dim sDiscountPercent, sDiscountAmount, arsDiscount() as String
+		    arsDiscount() = oDiscount.sgroup_discount.Split(":")
 		    
-		    If InStr( oDiscount.sgroup_discount, "%" ) > 0 Then
-		      // the discount is a percent
-		      iAfterDiscount = iAfterDiscount - ( ( iDiscount / 100 ) * iAfterDiscount )
-		    Else 
-		      // the discount is a dollar sum
-		      iAfterDiscount = iAfterDiscount - iDiscount
-		    End If
+		    For i1 as integer = 0 To arsDiscount.Ubound
+		      dim sDiscount as string = arsDiscount(i1)
+		      If InStr( sDiscount , "%") > 0 Then
+		        ' discount is a percent
+		        iDiscountPercent = val( Methods.StripNonDigitsDecimals(sDiscount) ) /100
+		      Else
+		        iDiscountAmount = val( Methods.StripNonDigitsDecimals(sDiscount) )
+		      End If
+		    Next
+		    
+		    iAfterDiscount = iAfterDiscount - ( iDiscountPercent * iAfterDiscount ) - iDiscountAmount
+		    
+		    '// Put the group discount into a number variable
+		    'dim iDiscount as Double = val( Methods.StripNonDigitsDecimals( oDiscount.sgroup_discount ) )
+		    
+		    'If InStr( oDiscount.sgroup_discount, "%" ) > 0 Then
+		    '// the discount is a percent
+		    'iAfterDiscount = iAfterDiscount - ( ( iDiscount / 100 ) * iAfterDiscount )
+		    'Else 
+		    '// the discount is a dollar sum
+		    'iAfterDiscount = iAfterDiscount - iDiscount
+		    'End If
 		    
 		  Next
 		  
@@ -277,16 +327,32 @@ Protected Module modPriceCalculations
 		  
 		  For Each oDiscount as DataFile.tbl_group_discounts In aroDiscountRecords()
 		    
-		    // Put the group discount into a number variable
-		    dim iDiscount as double = val( Methods.StripNonDigitsDecimals( oDiscount.sgroup_discount ) )
+		    dim iDiscountAmount, iDiscountPercent as Double
+		    dim sDiscountPercent, sDiscountAmount, arsDiscount() as String
+		    arsDiscount() = oDiscount.sgroup_discount.Split(":")
 		    
-		    If InStr( oDiscount.sgroup_discount, "%" ) > 0 Then
-		      // the discount is a percent
-		      iAfterDiscount = iAfterDiscount - ( ( iDiscount / 100 ) * iAfterDiscount )
-		    Else 
-		      // the discount is a dollar sum
-		      iAfterDiscount = iAfterDiscount - iDiscount
-		    End If
+		    For i1 as integer = 0 To arsDiscount.Ubound
+		      dim sDiscount as string = arsDiscount(i1)
+		      If InStr( sDiscount , "%") > 0 Then
+		        ' discount is a percent
+		        iDiscountPercent = val( Methods.StripNonDigitsDecimals(sDiscount) ) /100
+		      Else
+		        iDiscountAmount = val( Methods.StripNonDigitsDecimals(sDiscount) )
+		      End If
+		    Next
+		    
+		    iAfterDiscount = iAfterDiscount - ( iDiscountPercent * iAfterDiscount ) - iDiscountAmount
+		    
+		    '// Put the group discount into a number variable
+		    'dim iDiscount as double = val( Methods.StripNonDigitsDecimals( oDiscount.sgroup_discount ) )
+		    
+		    'If InStr( oDiscount.sgroup_discount, "%" ) > 0 Then
+		    '// the discount is a percent
+		    'iAfterDiscount = iAfterDiscount - ( ( iDiscount / 100 ) * iAfterDiscount )
+		    'Else 
+		    '// the discount is a dollar sum
+		    'iAfterDiscount = iAfterDiscount - iDiscount
+		    'End If
 		    
 		  Next
 		  
@@ -340,12 +406,24 @@ Protected Module modPriceCalculations
 		  // Calculation is: ( (Price * Quantity * Time) If %: * (discount/100) If $: - discount ) * ( Tax / 100 ) = Total
 		  
 		  dim iPrice, iQuantity, iTime, iTax, iSubTotal, iAfterDiscount, iTotal, iDiscountSum, iTaxSum as Currency
-		  dim iDiscount as Double
+		  dim iDiscountAmount, iDiscountPercent as Double
+		  dim sDiscountPercent, sDiscountAmount, arsDiscount() as String
+		  arsDiscount() = oLIRecord.sli_discount.Split(":")
+		  
+		  For i1 as integer = 0 To arsDiscount.Ubound
+		    dim sDiscount as string = arsDiscount(i1)
+		    If InStr( sDiscount , "%") > 0 Then
+		      ' discount is a percent
+		      iDiscountPercent = val( Methods.StripNonDigitsDecimals(sDiscount) ) /100
+		    Else
+		      iDiscountAmount = val( Methods.StripNonDigitsDecimals(sDiscount) )
+		    End If
+		  Next
 		  
 		  iPrice = val( Methods.StripNonDigitsDecimals( oLIRecord.sli_price ) )
 		  iQuantity = val( Methods.StripNonDigitsDecimals( oLIRecord.sli_quantity ) )
 		  iTime = val( Methods.StripNonDigitsDecimals(  oLIRecord.sli_time ) )
-		  iDiscount = val( Methods.StripNonDigitsDecimals( oLIRecord.sli_discount ) )
+		  'iDiscount = val( Methods.StripNonDigitsDecimals( oLIRecord.sli_discount ) )
 		  iTax = val( Methods.StripNonDigitsDecimals( oEIRecord.seipl_tax_rate ) )
 		  
 		  
@@ -353,15 +431,19 @@ Protected Module modPriceCalculations
 		  iSubTotal = iPrice * iQuantity * iTime
 		  
 		  // Calculate the after discount price
-		  If iDiscount = 0 Then
-		    iAfterDiscount = iSubTotal
-		  ElseIf InStr( oLIRecord.sli_discount, "%") > 0 Then
-		    // the discount is a percent
-		    iAfterDiscount = iSubTotal - ( ( iDiscount / 100 ) * iSubTotal )
-		  Else
-		    // the discount is an amount
-		    iAfterDiscount = iSubTotal - iDiscount
+		  If iDiscountPercent <> 0 Then
+		    iAfterDiscount = iSubTotal - ( ( iDiscountPercent / 100 ) * iSubTotal )
 		  End If
+		  iAfterDiscount = iSubTotal - iDiscountAmount
+		  'If iDiscount = 0 Then
+		  'iAfterDiscount = iSubTotal
+		  'ElseIf InStr( oLIRecord.sli_discount, "%") > 0 Then
+		  '// the discount is a percent
+		  'iAfterDiscount = iSubTotal - ( ( iDiscount / 100 ) * iSubTotal )
+		  'Else
+		  '// the discount is an amount
+		  'iAfterDiscount = iSubTotal - iDiscount
+		  'End If
 		  
 		  iDiscountSum = iSubTotal - iAfterDiscount
 		  

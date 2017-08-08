@@ -3123,9 +3123,8 @@ End
 		  tfItemBarcode.Text = oCurrentInventoryItem.sitem_barcode
 		  tfItemRFIDCode.Text = oCurrentInventoryItem.sitem_rfid_code
 		  
-		  contItemFirmwareLatest.LoadMe(oCurrentInventoryItem.suuid)
-		  
 		  If oCurrentInventoryItem.suuid <> "" Then
+		    contItemFirmwareLatest.LoadMe(oCurrentInventoryItem.suuid)
 		    contInventoryExpanded.methLoadMe_ExpandSingleRecord(oCurrentInventoryItem)
 		  End If
 		  

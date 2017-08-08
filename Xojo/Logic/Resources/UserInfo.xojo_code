@@ -34,7 +34,7 @@ Protected Module UserInfo
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function GetLoginInfo() As Variant()
+		Protected Function GetLoginInfo() As Dictionary
 		  dim udf as FolderItem
 		  dim db as new SQLiteDatabase
 		  dim ps as SQLitePreparedStatement
@@ -47,8 +47,7 @@ Protected Module UserInfo
 		  udf = rd1.user_db_file.FilePath
 		  ' if the database already exists 
 		  If Not udf.Exists Then
-		    Dim v as Variant = "None"
-		    Return Array(v)
+		    Return Nil
 		  End If
 		  
 		  'Now we connect to the database file
@@ -71,15 +70,13 @@ Protected Module UserInfo
 		    'dim err as new RuntimeException
 		    'err.Message = "cannot get login data for some reaseon" + db.ErrorMessage
 		    'Raise err
-		    dim v as Variant = "None"
-		    Return Array(v)
+		    Return Nil
 		  End If
 		  
 		  If rs.RecordCount = 0 Then
 		    dim err as new RuntimeException
 		    err.Message = "cannot get user data for some reaseon" + db.ErrorMessage
-		    Dim v as Variant = "NONE"
-		    Return Array(v)
+		    Return Nil
 		  Else
 		    dim username as string
 		    dim password as string
@@ -89,7 +86,13 @@ Protected Module UserInfo
 		    password = rs.Field( "password" ).StringValue
 		    auto_login = rs.Field( "auto_login" ).BooleanValue
 		    pkid = rs.Field( "pkid" ).Int64Value
-		    Return Array( username, password, auto_login, pkid )
+		    
+		    Dim retDict as New Dictionary
+		    retDict.Value("Username") = username
+		    retDict.Value("Password") = password
+		    retDict.Value("AutoLogin") = auto_login
+		    
+		    Return retDict
 		  End If
 		  
 		  
@@ -163,7 +166,7 @@ Protected Module UserInfo
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub SaveLoginInfo(oUsername as String, oPassword as String, oAutoLogin as Boolean, oPKID as Integer)
+		Protected Sub SaveLoginInfo(oUsername as String, oPassword as String, oAutoLogin as Boolean)
 		  dim udf as FolderItem
 		  dim db as new SQLiteDatabase
 		  dim ps as SQLitePreparedStatement
@@ -178,6 +181,8 @@ Protected Module UserInfo
 		    break
 		    ErrManage("UserInfo.SaveLoginInfo","Could not connect to user data database. | " + db.ErrorMessage )
 		  End If
+		  
+		  db.SQLExecute("Delete From login_info;")
 		  
 		  'Finally we add the data to the table
 		  If oPKID = 0 Then

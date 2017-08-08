@@ -166,7 +166,6 @@ Begin Window window_login
       Selectable      =   False
       TabIndex        =   8
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Authentication Failed"
       TextAlign       =   0
       TextColor       =   &c0A0A00E3
@@ -201,7 +200,6 @@ Begin Window window_login
       Selectable      =   False
       TabIndex        =   9
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Password"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -236,7 +234,6 @@ Begin Window window_login
       Selectable      =   False
       TabIndex        =   10
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Username"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -400,24 +397,12 @@ End
 
 #tag WindowCode
 	#tag Event
-		Sub Activate()
-		  
-		End Sub
-	#tag EndEvent
-
-	#tag Event
 		Sub Close()
 		  username = tf_username.Text
 		  password = tf_password.Text
 		  save_username = checkbox_save_username.Value
 		  save_password = checkbox_save_password.Value
 		  auto_login = checkbox_auto_login.Value
-		  
-		End Sub
-	#tag EndEvent
-
-	#tag Event
-		Sub Open()
 		  
 		End Sub
 	#tag EndEvent
@@ -454,21 +439,15 @@ End
 
 	#tag Method, Flags = &h0
 		Sub my_open()
-		  tf_username.Text = username
-		  tf_password.Text = password
-		  If authentication_failed Then
-		    me.label_authentication_failed.Visible = True
-		  Else
-		    me.label_authentication_failed.Visible = False
-		  End If
-		  
+		  SetFields
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub my_open(p_username as string, p_password as string, p_server_address as string, p_server_port as integer, p_db_name as String)
+		Sub my_open(p_username as string, p_password as string, p_auth_failed as boolean, p_server_address as string, p_server_port as integer, p_db_name as String)
 		  username = p_username
 		  password = p_password
+		  authentication_failed = p_auth_failed
 		  server_address = p_server_address
 		  server_port = p_server_port
 		  db_name = p_db_name
@@ -489,16 +468,6 @@ End
 		  End If
 		End Sub
 	#tag EndMethod
-
-
-	#tag Note, Name = PurposeOfWindow
-		
-		This windows purpose is to:
-		
-		Get user login info from the user and ask if it sould be saved
-		This window does not login in any way shape or form
-		It is simply here to obtain information
-	#tag EndNote
 
 
 	#tag Property, Flags = &h0
