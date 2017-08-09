@@ -39,6 +39,20 @@ Inherits Application
 	#tag EndEvent
 
 
+	#tag Method, Flags = &h0
+		Sub UIInit()
+		  
+		  UiColors.DefaultScheme
+		  
+		  // Launch main windows
+		  app.db = DataFile.ConnectDB
+		  dim winMain as New winMain_1TabPanel
+		  app.MainWindow = winMain
+		  app.MainWindow.Show
+		End Sub
+	#tag EndMethod
+
+
 	#tag Property, Flags = &h0
 		bOnline As Boolean
 	#tag EndProperty
@@ -76,6 +90,11 @@ Inherits Application
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="bOnline"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="bUserAuthenticationFailed"
 			Group="Behavior"

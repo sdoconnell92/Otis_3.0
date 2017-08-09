@@ -1,22 +1,8 @@
 #tag Class
 Protected Class AppInit
 	#tag Method, Flags = &h0
-		Sub Constructor()
-		  
-		  thrInit = New Thread
-		  AddHandler thrInit.Run, AddressOf mThreadRun
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Go()
-		  
-		  // Launch the Init thread
-		  thrInit.Run
-		  
-		  // Keep looping and check for triggers
-		  While Not bInitDone
-		    
+		Sub CheckUIState(sender as timer)
+		  If Not bInitDone Then
 		    // check if login window is needed
 		    If bLaunchLoginWindow Then
 		      HandleLoginWindow
@@ -30,18 +16,58 @@ Protected Class AppInit
 		      bOfflineModePromptComplete = True
 		    End If
 		    bPromptOfflineMode = False
-		    
-		    
-		  Wend
-		  
-		  If bOpenMainWindow Then
-		    // Launch main windows
-		    dim winMain as New winMain_1TabPanel
-		    app.MainWindow = winMain
-		    app.MainWindow.Show
 		  Else
-		    Quit
+		    
+		    
 		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor()
+		  tmrUI = New Timer
+		  AddHandler tmrUI.Action, AddressOf CheckUIState
+		  tmrUI.Mode = Timer.ModeOff
+		  
+		  thrInit = New Thread
+		  AddHandler thrInit.Run, AddressOf mThreadRun
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Go()
+		  
+		  // Launch the Init thread
+		  thrInit.Run
+		  
+		  'tmrUI.Mode = Timer.ModeMultiple
+		  
+		  'While Not bInitDone
+		  
+		  '// check if login window is needed
+		  'If bLaunchLoginWindow Then
+		  'HandleLoginWindow
+		  'bLoginAttemptComplete = True
+		  'End If
+		  'bLaunchLoginWindow = False
+		  '
+		  // Check if offline prompt is needed
+		  'If bPromptOfflineMode Then
+		  'HandleOfflinePrompt
+		  'bOfflineModePromptComplete = True
+		  'End If
+		  'bPromptOfflineMode = False
+		  
+		  'Wend
+		  
+		  'If bOpenMainWindow Then
+		  // Launch main windows
+		  'dim winMain as New winMain_1TabPanel
+		  'app.MainWindow = winMain
+		  'app.MainWindow.Show
+		  'Else
+		  'Quit
+		  'End If
 		  
 		End Sub
 	#tag EndMethod
@@ -177,6 +203,8 @@ Protected Class AppInit
 		      
 		      bLaunchLoginWindow = True
 		      
+		      tmrUI.Mode = Timer.ModeSingle
+		      
 		      // Loop while waiting for user to login
 		      While Not bLoginAttemptComplete
 		        thrInit.Sleep(500)
@@ -242,15 +270,16 @@ Protected Class AppInit
 		      End Try
 		      InitializationModule.SetInitDataPull(True)
 		    End If
+		    bOpenMainWindow = True
 		  Else
 		    'we are offline
 		    If bOfflineCapable Then
 		      bPromptOfflineMode = True
-		      
+		      tmrUI.Mode = Timer.ModeSingle
 		      While Not bOfflineModePromptComplete
 		        
 		      Wend
-		      Break
+		      
 		      If bUserOfflineModeResponse Then
 		        ' user wants to work offline
 		        bOpenMainWindow = True
@@ -293,8 +322,8 @@ Protected Class AppInit
 	#tag EndMethod
 
 
-	#tag Property, Flags = &h21
-		Private bInitDone As Boolean
+	#tag Property, Flags = &h0
+		bInitDone As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -333,6 +362,10 @@ Protected Class AppInit
 		Private thrInit As Thread
 	#tag EndProperty
 
+	#tag Property, Flags = &h0
+		tmrUI As Timer
+	#tag EndProperty
+
 
 	#tag Constant, Name = RegDBDatabaseName, Type = String, Dynamic = False, Default = \"otis_data", Scope = Private
 	#tag EndConstant
@@ -345,6 +378,11 @@ Protected Class AppInit
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="bOpenMainWindow"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
@@ -370,11 +408,6 @@ Protected Class AppInit
 			Visible=true
 			Group="ID"
 			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="thrInit"
-			Group="Behavior"
-			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Top"

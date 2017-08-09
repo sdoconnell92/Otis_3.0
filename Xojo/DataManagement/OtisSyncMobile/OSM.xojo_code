@@ -134,6 +134,8 @@ Protected Module OSM
 		    Return False
 		  End If
 		  
+		  db1.SQLExecute("Begin Transaction")
+		  
 		  // Break the Script we were sent into each individual statement
 		  ' Statements look like this: Insert Into tbl_inventory(field1,field2,field3) Values(|PLACEHOLDER|,|PLACEHOLDER|,|PLACEHOLDER|)|EOSTATEMENT|albert:Text,sonya:Text,54:Integer|EOINSERT|Insert Into tbl_inventory(field1,field2,field3) Values(|PLACEHOLDER|,|PLACEHOLDER|,|PLACEHOLDER|)|EOSTATEMENT|albert:Text,sonya:Text,54:Integer|EOINSERT|
 		  ' After breaking it into an array we will have an insert statment followed by pairs of value:valueType
@@ -171,6 +173,8 @@ Protected Module OSM
 		      dim vFormattedValue as Variant
 		      dim sType as String
 		      dim tempArray2() as String
+		      
+		      InitializationModule.sSecondaryProgressString = "Preparing statement: " + i1.ToText + " of " + sValueValueTypesArray.Ubound.ToText
 		      
 		      // Split the ValueValueType into its value and type variables
 		      tempArray2 = ValueValueType.Split("(:)")
@@ -234,6 +238,8 @@ Protected Module OSM
 		  // Loop through each prepared Statement
 		  For each psStatement as SQLitePreparedStatement In ps1Array
 		    
+		    InitializationModule.sSecondaryProgressString = "Executing statement: " + iIndex.ToText + " of " + ps1Array.Ubound.ToText
+		    
 		    // Execute the Statement
 		    psStatement.SQLExecute
 		    If db1.Error Then
@@ -244,6 +250,7 @@ Protected Module OSM
 		    iIndex = iIndex + 1
 		  Next
 		  
+		  db1.SQLExecute("Commit Transaction")
 		  
 		  Return True
 		  

@@ -185,27 +185,16 @@ Protected Module UserInfo
 		  db.SQLExecute("Delete From login_info;")
 		  
 		  'Finally we add the data to the table
-		  If oPKID = 0 Then
-		    sql = "Insert into login_info ( username, password, auto_login ) Values( ?,?,?  );"
-		    ps = db.Prepare( sql )
-		    ps.BindType(0,SQLitePreparedStatement.SQLITE_TEXT)
-		    ps.BindType(1,SQLitePreparedStatement.SQLITE_TEXT)
-		    ps.BindType(2,SQLitePreparedStatement.SQLITE_BOOLEAN)
-		    ps.Bind( 0, ousername )
-		    ps.Bind( 1, opassword )
-		    ps.Bind( 2, oautologin )
-		  Else
-		    sql = "Update login_info Set username = ?, password = ?, auto_login = ? Where pkid = ? ;" 
-		    ps = db.Prepare( sql )
-		    ps.BindType(0,SQLitePreparedStatement.SQLITE_TEXT)
-		    ps.BindType(1,SQLitePreparedStatement.SQLITE_TEXT)
-		    ps.BindType(2,SQLitePreparedStatement.SQLITE_BOOLEAN)
-		    ps.BindType(3,SQLitePreparedStatement.SQLITE_INT64)
-		    ps.Bind( 0, ousername )
-		    ps.Bind( 1, opassword )
-		    ps.Bind( 2, oautologin )
-		    ps.Bind( 3, oPKID )
-		  End If
+		  
+		  sql = "Insert into login_info ( username, password, auto_login ) Values( ?,?,?  );"
+		  ps = db.Prepare( sql )
+		  ps.BindType(0,SQLitePreparedStatement.SQLITE_TEXT)
+		  ps.BindType(1,SQLitePreparedStatement.SQLITE_TEXT)
+		  ps.BindType(2,SQLitePreparedStatement.SQLITE_BOOLEAN)
+		  ps.Bind( 0, ousername )
+		  ps.Bind( 1, opassword )
+		  ps.Bind( 2, oautologin )
+		  
 		  If db.Error Then
 		    dim err as new RuntimeException
 		    err.Message = "could not insert user data" + db.ErrorMessage

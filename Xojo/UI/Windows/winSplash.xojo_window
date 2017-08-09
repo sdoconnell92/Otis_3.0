@@ -267,6 +267,14 @@ Begin Window winSplash
       Visible         =   True
       Width           =   465
    End
+   Begin Timer tmrProgressUpdater
+      Index           =   -2147483648
+      LockedInPosition=   False
+      Mode            =   0
+      Period          =   500
+      Scope           =   0
+      TabPanelIndex   =   0
+   End
 End
 #tag EndWindow
 
@@ -285,13 +293,19 @@ End
 
 	#tag Method, Flags = &h0
 		Sub HandleInitialize()
-		  dim clInit as New AppInit
+		  clInit = New AppInit
+		  tmrProgressUpdater.Mode = Timer.ModeMultiple
 		  clInit.Go
 		  
 		  'App.Initialize
 		  'self.close
 		End Sub
 	#tag EndMethod
+
+
+	#tag Property, Flags = &h0
+		clInit As AppInit
+	#tag EndProperty
 
 
 #tag EndWindowCode
@@ -328,6 +342,27 @@ End
 		  'For more information on DrawPicture see:
 		  'http://docs.xojo.com/index.php/Graphics.DrawPicture
 		  g.DrawPicture(appLogo, 0, 0,g.Width,g.Height,0,0,appLogo.Width * (appLogo.Height / g.Height),appLogo.Height)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events tmrProgressUpdater
+	#tag Event
+		Sub Action()
+		  
+		  'clInit.CheckUIState
+		  
+		  labLoadingProgress.Text = InitializationModule.sProgressString
+		  labSecondaryLoadingProgress.Text = InitializationModule.sSecondaryProgressString
+		  
+		  If clInit.bInitDone Then
+		    me.Mode = Timer.ModeOff
+		    If clInit.bOpenMainWindow Then
+		      self.TrueWindow.Close
+		      App.UIInit
+		    Else
+		      Quit
+		    End If
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents

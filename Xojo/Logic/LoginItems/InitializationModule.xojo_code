@@ -23,7 +23,7 @@ Protected Module InitializationModule
 		  db1.DatabaseFile = DatabaseFile
 		  If Not db1.Connect Then
 		    // No database file
-		    Break
+		    'Break
 		    ReturnValue = 1
 		    
 		  Else
@@ -368,6 +368,7 @@ Protected Module InitializationModule
 		  f1.Append( rd1.sync_db_file.FilePath )
 		  f1.Append( rd1.user_db_file.FilePath )
 		  f1.Append( rd1.client_id_file.FilePath )
+		  f1.Append( rd1.init_data_pull_file.FilePath )
 		  
 		  For i1 as integer = 0 To f1.Ubound
 		    
@@ -499,11 +500,13 @@ Protected Module InitializationModule
 			Name="sProgressString"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="sSecondaryProgressString"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
