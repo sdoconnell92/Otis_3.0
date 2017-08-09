@@ -293,6 +293,8 @@ End
 
 	#tag Method, Flags = &h0
 		Sub HandleInitialize()
+		  dim rd as New ResourceDirectories
+		  
 		  clInit = New AppInit
 		  tmrProgressUpdater.Mode = Timer.ModeMultiple
 		  clInit.Go
@@ -331,6 +333,17 @@ End
 		  ars.Append "Version: " + Str(app.MajorVersion)
 		  ars.Append Str(app.MinorVersion)
 		  ars.Append Str(app.BugVersion)
+		  Select Case app.StageCode
+		  Case 0
+		    ars.Append("d")
+		  Case 1
+		    ars.Append("a")
+		  Case 2
+		    ars.Append("b")
+		  Case 3
+		    ars.Append("f")
+		  End Select
+		  ars.Append str( app.NonReleaseVersion )
 		  me.Text = Join(ars,".") 
 		  
 		End Sub
