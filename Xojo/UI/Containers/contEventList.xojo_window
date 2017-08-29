@@ -560,106 +560,106 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function methGetRecordList_Grouped(sGroupByField as string, sConditionpar as string) As Dictionary
+		Function methGetRecordList_Grouped(sGroupByField as string) As Dictionary
+		  // search string
+		  // conditionspar
+		  // hide condition
+		  
 		  dim dictGroupedItems as Dictionary
+		  dim arsSQL() as String
+		  dim arsCondition() as String
+		  dim arvValues() as Variant
+		  dim ariTypes() as integer
 		  
-		  // Grab the search value
-		  dim sSearchValue as String
-		  sSearchValue = scSearchField.Text  
+		  // Add the base sql to array
+		  arsSQL.Append( DataFile.tbl_events.BaseSQL )
 		  
-		  // Get the inventory items from the database grouped by sGroupByField
-		  dim sSearchCondition,sExcludeHiddenItemsCondition as String
-		  dim sCondition,sOrder as String
-		  
-		  // Set up the search condition
-		  If sSearchValue = "" Then
-		    sSearchCondition = ""
-		  Else
-		    sSearchCondition = "item_name Like '%" + sSearchValue + "%'"
+		  // Build Search String
+		  dim sSearchValue as String = scSearchField.Text
+		  If sSearchValue <> "" Then 
+		    arsCondition.Append("event_name Like ?")
+		    ariTypes.Append(SQLitePreparedStatement.SQLITE_TEXT)
+		    arvValues.Append(sSearchValue)
 		  End If
 		  
-		  // Set up Hidden Condition
-		  dim HiddenValue as Boolean
-		  HiddenValue = chbShowHidden.Value
-		  If HiddenValue Then
-		    sExcludeHiddenItemsCondition = ""
-		  Else
-		    sExcludeHiddenItemsCondition = "(hide <> 1 Or hide Is Null)"
+		  // Build Hide String
+		  dim sHideString as String = "(hide <> 1 Or hide Is Null)"
+		  If Not chbShowHidden.Value Then
+		    arsCondition.Append(sHideString)
 		  End If
 		  
-		  // Set up the condition
-		  If sSearchCondition <> "" Then
-		    sCondition = sSearchCondition
-		    If sExcludeHiddenItemsCondition <> "" Then
-		      sCondition = sCondition + " And "
-		    End If
+		  If arsCondition.Ubound <> -1 Then
+		    arsSQL.Append( " Where " + Join(arsCondition, " And ") )
 		  End If
-		  If  sExcludeHiddenItemsCondition <> "" Then
-		    sCondition = sCondition + sExcludeHiddenItemsCondition
-		    If sConditionpar <> "" Then
-		      sCondition = sCondition + " And " 
-		    End If
-		  End If 
-		  If sConditionpar <> "" Then
-		    sCondition = sCondition + sConditionpar
+		  
+		  If sGroupByField <> "" Then
+		    arsSQL.Append( " Order By " + sGroupByField )
 		  End If
-		  sOrder = sGroupByField
-		  dictGroupedItems = DataFile.tbl_events.ListGrouped(sCondition,sOrder,sGroupByField)  '!@! Table Dependent !@!
+		  
+		  dim SQL as String = arsSQL.JoinSQL + ";"
+		  
+		  dim ps as SQLitePreparedStatement = DataFile.DB.Prepare(SQL)
+		  For i1 as integer = 0 To arvValues.Ubound
+		    ps.BindType(i1, ariTypes(i1) )
+		    ps.Bind( i1, arvValues(i1) )
+		  Next
+		  
+		  dictGroupedItems = DataFile.tbl_events.ListGrouped(ps, sGroupByField)  '!@! Table Dependent !@!
 		  
 		  Return dictGroupedItems
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function methGetRecordList_UnGrouped(sOrderByFields as string, sConditionpar as string) As DataFile.tbl_events()
-		  '!@! Table Dependent In Return Type !@!
+		Function methGetRecordList_UnGrouped(sOrderByFields as string) As DataFile.tbl_events()
+		  // search string
+		  // conditionspar
+		  // hide condition
 		  
-		  dim aroRecords() as DataFile.tbl_events  '!@! Table Dependent !@!
+		  dim aroRecords() as DataFile.tbl_events
+		  dim arsSQL() as String
+		  dim arsCondition() as String
+		  dim arvValues() as Variant
+		  dim ariTypes() as integer
 		  
-		  // Grab the search value
-		  dim sSearchValue as String
-		  sSearchValue = scSearchField.Text
+		  // Add the base sql to array
+		  arsSQL.Append( DataFile.tbl_events.BaseSQL )
 		  
-		  // Get the inventory items from the database grouped by sGroupByField
-		  dim sSearchCondition,sExcludeHiddenItemsCondition as String
-		  dim sCondition,sOrder as String
-		  
-		  // Set up the search condition
-		  If sSearchValue = "" Then
-		    sSearchCondition = ""
-		  Else
-		    sSearchCondition = "event_name Like '%" + sSearchValue + "%'"  '!@! Table Dependent !@!
+		  // Build Search String
+		  dim sSearchValue as String = scSearchField.Text
+		  If sSearchValue <> "" Then 
+		    arsCondition.Append("event_name Like ?")
+		    ariTypes.Append(SQLitePreparedStatement.SQLITE_TEXT)
+		    arvValues.Append("%" + sSearchValue + "%")
 		  End If
 		  
-		  // Set up Hidden Condition
-		  dim HiddenValue as Boolean
-		  HiddenValue = chbShowHidden.Value
-		  If HiddenValue Then
-		    sExcludeHiddenItemsCondition = ""
-		  Else
-		    sExcludeHiddenItemsCondition = "(hide <> 1 Or hide Is Null)"
+		  // Build Hide String
+		  dim sHideString as String = "(hide <> 1 Or hide Is Null)"
+		  If Not chbShowHidden.Value Then
+		    arsCondition.Append(sHideString)
 		  End If
 		  
-		  // Set up the condition
-		  If sSearchCondition <> "" Then
-		    sCondition = sSearchCondition
-		    If sExcludeHiddenItemsCondition <> "" Then
-		      sCondition = sCondition + " And "
-		    End If
-		  End If
-		  If  sExcludeHiddenItemsCondition <> "" Then
-		    sCondition = sCondition + sExcludeHiddenItemsCondition
-		    If sConditionpar <> "" Then
-		      sCondition = sCondition + " And " 
-		    End If
-		  End If 
-		  If sConditionpar <> "" Then
-		    sCondition = sCondition + sConditionpar
+		  If arsCondition.Ubound <> -1 Then
+		    arsSQL.Append( " Where " + Join(arsCondition, " And ") )
 		  End If
 		  
-		  aroRecords = DataFile.tbl_events.List(sCondition,sOrderByFields)  '!@! Table Dependent !@!
+		  If sOrderByFields <> "" Then
+		    arsSQL.Append( " Order By " + sOrderByFields )
+		  End If
+		  
+		  dim SQL as String = arsSQL.JoinSQL + ";"
+		  
+		  dim ps as SQLitePreparedStatement = DataFile.DB.Prepare(SQL)
+		  For i1 as integer = 0 To arvValues.Ubound
+		    ps.BindType(i1, ariTypes(i1) )
+		    ps.Bind( i1, arvValues(i1) )
+		  Next
+		  
+		  aroRecords() = DataFile.tbl_events.List(ps)  '!@! Table Dependent !@!
 		  
 		  Return aroRecords
+		  
+		  
 		End Function
 	#tag EndMethod
 
@@ -808,7 +808,7 @@ End
 		  If Not IsGrouped Then
 		    
 		    // Get the records
-		    dim records() as DataFile.tbl_events = methGetRecordList_UnGrouped("start_date","")    '!@! Table Dependent !@!
+		    dim records() as DataFile.tbl_events = methGetRecordList_UnGrouped("start_date")    '!@! Table Dependent !@!
 		    
 		    If records.Ubound <> -1 Then
 		      // Build the rowtags
@@ -825,7 +825,7 @@ End
 		  ElseIf IsGrouped Then
 		    
 		    // Get the Records
-		    dim dictRecords as Dictionary = methGetRecordList_Grouped("start_date", "")    '!@! Table Dependent !@!
+		    dim dictRecords as Dictionary = methGetRecordList_Grouped("start_date")    '!@! Table Dependent !@!
 		    
 		    If dictRecords.Count <> 0 Then
 		      dim theRowtagsGrouped() as lbRowTag

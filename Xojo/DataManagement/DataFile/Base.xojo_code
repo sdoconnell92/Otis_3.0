@@ -376,6 +376,13 @@ Protected Class Base
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function TableName() As String
+		  dim ti as Introspection.TypeInfo = Introspection.GetType(me)
+		  Return ti.Name
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub Update()
 		  dim db as SQLiteDatabase = DataFile.GetDB
