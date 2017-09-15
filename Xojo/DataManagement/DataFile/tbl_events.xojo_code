@@ -111,60 +111,101 @@ Inherits DataFile.ActiveRecordBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function GroupRecords(oEvents() as Datafile.tbl_events, sGroupField as string) As Dictionary
-		  dim dictReturn as New Dictionary
-		  dim sCurrentGroupName as String
-		  dim oCurrentGroup() as DataFile.tbl_events
+		Shared Function GroupRecordsOld(oRecordList() as DataFile.tbl_events, sGroupBy as String) As Dictionary
+		  dim jsMaster as New Dictionary
 		  
-		  // Loop through the inventory
-		  For each oEvent as DataFile.tbl_events In oEvents
-		    dim jsFieldValues as JSONItem
-		    
-		    // Get the field value pairs as a json item of this item
-		    jsFieldValues = oEvent.GetMyFieldValues(True)
-		    
-		    // Check to see if the Current group name is the same as the one in this item
-		    If jsFieldValues.Value(sGroupField) <> sCurrentGroupName then
-		      ' The current group and the current item differ
-		      
-		      // Check if there is anything in the current group
-		      If oCurrentGroup.Ubound <> -1 Then
-		        ' The current group is not empty
-		        
-		        // Store the current group in the return dict
-		        '          We have to make a copy of the Array otherwise we get right fucked
-		        dim StupidDamnArrays() as DataFile.tbl_events
-		        For Each oElement as DataFile.tbl_events In oCurrentGroup
-		          StupidDamnArrays.Append(oElement)
-		        Next
-		        dictReturn.Value(sCurrentGroupName) = StupidDamnArrays
-		        
-		        // Clear the current group 
-		        ReDim oCurrentGroup(-1)
-		        
-		        // update the current group name
-		        sCurrentGroupName = jsFieldValues.Value(sGroupField)
-		        
-		      Else
-		        sCurrentGroupName = jsFieldValues.Value(sGroupField)
-		      End If
-		      
-		    End If
-		    
-		    // Add the current item to the current group array
-		    oCurrentGroup.Append(oEvent)
-		    
-		  Next
-		  
-		  If oCurrentGroup.Ubound <> -1 Then
-		    dim StupidDamnArrays() as DataFile.tbl_events
-		    For Each oElement as DataFile.tbl_events In oCurrentGroup
-		      StupidDamnArrays.Append(oElement)
-		    Next
-		    dictReturn.Value(sCurrentGroupName) = oCurrentGroup
+		  If sGroupBy = "" Then
+		    Return Nil
 		  End If
 		  
-		  Return dictReturn
+		  // now we need to loop through each one of the records and startp putting them in there place
+		  dim sGroupByList() as string = sGroupBy.split(", ")
+		  dim jsCurrent() as Dictionary
+		  dim idx_record as integer
+		  For Each oRecord as DataFile.tbl_events In oRecordList()
+		    
+		    jsCurrent.append( jsMaster)
+		    
+		    dim jsFieldValues as JSONItem = oRecord.GetMyFieldValues(True)
+		    
+		    
+		    For idx1 as integer = 0 To sGroupByList.Ubound
+		      
+		      dim sGroupField as string = sGroupByList(idx1)
+		      dim n3 as integer = jsCurrent.Ubound
+		      dim sGroupValue as String =  jsFieldValues.Value(sGroupField)
+		      
+		      // Check if this record fits into any existing groups
+		      dim sArray() as string
+		      for Each vKey as Variant In jsCurrent(n3).Keys
+		        sArray.Append( str( vKey ) )
+		      Next
+		      'If jsCurrent(n3).Keys.IndexOf( sGroupValue ) > -1 Then
+		      If sArray.IndexOf( sGroupValue ) > -1 THen
+		        ' there is a place for this record at this level
+		        
+		        ' now we check if the value of the current level group is a jsonitem, array, or s"none"
+		        If jsCurrent(n3).Value( sGroupValue ) IsA Dictionary Then
+		          ' we must dig depper into jsonitems
+		          
+		          jsCurrent.Append( jsCurrent(n3).Value( sGroupValue ) )
+		          Continue
+		          
+		        Elseif jsCurrent(n3).Value( sGroupValue ) IsA DataFile.tbl_events Then
+		          ' we can put the record here
+		          
+		        Else
+		          'ElseIf jsCurrent(n3).Value( sGroupValue ) IsA String THen
+		          
+		          #Pragma BreakOnExceptions Off
+		          Try
+		            // pull the array of records from the value
+		            dim oRecords() as DataFile.tbl_events
+		            oRecords() = jsCurrent(n3).Value(sGroupValue)
+		            oRecords.Append(oRecord)
+		            jsCurrent(n3).Value(sGroupValue) = oRecords
+		            Continue
+		          Exception
+		          End Try
+		          #Pragma BreakOnExceptions On
+		          
+		          If jsCurrent(n3).Value( sGroupValue ) = "none" THen
+		            
+		            // We need to check if this is the last group by field
+		            If idx1 = sGroupByList.Ubound Then
+		              // this is the last of the group by fields so we can put an array with this record in the value
+		              dim oRecords() as DataFile.tbl_events
+		              oRecords.Append( oRecord )
+		              jsCurrent(n3).Value( sGroupValue ) = oRecords
+		            Else
+		              // We still need to group by deeper
+		              // we will continue on the loop so as to advance the level of deepness by one group creating field
+		              jsCurrent(n3).Value( sGroupValue ) = New Dictionary
+		              jsCurrent.Append( jsCurrent(n3).Value( sGroupValue ) )
+		              Continue
+		            End If
+		          End If
+		          
+		        End If
+		        
+		      Else
+		        ' There is no place created for this record at this level
+		        
+		        // we will create a new key for this unique value and mark it as s"none" 
+		        jsCurrent(n3).Value( sGroupValue ) = "none"
+		        
+		        // Now we will continue on with our looping with the index backtracked so we will try to categorize this record with this new key created
+		        idx1 = idx1 - 1
+		        Continue
+		        
+		      End If
+		    Next
+		    
+		    ReDim jsCurrent(-1)
+		    idx_record = idx_record + 1
+		  Next
+		  
+		  Return jsMaster
 		End Function
 	#tag EndMethod
 
@@ -272,283 +313,6 @@ Inherits DataFile.ActiveRecordBase
 		    return 0
 		  end
 		  return rs.Field("iCnt").IntegerValue
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Shared Function ListGrouped(ps as SQLitePreparedStatement, sGroupBy as String) As Dictionary
-		  dim jsMaster as New Dictionary
-		  dim oRecordList() as DataFile.tbl_events
-		  
-		  If sGroupBy = "" Then
-		    Return Nil
-		  End If
-		  
-		  // Lets get the complete list of records from the database
-		  oRecordList() = DataFile.tbl_events.List(ps)
-		  
-		  // now we need to loop through each one of the records and startp putting them in there place
-		  dim sGroupByList() as string = sGroupBy.split(", ")
-		  dim jsCurrent() as Dictionary
-		  dim idx_record as integer
-		  For Each oRecord as DataFile.tbl_events In oRecordList()
-		    
-		    jsCurrent.append( jsMaster)
-		    
-		    dim jsFieldValues as JSONItem = oRecord.GetMyFieldValues(True)
-		    
-		    
-		    For idx1 as integer = 0 To sGroupByList.Ubound
-		      
-		      dim sGroupField as string = sGroupByList(idx1)
-		      dim n3 as integer = jsCurrent.Ubound
-		      dim sGroupValue as String =  jsFieldValues.Value(sGroupField)
-		      
-		      // Check if this record fits into any existing groups
-		      dim sArray() as string
-		      for Each vKey as Variant In jsCurrent(n3).Keys
-		        sArray.Append( str( vKey ) )
-		      Next
-		      'If jsCurrent(n3).Keys.IndexOf( sGroupValue ) > -1 Then
-		      If sArray.IndexOf( sGroupValue ) > -1 THen
-		        ' there is a place for this record at this level
-		        
-		        ' now we check if the value of the current level group is a jsonitem, array, or s"none"
-		        If jsCurrent(n3).Value( sGroupValue ) IsA Dictionary Then
-		          ' we must dig depper into jsonitems
-		          
-		          jsCurrent.Append( jsCurrent(n3).Value( sGroupValue ) )
-		          Continue
-		          
-		        Elseif jsCurrent(n3).Value( sGroupValue ) IsA DataFile.tbl_events Then
-		          ' we can put the record here
-		          
-		        Else
-		          'ElseIf jsCurrent(n3).Value( sGroupValue ) IsA String THen
-		          
-		          #Pragma BreakOnExceptions Off
-		          Try
-		            // pull the array of records from the value
-		            dim oRecords() as DataFile.tbl_events
-		            oRecords() = jsCurrent(n3).Value(sGroupValue)
-		            oRecords.Append(oRecord)
-		            jsCurrent(n3).Value(sGroupValue) = oRecords
-		            Continue
-		          Exception
-		          End Try
-		          #Pragma BreakOnExceptions On
-		          
-		          If jsCurrent(n3).Value( sGroupValue ) = "none" THen
-		            
-		            // We need to check if this is the last group by field
-		            If idx1 = sGroupByList.Ubound Then
-		              // this is the last of the group by fields so we can put an array with this record in the value
-		              dim oRecords() as DataFile.tbl_events
-		              oRecords.Append( oRecord )
-		              jsCurrent(n3).Value( sGroupValue ) = oRecords
-		            Else
-		              // We still need to group by deeper
-		              // we will continue on the loop so as to advance the level of deepness by one group creating field
-		              jsCurrent(n3).Value( sGroupValue ) = New Dictionary
-		              jsCurrent.Append( jsCurrent(n3).Value( sGroupValue ) )
-		              Continue
-		            End If
-		          End If
-		          
-		        End If
-		        
-		      Else
-		        ' There is no place created for this record at this level
-		        
-		        // we will create a new key for this unique value and mark it as s"none" 
-		        jsCurrent(n3).Value( sGroupValue ) = "none"
-		        
-		        // Now we will continue on with our looping with the index backtracked so we will try to categorize this record with this new key created
-		        idx1 = idx1 - 1
-		        Continue
-		        
-		      End If
-		    Next
-		    
-		    ReDim jsCurrent(-1)
-		    idx_record = idx_record + 1
-		  Next
-		  
-		  Return jsMaster
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Shared Function ListGrouped(sCriteria as string = "", sOrder as string = "", sGroupBy as String = "") As Dictionary
-		  dim jsMaster as New Dictionary
-		  dim oRecordList() as DataFile.tbl_events
-		  
-		  If sGroupBy = "" Then
-		    Return Nil
-		  End If
-		  
-		  // Lets get the complete list of records from the database
-		  oRecordList() = DataFile.tbl_events.List(sCriteria, sOrder)
-		  
-		  // now we need to loop through each one of the records and startp putting them in there place
-		  dim sGroupByList() as string = sGroupBy.split(", ")
-		  dim jsCurrent() as Dictionary
-		  dim idx_record as integer
-		  For Each oRecord as DataFile.tbl_events In oRecordList()
-		    
-		    jsCurrent.append( jsMaster)
-		    
-		    dim jsFieldValues as JSONItem = oRecord.GetMyFieldValues(True)
-		    
-		    
-		    For idx1 as integer = 0 To sGroupByList.Ubound
-		      
-		      dim sGroupField as string = sGroupByList(idx1)
-		      dim n3 as integer = jsCurrent.Ubound
-		      dim sGroupValue as String =  jsFieldValues.Value(sGroupField)
-		      
-		      // Check if this record fits into any existing groups
-		      dim sArray() as string
-		      for Each vKey as Variant In jsCurrent(n3).Keys
-		        sArray.Append( str( vKey ) )
-		      Next
-		      'If jsCurrent(n3).Keys.IndexOf( sGroupValue ) > -1 Then
-		      If sArray.IndexOf( sGroupValue ) > -1 THen
-		        ' there is a place for this record at this level
-		        
-		        ' now we check if the value of the current level group is a jsonitem, array, or s"none"
-		        If jsCurrent(n3).Value( sGroupValue ) IsA Dictionary Then
-		          ' we must dig depper into jsonitems
-		          
-		          jsCurrent.Append( jsCurrent(n3).Value( sGroupValue ) )
-		          Continue
-		          
-		        Elseif jsCurrent(n3).Value( sGroupValue ) IsA DataFile.tbl_events Then
-		          ' we can put the record here
-		          
-		        Else
-		          'ElseIf jsCurrent(n3).Value( sGroupValue ) IsA String THen
-		          
-		          #Pragma BreakOnExceptions Off
-		          Try
-		            // pull the array of records from the value
-		            dim oRecords() as DataFile.tbl_events
-		            oRecords() = jsCurrent(n3).Value(sGroupValue)
-		            oRecords.Append(oRecord)
-		            jsCurrent(n3).Value(sGroupValue) = oRecords
-		            Continue
-		          Exception
-		          End Try
-		          #Pragma BreakOnExceptions On
-		          
-		          If jsCurrent(n3).Value( sGroupValue ) = "none" THen
-		            
-		            // We need to check if this is the last group by field
-		            If idx1 = sGroupByList.Ubound Then
-		              // this is the last of the group by fields so we can put an array with this record in the value
-		              dim oRecords() as DataFile.tbl_events
-		              oRecords.Append( oRecord )
-		              jsCurrent(n3).Value( sGroupValue ) = oRecords
-		            Else
-		              // We still need to group by deeper
-		              // we will continue on the loop so as to advance the level of deepness by one group creating field
-		              jsCurrent(n3).Value( sGroupValue ) = New Dictionary
-		              jsCurrent.Append( jsCurrent(n3).Value( sGroupValue ) )
-		              Continue
-		            End If
-		          End If
-		          
-		        End If
-		        
-		      Else
-		        ' There is no place created for this record at this level
-		        
-		        // we will create a new key for this unique value and mark it as s"none" 
-		        jsCurrent(n3).Value( sGroupValue ) = "none"
-		        
-		        // Now we will continue on with our looping with the index backtracked so we will try to categorize this record with this new key created
-		        idx1 = idx1 - 1
-		        Continue
-		        
-		      End If
-		    Next
-		    
-		    ReDim jsCurrent(-1)
-		    idx_record = idx_record + 1
-		  Next
-		  
-		  Return jsMaster
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Shared Function listGroupedold(sCriteria as string = "", sOrder as string, sGroupBy as string = "", iOffset as integer = -1) As Dictionary
-		  
-		  dim dictReturn as New Dictionary
-		  
-		  // Load the entire Event List into a varialbe
-		  dim oEvents() as DataFile.tbl_events
-		  oEvents() = DataFile.tbl_events.List(sCriteria, sOrder, iOffset)
-		  
-		  
-		  // Exract the fields we want to group by out of the sGroupBy string
-		  dim sGroupFields() as string
-		  sGroupFields = sGroupBy.Split(",")
-		  
-		  dim dictGrouped as New Dictionary
-		  
-		  If sGroupFields.Ubound >= 0 Then
-		    
-		    // Grab the current group fieldname
-		    dim sGroup as String
-		    sGroup = sGroupFields(0)
-		    
-		    dictGrouped = GroupRecords(oEvents,sGroup)
-		    
-		    If sGroupFields.Ubound >= 1 Then
-		      For Each vKey as Variant In dictGrouped.Keys
-		        
-		        dim d1 as Dictionary
-		        
-		        // Grab the array of records out of the Dictionary
-		        dim o2ndEvents() as DataFile.tbl_events
-		        o2ndEvents() = dictGrouped.Value(vKey)
-		        
-		        // get it sorted and put into a dictionary
-		        d1 = GroupRecords(o2ndEvents,sGroupFields(1))
-		        
-		        dictGrouped.Value(vKey) = d1
-		        
-		        If sGroupFields.Ubound >=2 Then
-		          For Each v3rdKey as Variant In d1.Keys
-		            
-		            dim d3 as Dictionary
-		            
-		            // Grab the array of records out of the Dictionary
-		            dim o3rdEvents() as DataFile.tbl_events
-		            o3rdEvents() = d1.Value(v3rdKey)
-		            
-		            // Get it sorted and put into a dictionsar
-		            d3 = GroupRecords(o3rdEvents,sGroupFields(2))
-		            
-		          Next
-		          
-		        End If
-		        
-		      Next
-		      
-		    End If
-		    
-		  End If
-		  
-		  if dictGrouped.Count = 0 Then
-		    dictGrouped.Value("All") = oEvents
-		  end if
-		  Return dictGrouped
-		  
-		  
-		  
 		  
 		End Function
 	#tag EndMethod

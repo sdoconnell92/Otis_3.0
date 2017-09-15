@@ -233,7 +233,344 @@ End
 
 
 	#tag Method, Flags = &h0
-		Sub methBuildRowTag(ByRef oRowTag as lbRowTag)
+		Function methAcquireRecords(oSQLStor as SQLStorageClass, sGroupBy as String, bGetChildren as Boolean = False, bGroupRecords as Boolean = False) As RecordStorageClass()
+		  
+		  
+		  // First get a list of all records
+		  dim aroRecords() as DataFile.ActiveRecordBase = DataFile.tbl_events.List( oSQLStor.oPS )
+		  
+		  // Storify the records
+		  dim aroStor() as RecordStorageClass = DataFile.StorifyRecords( aroRecords )
+		  
+		  // Check if we need to get the children
+		  If bGetChildren Then DataFile.PopulateListWithChildren( aroStor() )
+		  
+		  // Check if we need to group the records
+		  If bGroupRecords Then aroStor() = DataFile.GroupRecords( aroStor(), sGroupBy )
+		  
+		  Return aroStor
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function methBuildSQL(bShowHidden as Boolean, sSearchString as String, sOrderBy as String) As SQLStorageClass
+		  dim aroSQL() as String
+		  dim arsConditions() as String
+		  dim arsOrderBy() as String
+		  dim ariTypes() as Integer
+		  dim arvValue() as Variant
+		  
+		  // Add the base sql
+		  aroSQL.Append( DataFile.tbl_events.BaseSQL )
+		  
+		  
+		  // Build condition array
+		  ' Build Search Condition
+		  If sSearchString <> "" Then
+		    arsConditions.Append( "event_name Like ?" )
+		    ariTypes.Append( SQLitePreparedStatement.SQLITE_TEXT )
+		    arvValue.Append( "%" + sSearchString + "%" )
+		  End If
+		  
+		  ' Build the Hidden Items Condition
+		  If bShowHidden Then
+		  Else
+		    arsConditions.Append( "(hide <> 1 Or hide Is Null)" )
+		  End If
+		  
+		  If arsConditions.Ubound <> -1 Then
+		    aroSQL.Append( "Where" )
+		    aroSQL.Append( Join(aroConditions, " And ") )
+		  End If
+		  
+		  // Build OrderBy String
+		  If sOrderBy <> "" Then
+		    aroSQL.Append( "Order By" )
+		    aroSQL.Append( sOrderBy )
+		  End If
+		  
+		  aroSQL.Append(";")
+		  
+		  // Join the sql into one string
+		  dim sSQL as String
+		  sSQL = aroSQL.JoinSQL
+		  
+		  // Put all of this into a sql Storage Class
+		  dim oSQLStor as New SQLStorageClass
+		  oSQLStor.sSQL = sSQL
+		  oSQLStor.ariTypes = ariTypes
+		  oSQLStor.arvValues = arvValue
+		  
+		  // Prepare a statement
+		  oSQLStor.PrepareStatement
+		  
+		  Return oSQLStor
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methExpandAllRows(JustTopLevel as Boolean = True)
+		  dim lb1 As entListbox = lbEvents  '!@! Table Dependent !@!
+		  
+		  // Loop through all the rows
+		  dim i1 as integer
+		  While i1 < lb1.ListCount 
+		    
+		    dim oRowData as RecordStorageClass
+		    
+		    // extract the rowtag
+		    oRowData = lb1.RowTag(i1)
+		    
+		    // Chgeck if its a folder
+		    If lb1.RowIsFolder(i1) Then
+		      
+		      // Check if its a top level folder
+		      Select Case oRowData.FolderLevel
+		      Case 0 
+		        lb1.Expanded(i1) = True
+		      Else
+		        If Not JustTopLevel Then
+		          lb1.Expanded(i1) = True
+		        End If
+		      End Select
+		      
+		    End If
+		    
+		    i1 = i1 + 1
+		    
+		  Wend
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methHandleExpandRow(row as integer)
+		  dim lb1 as entListbox = lbEvents  '!@! Table Dependent !@!
+		  
+		  // Extract the rowtag out of the parent
+		  dim oParentStor as RecordStorageClass
+		  oParentStor = lb1.RowTag(row)
+		  
+		  // Grab all the children
+		  dim aroChildrenStor() as RecordStorageClass
+		  aroChildrenStor() = oParentStor.aroChildren
+		  
+		  For Each oChild as RecordStorageClass In aroChildrenStor
+		    
+		    // Add a row
+		    lb1.AddRow("")
+		    
+		    // Load the rowtag into the row
+		    lb1.RowTag(lb1.LastIndex) = oChild
+		    
+		    // Load the row
+		    methPopulateRow( lbEvents.LastIndex, oChild )
+		    
+		  Next
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function methHandleMouseWheel(X As Integer, Y As Integer, DeltaX as Integer, DeltaY as Integer) As Boolean
+		  'me.EraseBackground = False
+		  
+		  me.top = me.Top - DeltaY
+		  me.Invalidate
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methListboxSettings()
+		  _
+		  
+		  
+		  // Set up some basic stuff
+		  
+		  // trigger event to allow me to set information externally
+		  evdefListboxSettings(lbEvents,dictCellTypes,dictFieldNames)
+		  
+		  If dictFieldNames = Nil And dictCellTypes = Nil Then
+		    
+		    dim s1,s2() as string
+		    
+		    dim sRowType as string
+		    
+		    // Set Column Count
+		    dim iColCount as integer = 4
+		    lbEvents.ColumnCount = iColCount
+		    
+		    // Initialize dictionaries
+		    dictFieldNames = New Dictionary
+		    dictCellTypes = New Dictionary
+		    
+		    // Set header names
+		    s1 = "Name,Start Date, End Date, Account Manager"
+		    s2() = Split(s1,",")
+		    lbEvents.Heading = s2()
+		    
+		    
+		    // **********
+		    // Set up the cell types and field names for each type of row
+		    
+		    // Group Folders
+		    sRowType = "GroupFolder"
+		    'field names
+		    dictFieldNames.Value(sRowType) = Array("")
+		    
+		    'cell types
+		    dim iCellTypes() as integer
+		    ReDim iCellTypes(iColCount - 1) 
+		    dictCellTypes.Value(sRowType) = iCellTypes
+		    
+		    
+		    // GrandParent
+		    sRowType = "GrandParent"
+		    'field names
+		    s1 = "tbl_events.event_name,tbl_events.start_date,tbl_events.end_date,tbl_events.account_manager"
+		    s2() = Split(s1,",")
+		    dictFieldNames.Value(sRowType) = s2
+		    
+		    'cell types
+		    dim iCellTypes2() as integer
+		    ReDim iCellTypes2(iColCount - 1) 
+		    dictCellTypes.Value(sRowType) = iCellTypes2
+		    
+		    
+		    // Linking Type Folder
+		    sRowType = "LinkingTypeFolder"
+		    'field names
+		    dictFieldNames.Value(sRowType) = Array("")
+		    
+		    'cell types
+		    dim iCellTypes3() as integer
+		    ReDim iCellTypes3(iColCount - 1) 
+		    dictCellTypes.Value(sRowType) = iCellTypes3
+		    
+		    
+		    // Linked - 
+		    sRowType = "Child - NoType"
+		    'field names
+		    s1 = "tbl_events.event_name,tbl_events.start_date,tbl_events.end_date,tbl_events.account_manager"
+		    s2() = Split(s1,",")
+		    dictFieldNames.Value(sRowType) = s2
+		    
+		    'cell types
+		    dim iCellTypes4() as integer = Array(0,0,0,0)
+		    dictCellTypes.Value(sRowType) = iCellTypes4
+		    
+		    
+		    
+		  End If
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methLoadMe(bGrouped as Boolean = False, sGroupFields as String = "", bGetChildren as boolean = True)
+		  dim lb as entListbox = lbEvents
+		  
+		  
+		  // Prepare the sql statement to get our records
+		  dim bHidden as Boolean = chbShowHidden.Value
+		  dim sSearchString as String = scSearchField.Text
+		  dim sOrderBy as String = "start_date"
+		  dim oSQL as SQLStorageClass = methBuildSQL( bHidden, sSearchString, sOrderBy )
+		  
+		  // Get the records from the database
+		  dim aroStor() as RecordStorageClass = methAcquireRecords( oSQL, sGroupFields, bGetChildren, bGrouped )
+		  
+		  If aroStor.Ubound <> -1 Then
+		    // Populate RowData values
+		    aroStor.PopulateLbDataList( dictFieldNames, dictCellTypes )
+		    'methPopulateLbData( aroStor )
+		  Else
+		    lb.DeleteAllRows
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methPopulateListbox(aroRecordStor() as RecordStorageClass)
+		  dim lb as entListbox = lbEvents
+		  
+		  For Each oStor as RecordStorageClass In aroRecordStor()
+		    
+		    lb.AddRow("")
+		    dim iLastIndex as integer = lb.LastIndex
+		    
+		    // Populate the row
+		    methPopulateRow( iLastIndex, oStor )
+		    
+		  Next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methPopulateRow(iRowIndex as integer, oStor as RecordStorageClass)
+		  dim lb as entListbox = lbEvents
+		  dim oDummy as New DataFile.tbl_events
+		  dim sTableName as String = oDummy.GetTableName
+		  
+		  For iCellIndex as integer = 0 To oStor.oRowData.arsColumnValues.Ubound
+		    dim sColumnValue as string = oStor.oRowData.arsColumnValues(iCellIndex)
+		    dim sFieldName as string = oStor.oRowData.arsFieldNames(iCellIndex)
+		    dim iColumnType as integer = oStor.oRowData.ariColumnTypes(iCellIndex)
+		    dim sDotNotation as String = sTableName + "." + sFieldName
+		    
+		    // Set the cell type
+		    lb.CellType( iRowIndex, iCellIndex ) = iColumnType
+		    
+		    // Format the value
+		    sColumnValue = str( sColumnValue, modFieldFormatting.GetFormattingString( sDotNotation ) )
+		    
+		    Select Case iColumnType
+		    Case 0 'default
+		      lb.Cell(iRowIndex,iCellIndex) = sColumnValue
+		    Case 1 'text
+		      lb.Cell(iRowIndex,iCellIndex) = sColumnValue
+		    Case 2 'CheckBox
+		      If sColumnValue = "True" then
+		        lb.CellState(iRowIndex ,iCellIndex) = CheckBox.CheckedStates.Checked
+		      Else
+		        lb.CellState(iRowIndex ,iCellIndex) = CheckBox.CheckedStates.Unchecked
+		      End If
+		    Case 3 'edit text
+		      lb.Cell(iRowIndex,iCellIndex) = sColumnValue
+		    Else
+		      lb.Cell(iRowIndex,iCellIndex) = sColumnValue
+		    End Select
+		    
+		  Next
+		  
+		  // Add the rowtag
+		  lb.RowTag( iRowIndex ) = oStor
+		  
+		  // Set folder status
+		  lb.RowisFolder( iRowIndex ) = oStor.isFolder
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methRefresh()
+		  
+		  
+		  methLoadMe()
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub OldmethBuildRowTag(ByRef oRowTag as lbRowTag)
 		  dim otblRecord as DataFile.tbl_events  '!@! Table Dependent !@!
 		  dim sUUID as String
 		  
@@ -417,7 +754,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function methCreateRowTags(vRecords() as DataFile.tbl_events) As lbRowTag()
+		Function OldmethCreateRowTags(vRecords() as DataFile.tbl_events) As lbRowTag()
 		  '!@! Table Dependent In Parameters !@!
 		  
 		  // vRecords will either be 
@@ -462,7 +799,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function methCreateRowTags_dict(dictRecords as Dictionary) As lbRowTag()
+		Function OldmethCreateRowTags_dict(dictRecords as Dictionary) As lbRowTag()
 		  // vRecords will either be 
 		  // an array of ActiveRecordBase objects
 		  //      or
@@ -505,7 +842,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub methCreateTopLevelRows(aroRowtags() As lbRowTag)
+		Sub OldmethCreateTopLevelRows(aroRowtags() As lbRowTag)
 		  dim lb1 as entListbox = lbEvents  '!@! Table Dependent !@!
 		  
 		  // Clear the listbox
@@ -526,41 +863,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub methExpandAllRows(JustTopLevel as Boolean = True)
-		  dim lb1 As entListbox = lbEvents  '!@! Table Dependent !@!
-		  
-		  // Loop through all the rows
-		  dim i1 as integer
-		  While i1 < lb1.ListCount 
-		    
-		    dim oRowTag as lbRowTag
-		    
-		    // extract the rowtag
-		    oRowTag = lb1.RowTag(i1)
-		    
-		    // Chgeck if its a folder
-		    If lb1.RowIsFolder(i1) Then
-		      
-		      // Check if its a top level folder
-		      Select Case oRowTag.iFolderLevel
-		      Case 0 
-		        lb1.Expanded(i1) = True
-		      Else
-		        If Not JustTopLevel Then
-		          lb1.Expanded(i1) = True
-		        End If
-		      End Select
-		      
-		    End If
-		    
-		    i1 = i1 + 1
-		    
-		  Wend
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function methGetRecordList_Grouped(sGroupByField as string) As Dictionary
+		Function OldmethGetRecordList_Grouped(sGroupByField as string) As Dictionary
 		  // search string
 		  // conditionspar
 		  // hide condition
@@ -604,14 +907,14 @@ End
 		    ps.Bind( i1, arvValues(i1) )
 		  Next
 		  
-		  dictGroupedItems = DataFile.tbl_events.ListGrouped(ps, sGroupByField)  '!@! Table Dependent !@!
+		  dictGroupedItems = DataFile.tbl_events.GroupRecords( DataFile.tbl_events.List(ps), sGroupByField )  '!@! Table Dependent !@!
 		  
 		  Return dictGroupedItems
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function methGetRecordList_UnGrouped(sOrderByFields as string) As DataFile.tbl_events()
+		Function OldmethGetRecordList_UnGrouped(sOrderByFields as string) As DataFile.tbl_events()
 		  // search string
 		  // conditionspar
 		  // hide condition
@@ -664,139 +967,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub methHandleExpandRow(row as integer)
-		  dim lb1 as entListbox = lbEvents  '!@! Table Dependent !@!
-		  
-		  // Extract the rowtag out of the parent
-		  dim oParentRowTag as lbRowTag
-		  oParentRowTag = lb1.RowTag(row)
-		  
-		  // Grab all the children
-		  dim aroChildrenRowTag() as lbRowTag
-		  aroChildrenRowTag() = oParentRowTag.aroChildren
-		  
-		  For Each oChild as lbRowTag In aroChildrenRowTag
-		    
-		    // Add a row
-		    lb1.AddRow("")
-		    
-		    // Load the rowtag into the row
-		    lb1.RowTag(lb1.LastIndex) = oChild
-		    
-		    // Load the row
-		    methLoadRow(lbEvents.LastIndex,oChild)
-		    
-		  Next
-		  
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function methHandleMouseWheel(X As Integer, Y As Integer, DeltaX as Integer, DeltaY as Integer) As Boolean
-		  'me.EraseBackground = False
-		  
-		  me.top = me.Top - DeltaY
-		  me.Invalidate
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub methListboxSettings()
-		  _
-		  
-		  
-		  // Set up some basic stuff
-		  
-		  // trigger event to allow me to set information externally
-		  evdefListboxSettings(lbEvents,dictCellTypes,dictFieldNames)
-		  
-		  If dictFieldNames = Nil And dictCellTypes = Nil Then
-		    
-		    dim s1,s2() as string
-		    
-		    dim sRowType as string
-		    
-		    // Set Column Count
-		    dim iColCount as integer = 4
-		    lbEvents.ColumnCount = iColCount
-		    
-		    // Initialize dictionaries
-		    dictFieldNames = New Dictionary
-		    dictCellTypes = New Dictionary
-		    
-		    // Set header names
-		    s1 = "Name,Start Date, End Date, Account Manager"
-		    s2() = Split(s1,",")
-		    lbEvents.Heading = s2()
-		    
-		    
-		    // **********
-		    // Set up the cell types and field names for each type of row
-		    
-		    // Group Folders
-		    sRowType = "GroupFolder"
-		    'field names
-		    dictFieldNames.Value(sRowType) = Array("")
-		    
-		    'cell types
-		    dim iCellTypes() as integer
-		    ReDim iCellTypes(iColCount - 1) 
-		    dictCellTypes.Value(sRowType) = iCellTypes
-		    
-		    
-		    // GrandParent
-		    sRowType = "GrandParent"
-		    'field names
-		    s1 = "tbl_events.event_name,tbl_events.start_date,tbl_events.end_date,tbl_events.account_manager"
-		    s2() = Split(s1,",")
-		    dictFieldNames.Value(sRowType) = s2
-		    
-		    'cell types
-		    dim iCellTypes2() as integer
-		    ReDim iCellTypes2(iColCount - 1) 
-		    dictCellTypes.Value(sRowType) = iCellTypes2
-		    
-		    
-		    // Linking Type Folder
-		    sRowType = "LinkingTypeFolder"
-		    'field names
-		    dictFieldNames.Value(sRowType) = Array("")
-		    
-		    'cell types
-		    dim iCellTypes3() as integer
-		    ReDim iCellTypes3(iColCount - 1) 
-		    dictCellTypes.Value(sRowType) = iCellTypes3
-		    
-		    
-		    // Linked - 
-		    sRowType = "Linked - NoType"
-		    'field names
-		    s1 = "tbl_events.event_name,tbl_events.start_date,tbl_events.end_date,tbl_events.account_manager"
-		    s2() = Split(s1,",")
-		    dictFieldNames.Value(sRowType) = s2
-		    
-		    'cell types
-		    dim iCellTypes4() as integer = Array(0,0,0,0)
-		    dictCellTypes.Value(sRowType) = iCellTypes4
-		    
-		    
-		    
-		  End If
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub methLoadMe()
+		Sub OldmethLoadMe()
 		  dim IsGrouped as Boolean = bDisplayGrouped
 		  
 		  If oParentRecord <> Nil Then
@@ -843,7 +1014,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub methLoadMe_ExpandSingleRecord(oRecord as DataFile.tbl_events)
+		Sub OldmethLoadMe_ExpandSingleRecord(oRecord as DataFile.tbl_events)
 		  '!@! Table Dependent In Parameters !@!
 		  
 		  If oRecord <> Nil Then
@@ -867,7 +1038,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub methLoadRow(RowIndex as integer, oRowTag as lbRowTag)
+		Sub OldmethLoadRow(RowIndex as integer, oRowTag as lbRowTag)
 		  dim lb1 as entListbox = lbEvents    '!@! Table Dependent !@!
 		  
 		  
@@ -907,10 +1078,17 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub methRefresh()
+		Sub OldmethPopulateLbData(aroStor() as RecordStorageClass)
 		  
-		  
-		  methLoadMe()
+		  // Loop through all storage classes
+		  For Each oStor as RecordStorageClass In aroStor()
+		    
+		    oStor.PopulateLbData( dictFieldNames, dictCellTypes )
+		    
+		    // Check if there are any children
+		    'If oStor.aroChildren.Ubound <> -1 Then methPopulateLbData( oStor.aroChildren )
+		    
+		  Next
 		End Sub
 	#tag EndMethod
 
@@ -927,6 +1105,10 @@ End
 		Event evdefOpen()
 	#tag EndHook
 
+
+	#tag Property, Flags = &h0
+		aroStorClass() As RecordStorageClass
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		bDisplayGrouped As Boolean

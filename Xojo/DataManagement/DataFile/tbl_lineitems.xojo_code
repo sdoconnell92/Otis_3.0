@@ -55,28 +55,6 @@ Inherits DataFile.ActiveRecordBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function FindChildren() As RecordStorageClass
-		  dim aroLinkChildren() as DataFile.tbl_internal_linking
-		  dim aroRet() as RecordStorageClass
-		  
-		  aroLinkChildren() = DataFile.tbl_internal_linking.List( "fk_parent = '" + me.suuid + "' And fk_table_name = '" + me.TableName + "'" )
-		  
-		  For Each oLink as DataFile.tbl_internal_linking In aroLinkChildren
-		    
-		    dim oChild as DataFile.tbl_lineitems = DataFile.tbl_lineitems.FindByID(oLink.sfk_child)
-		    
-		    If oChild <> Nil then
-		      dim oRet as New RecordStorageClass
-		      oRet.vLinkRecord = oLink
-		      oRet.vTableRecord = oChild
-		      aroRet.Append(oRet)
-		    End If
-		    
-		  Next
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
 		Shared Function List(stmt as PreparedSQLStatement) As DataFile.tbl_lineitems()
 		  //Note: You should use this method if your query contains user entered data. Using this method will help prevent SQL injection attacks
 		  dim aro() as DataFile.tbl_lineitems

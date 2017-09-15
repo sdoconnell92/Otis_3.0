@@ -1,15 +1,15 @@
 #tag Class
-Protected Class RecordStorageClass
+Protected Class lbData
 	#tag Property, Flags = &h0
-		arvChildren() As Variant
+		ariColumnTypes() As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		vLinkRecord As Variant
+		arsColumnValues() As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		vTableRecord As Variant
+		arsFieldNames() As String
 	#tag EndProperty
 
 
@@ -45,11 +45,6 @@ Protected Class RecordStorageClass
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="vTableRecord"
-			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior
