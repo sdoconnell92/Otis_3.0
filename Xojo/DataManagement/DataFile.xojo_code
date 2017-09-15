@@ -178,6 +178,7 @@ Protected Module DataFile
 		            oNewStor.isChild = True
 		            oNewStor.isRecord = True
 		            oNewStor.oParentStor = oParentStor
+		            oNewStor.sUUID = oNewStor.oTableRecord.suuid
 		            
 		            // Get the children of this child record
 		            GetChildren(oNewStor)
@@ -357,6 +358,7 @@ Protected Module DataFile
 		    oStor.oTableRecord = oRecord
 		    oStor.isChild = False
 		    oStor.isRecord = True
+		    oStor.sUUID = oRecord.suuid
 		    
 		    aroStors.Append(oStor)
 		    

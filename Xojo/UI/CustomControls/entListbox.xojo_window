@@ -352,6 +352,35 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetSelectedRowTags() As RecordStorageClass()
+		  dim oSelectedRows() as RecordStorageClass
+		  
+		  dim i1 as integer
+		  While i1 < oListbox.ListCount
+		    
+		    // Check if row is selected
+		    If oListbox.Selected(i1) Then
+		      
+		      dim oStor as RecordStorageClass
+		      oStor = oListbox.RowTag(i1)
+		      
+		      If oListbox.ListIndex = i1 Then
+		        oSelectedRows.Insert(0,oStor)
+		      Else
+		        oSelectedRows.Append(oStor)
+		      End If
+		      
+		    End If
+		    
+		    i1 = i1 + 1 
+		    
+		  Wend
+		  
+		  Return oSelectedRows
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetUIState() As lbUIState
 		  dim oUIState as New lbUIState
 		  

@@ -5,7 +5,7 @@ Protected Module ExtentionMethods
 		  
 		  For i1 as integer = 0 To aro.Ubound
 		    dim oStor as RecordStorageClass = aro(i1)
-		    If sFolderName = sValue Then
+		    If oStor.sFolderName = sValue Then
 		      Return i1
 		    End If
 		  Next
@@ -21,7 +21,7 @@ Protected Module ExtentionMethods
 		    aro(i1).PopulateLbData( dictFieldNames, dictCellTypes )
 		    
 		    // Check if there are any children
-		    If aroChildren.Ubound <> -1 Then aroChildren.PopulateLbDataList( dictFieldNames, dictCellTypes )
+		    If aro(i1).aroChildren.Ubound <> -1 Then aro(i1).aroChildren.PopulateLbDataList( dictFieldNames, dictCellTypes )
 		  Next
 		End Sub
 	#tag EndMethod

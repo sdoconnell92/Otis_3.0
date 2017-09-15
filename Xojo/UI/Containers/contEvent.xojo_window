@@ -1474,7 +1474,6 @@ End
 
 	#tag Method, Flags = &h0
 		Sub LoadEvent(oEvent as DataFile.tbl_events)
-		  
 		  oCurrentEvent = oEvent
 		  
 		  tfEventName.Text = oCurrentEvent.sevent_name
@@ -1578,7 +1577,8 @@ End
 		  
 		  If oCurrentEvent.suuid <> "" Then
 		    dim oRecord as DataFile.tbl_events = DataFile.tbl_events.FindByID(oCurrentEvent.suuid)
-		    contChildEventList.methLoadMe_ExpandSingleRecord(oRecord)
+		    dim oStor() as RecordStorageClass = DataFile.StorifyRecords( Array(oRecord) )
+		    contChildEventList.methLoadMe(oStor(0))
 		  Else
 		    contChildEventList.DoNotLoad = True
 		  End If
@@ -1746,6 +1746,7 @@ End
 #tag Events dcStart
 	#tag Event
 		Sub LostFocus()
+		  
 		  dim d1 as Date
 		  dim s1 as string
 		  

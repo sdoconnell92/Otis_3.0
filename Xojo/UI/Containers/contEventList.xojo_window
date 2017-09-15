@@ -280,7 +280,7 @@ End
 		  
 		  If arsConditions.Ubound <> -1 Then
 		    aroSQL.Append( "Where" )
-		    aroSQL.Append( Join(aroConditions, " And ") )
+		    aroSQL.Append( Join(arsConditions, " And ") )
 		  End If
 		  
 		  // Build OrderBy String
@@ -340,6 +340,150 @@ End
 		    i1 = i1 + 1
 		    
 		  Wend
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methHandleCellAction(row as integer, column as integer)
+		  dim lb as entListbox = lbEvents
+		  
+		  If lb.CellType(row,column) = 2 Then
+		    'its a checkbox
+		    
+		    // Get the state of the checkbox
+		    dim CheckBoxState as CheckBox.CheckedStates
+		    CheckBoxState = lb.CellState(row,column)
+		    
+		    // Pull the rowtag
+		    dim oStor as RecordStorageClass
+		    oStor = lb.RowTag(row)
+		    
+		    // Check if there is a record here
+		    If oStor.oTableRecord <> Nil Then
+		      
+		      dim bValue as Boolean
+		      Select Case CheckBoxState
+		      Case CheckBox.CheckedStates.Checked
+		        bValue = True
+		      Else
+		        bValue = False
+		      End Select
+		      
+		      oStor.oTableRecord.ChangeMySavedValue( oStor.oRowData.arsFieldNames(column), bValue )
+		      
+		    End If
+		    
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methHandleCellLostFocus(row as integer, col as integer)
+		  dim lb as entListbox = lbEvents
+		  
+		  If lb.CellType(row,col) = 3 Then
+		    ' it's a text edit
+		    
+		    // Get the storage class from the rowtag
+		    dim oStor as RecordStorageClass = lb.RowTag(row)
+		    
+		    // Check if there is a table record in this class
+		    If oStor.oTableRecord <> Nil Then
+		      
+		      // Grab the value of the cell
+		      dim vValue as Variant = lb.Cell(row,col)
+		      
+		      // Get the field values
+		      dim jsFieldValues as JSONItem = oStor.oTableRecord.GetMyFieldValues(True)
+		      
+		      // Check if our field name is already in table.field format
+		      dim sFieldName as string = oStor.oRowData.arsFieldNames(col)
+		      dim sTableName as String = oStor.oTableRecord.GetTableName
+		      dim sDBDotNotation as String
+		      dim sFTable, sFField as string
+		      dim dotIndex as Integer = sFieldName.InStr( "." )
+		      If dotIndex <> 0 Then
+		        'this is already in dotnotation
+		        sDBDotNotation = sFieldName
+		        dim s1() as string = sFieldName.Split(".")
+		        sFTable = s1(0)
+		        sFField = s1(1)
+		      Else
+		        sDBDotNotation = sTableName + "." + sFieldName
+		        sFField = sFieldName
+		        sFTable = sTableName
+		      End If
+		      
+		      // Check that the field actually exists
+		      If jsFieldValues.Names.IndexOf( sFField ) <> -1 Then
+		        ' the field exists
+		        Select Case VarType( jsFieldValues.Value(sFField) )
+		        Case 2 'int32
+		          vValue = val(vValue)
+		        Case 3 'int64
+		          vValue = val(vValue)
+		        Case 8 'string
+		        Case 37 'text
+		        End Select
+		        
+		        oStor.oTableRecord.ChangeMySavedValue(sFField,vValue)
+		        
+		      End If
+		      
+		    End If
+		    
+		  End If
+		  
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methHandleDoubleClick()
+		  dim lb as entListbox = lbEvents
+		  Break
+		  
+		  If evdefDoubleClick Then
+		    
+		    // the event was handled and we do not want to do anything else
+		    
+		  Else
+		    
+		    
+		    dim oStor as RecordStorageClass
+		    
+		    If lb.ListIndex <> -1 Then
+		      
+		      oStor = lb.RowTag(lb.ListIndex)
+		      
+		      If oStor.oTableRecord <> Nil Then
+		        
+		        // Get the Event name
+		        dim vRecord as Variant = oStor.oTableRecord
+		        dim oRecord as DataFile.tbl_events = vRecord
+		        dim sEventName as string
+		        sEventName = oRecord.sevent_name
+		        
+		        If oStor.sUUID <> "" Then
+		          
+		          // load up an Event container
+		          dim conEventInst as New contEvent
+		          dim oTabPanel as PagePanel = app.MainWindow.tbMainWindow
+		          
+		          app.MainWindow.AddTab(sEventName)
+		          
+		          conEventInst.EmbedWithinPanel(oTabPanel,oTabPanel.PanelCount - 1 )
+		          
+		          conEventInst.LoadEvent(oStor.sUUID)
+		          
+		        End If
+		        
+		      End If
+		      
+		    End If
+		    
+		    
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -493,9 +637,30 @@ End
 		    // Populate RowData values
 		    aroStor.PopulateLbDataList( dictFieldNames, dictCellTypes )
 		    'methPopulateLbData( aroStor )
+		    methPopulateListbox( aroStor )
 		  Else
 		    lb.DeleteAllRows
 		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methLoadMe(oStor as RecordStorageClass)
+		  // THis version of loadme is for expanding on a single record and displaying children below it only
+		  
+		  // Make the add event button invisible
+		  pbAddEvent.Visible = False
+		  
+		  // Store the Record so we know who the parent is later
+		  oParentStor = oStor
+		  
+		  // Get its children
+		  DataFile.GetChildren( oStor )
+		  dim aroChildren() as RecordStorageClass = oStor.aroChildren
+		  
+		  aroChildren.PopulateLbDataList( dictFieldNames, dictCellTypes )
+		  
+		  methPopulateListbox( aroChildren )
 		End Sub
 	#tag EndMethod
 
@@ -569,529 +734,6 @@ End
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub OldmethBuildRowTag(ByRef oRowTag as lbRowTag)
-		  dim otblRecord as DataFile.tbl_events  '!@! Table Dependent !@!
-		  dim sUUID as String
-		  
-		  // Check  to see what kind of row this will be based on varying conditions
-		  If oRowTag.vtblRecord IsA DataFile.tbl_events Then  '!@! Table Dependent !@!
-		    'there is a table record and it is our primary table
-		    
-		    // Put the table record into a variable
-		    otblRecord = oRowTag.vtblRecord
-		    
-		    // Pull the table name into a variable
-		    dim sTableName as String = otblRecord.GetTableName
-		    
-		    // FIll in some rowtag info that we know already
-		    sUUID = otblRecord.suuid
-		    If sUUID <> "" Then
-		      oRowTag.uuid = sUUID
-		    End If
-		    If oRowTag.sRowType = "Grandparent" Then
-		      'grandparent level row
-		      oRowTag.sFieldNames = dictFieldNames.Value("GrandParent")
-		      oRowTag.iCellTypes = dictCellTypes.Value("GrandParent")
-		    Else
-		      oRowTag.sFieldNames = dictFieldNames.Value(oRowTag.sRowType)
-		      oRowTag.iCellTypes = dictCellTypes.Value(oRowTag.sRowType)
-		    End If
-		    
-		    // Populate the Column values for this row
-		    For Each sFieldName as String In oRowTag.sFieldNames
-		      
-		      // make sure the table name isn't included in this
-		      dim sFieldNameStripped as string
-		      dim x1 as integer = sFieldName.InStr(".")
-		      If x1 = 0 Then
-		        sFieldNameStripped = sFieldName
-		      Else
-		        sFieldNameStripped = Mid(sFieldName, x1 + 1)
-		      End If
-		      
-		      // Get the field names and values as a json item from the database record
-		      dim jsFieldValues as JSONItem = otblRecord.GetMyFieldValues(True)
-		      dim sKeys() as string = jsFieldValues.Names
-		      
-		      // Check to make sure that the field we are looking for really exists
-		      If sKeys.IndexOf(sFieldNameStripped) <> -1 Then
-		        
-		        // Format the value for display
-		        dim sUnFormattedValue as String = jsFieldValues.value(sFieldNameStripped)
-		        dim sFormattedValue as String
-		        If sFieldName.InStr(".") = 0 Then
-		          sFormattedValue = str( sUnFormattedValue, modFieldFormatting.GetFormattingString( sTableName + "." + sFieldName) )
-		        Else
-		          sFormattedValue = str(sUnFormattedValue, modFieldFormatting.GetFormattingString(sFieldName) )
-		        End If
-		        
-		        // append this value to the rowtag array
-		        oRowTag.vColumnValues.Append(sFormattedValue)
-		        
-		      End If
-		    Next
-		    
-		    // Check to see if this record has any children
-		    dim arLinkArray() as DataFile.tbl_internal_linking
-		    dim dictChildRecords as New Dictionary
-		    arLinkArray = DataFile.tbl_internal_linking.List( "fk_parent = '" + otblRecord.suuid + "' And fk_table_name = 'tbl_events'" )
-		    
-		    // Loop through each link child
-		    If arLinkArray.Ubound <> -1 Then
-		      
-		      For iLinkIndex as integer = 0 To arLinkArray.Ubound
-		        
-		        // Pull the link record out of the array
-		        dim oLinkRecord as DataFile.tbl_internal_linking = arLinkArray( iLinkIndex )
-		        
-		        // Get the child record
-		        dim oChild as DataFile.tbl_events = DataFile.tbl_events.FindByID( oLinkRecord.sfk_child )  '!@! Table Dependent !@!
-		        If oChild <> Nil Then
-		          
-		          dim dictKeys() as Variant
-		          dim sLinkType as string
-		          sLinkType = oLinkRecord.slink_type
-		          dictKeys() = dictChildRecords.Keys
-		          If sLinkType = "" Then
-		            sLinkType = "NoType"
-		          End If
-		          
-		          dim aroSubChildren() as lbRowTag
-		          
-		          // Create new rowtag for this child
-		          dim oSubRowtag as New lbRowTag
-		          oSubRowtag.vtblRecord = otblRecord
-		          oSubRowtag.iFolderLevel = oRowTag.iFolderLevel + 1
-		          oSubRowtag.vtblRecord = oChild
-		          oSubRowtag.vLinkTable = oLinkRecord
-		          oSubRowtag.sRowType = "Linked - " + sLinkType
-		          
-		          If dictKeys.IndexOf(sLinkType) >=0 Then
-		            ' there is already a dictionary entry for this link type
-		            // Pull its fellow rowtags out of Dictionary
-		            aroSubChildren() = dictChildRecords.Value(sLinkType)
-		            
-		          Else
-		            'there is no dictionary entry for this link type
-		          End If
-		          
-		          // Feed this rowtag back into our build rowtag method to build it out
-		          methBuildRowTag(oSubRowtag)
-		          
-		          // Add our current child rowtag to the array and then back into the dictionary
-		          aroSubChildren.Append(oSubRowtag)
-		          dictChildRecords.Value(sLinkType) = aroSubChildren
-		          
-		        Else
-		          // The child specified by the link record does not exist
-		          
-		          // Delete the child from the array
-		          arLinkArray.Remove( iLinkIndex )
-		          
-		        End If
-		        
-		      Next
-		      
-		      // Check again if there are any link records left
-		      If arLinkArray.Ubound = -1 Then
-		        // No link records left 
-		      Else
-		        // Link records left
-		        oRowTag.isFolder = True
-		      End If
-		      
-		      // Loop through each of the categories in dictChildRecords
-		      dim dictKeys() as Variant = dictChildRecords.Keys
-		      For Each key as Variant In dictKeys
-		        
-		        // Pull all of the child rowtags out of this category
-		        dim aroChildRecords() as lbRowTag = dictChildRecords.Value(key)
-		        
-		        // Check to see if there is a link type that would force us to create a sub folder to contain sub reacord
-		        If key = "NoType" Then
-		          
-		          // Loop through each child rowtag
-		          For Each Child as lbRowTag In aroChildRecords
-		            oRowTag.aroChildren.Append(Child)
-		          Next
-		          
-		        Else
-		          
-		          // Create a link folder rowtag
-		          dim oLinkRowtag as New lbRowTag
-		          oLinkRowtag.aroChildren() = aroChildRecords()
-		          oLinkRowtag.iCellTypes = dictCellTypes.Value("LinkingTypeFolder")
-		          oLinkRowtag.iFolderLevel = oRowTag.iFolderLevel + 1
-		          oLinkRowtag.isFolder = True
-		          oLinkRowtag.sFieldNames = dictFieldNames.Value("LinkingTypeFolder")
-		          oLinkRowtag.sRowType = "LinkingTypeFolder"
-		          oLinkRowtag.vColumnValues = Array(key)
-		          
-		          oRowTag.aroChildren.Append(oLinkRowtag)
-		          
-		        End If
-		        
-		      Next
-		      
-		    End If
-		    
-		    
-		  End If
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function OldmethCreateRowTags(vRecords() as DataFile.tbl_events) As lbRowTag()
-		  '!@! Table Dependent In Parameters !@!
-		  
-		  // vRecords will either be 
-		  // an array of ActiveRecordBase objects
-		  //      or
-		  // a Dictionary or grouped records
-		  
-		  dim oReturnRowtags() as lbRowTag 
-		  
-		  // Check if vRecords is grouped or not
-		  
-		  Select Case vRecords(0)
-		  Case IsA Dictionary
-		    //Problem!!! should be in other form of method
-		    Return Array(new lbRowTag)
-		  Case IsA DataFile.ActiveRecordBase
-		    
-		    // Loop through each record
-		    For Each oRecord as DataFile.tbl_events In vRecords  '!@! Table Dependent !@!
-		      
-		      // Set up some basic things for the rowtag that we know already
-		      dim oCurrentRowtag as New lbRowTag
-		      'put the record we are on into the rowtag
-		      oCurrentRowtag.vtblRecord = oRecord
-		      oCurrentRowtag.iFolderLevel = 1
-		      oCurrentRowtag.sRowType = "GrandParent"
-		      
-		      // Build that damn rowtag
-		      methBuildRowTag(oCurrentRowtag)
-		      
-		      oReturnRowtags.Append( oCurrentRowtag )
-		      
-		    Next
-		    
-		    
-		    
-		  End Select
-		  
-		  Return oReturnRowtags
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function OldmethCreateRowTags_dict(dictRecords as Dictionary) As lbRowTag()
-		  // vRecords will either be 
-		  // an array of ActiveRecordBase objects
-		  //      or
-		  // a Dictionary or grouped records
-		  
-		  // Check if vRecords is grouped or not
-		  Select Case dictRecords
-		  Case IsA DataFile.ActiveRecordBase
-		    //Problem!!! should be in other form of method
-		    Return Array(New lbRowTag)
-		  Case IsA Dictionary
-		    
-		    dim aroGroupRowtags() as lbRowTag
-		    
-		    // Loop through all of the groups
-		    For Each vGroupName as Variant In dictRecords.Keys
-		      
-		      // Create the rowtags for this groups children
-		      dim aroChildRowTags() as lbRowTag
-		      aroChildRowTags() = methCreateRowTags(dictRecords.Value(vGroupName))
-		      
-		      // Create a New Rowtag for the Group
-		      dim oGroupRowtag as New lbRowTag
-		      oGroupRowtag.aroChildren() = aroChildRowTags()
-		      oGroupRowtag.iCellTypes = dictCellTypes.Value("GroupFolder")
-		      oGroupRowtag.iFolderLevel = 0
-		      oGroupRowtag.isFolder = True
-		      oGroupRowtag.sFieldNames = dictFieldNames.Value("GroupFolder")
-		      oGroupRowtag.sRowType = "GroupFolder"
-		      oGroupRowtag.vColumnValues = Array( vGroupname )
-		      
-		      aroGroupRowtags.Append(oGroupRowtag)
-		      
-		    Next
-		    
-		    Return aroGroupRowtags()
-		    
-		  End Select
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub OldmethCreateTopLevelRows(aroRowtags() As lbRowTag)
-		  dim lb1 as entListbox = lbEvents  '!@! Table Dependent !@!
-		  
-		  // Clear the listbox
-		  lb1.DeleteAllRows
-		  
-		  
-		  // Loop through each rowtag
-		  For Each oRowtag as lbRowTag In aroRowtags()
-		    
-		    // Create a row for this rowtag
-		    lb1.AddRow("")
-		    
-		    // Load the Row
-		    methLoadRow(lb1.LastIndex, oRowtag)
-		    
-		  Next
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function OldmethGetRecordList_Grouped(sGroupByField as string) As Dictionary
-		  // search string
-		  // conditionspar
-		  // hide condition
-		  
-		  dim dictGroupedItems as Dictionary
-		  dim arsSQL() as String
-		  dim arsCondition() as String
-		  dim arvValues() as Variant
-		  dim ariTypes() as integer
-		  
-		  // Add the base sql to array
-		  arsSQL.Append( DataFile.tbl_events.BaseSQL )
-		  
-		  // Build Search String
-		  dim sSearchValue as String = scSearchField.Text
-		  If sSearchValue <> "" Then 
-		    arsCondition.Append("event_name Like ?")
-		    ariTypes.Append(SQLitePreparedStatement.SQLITE_TEXT)
-		    arvValues.Append(sSearchValue)
-		  End If
-		  
-		  // Build Hide String
-		  dim sHideString as String = "(hide <> 1 Or hide Is Null)"
-		  If Not chbShowHidden.Value Then
-		    arsCondition.Append(sHideString)
-		  End If
-		  
-		  If arsCondition.Ubound <> -1 Then
-		    arsSQL.Append( " Where " + Join(arsCondition, " And ") )
-		  End If
-		  
-		  If sGroupByField <> "" Then
-		    arsSQL.Append( " Order By " + sGroupByField )
-		  End If
-		  
-		  dim SQL as String = arsSQL.JoinSQL + ";"
-		  
-		  dim ps as SQLitePreparedStatement = DataFile.DB.Prepare(SQL)
-		  For i1 as integer = 0 To arvValues.Ubound
-		    ps.BindType(i1, ariTypes(i1) )
-		    ps.Bind( i1, arvValues(i1) )
-		  Next
-		  
-		  dictGroupedItems = DataFile.tbl_events.GroupRecords( DataFile.tbl_events.List(ps), sGroupByField )  '!@! Table Dependent !@!
-		  
-		  Return dictGroupedItems
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function OldmethGetRecordList_UnGrouped(sOrderByFields as string) As DataFile.tbl_events()
-		  // search string
-		  // conditionspar
-		  // hide condition
-		  
-		  dim aroRecords() as DataFile.tbl_events
-		  dim arsSQL() as String
-		  dim arsCondition() as String
-		  dim arvValues() as Variant
-		  dim ariTypes() as integer
-		  
-		  // Add the base sql to array
-		  arsSQL.Append( DataFile.tbl_events.BaseSQL )
-		  
-		  // Build Search String
-		  dim sSearchValue as String = scSearchField.Text
-		  If sSearchValue <> "" Then 
-		    arsCondition.Append("event_name Like ?")
-		    ariTypes.Append(SQLitePreparedStatement.SQLITE_TEXT)
-		    arvValues.Append("%" + sSearchValue + "%")
-		  End If
-		  
-		  // Build Hide String
-		  dim sHideString as String = "(hide <> 1 Or hide Is Null)"
-		  If Not chbShowHidden.Value Then
-		    arsCondition.Append(sHideString)
-		  End If
-		  
-		  If arsCondition.Ubound <> -1 Then
-		    arsSQL.Append( " Where " + Join(arsCondition, " And ") )
-		  End If
-		  
-		  If sOrderByFields <> "" Then
-		    arsSQL.Append( " Order By " + sOrderByFields )
-		  End If
-		  
-		  dim SQL as String = arsSQL.JoinSQL + ";"
-		  
-		  dim ps as SQLitePreparedStatement = DataFile.DB.Prepare(SQL)
-		  For i1 as integer = 0 To arvValues.Ubound
-		    ps.BindType(i1, ariTypes(i1) )
-		    ps.Bind( i1, arvValues(i1) )
-		  Next
-		  
-		  aroRecords() = DataFile.tbl_events.List(ps)  '!@! Table Dependent !@!
-		  
-		  Return aroRecords
-		  
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub OldmethLoadMe()
-		  dim IsGrouped as Boolean = bDisplayGrouped
-		  
-		  If oParentRecord <> Nil Then
-		    methLoadMe_ExpandSingleRecord(oParentRecord)
-		    Return
-		  End If
-		  
-		  //UnGrouped
-		  If Not IsGrouped Then
-		    
-		    // Get the records
-		    dim records() as DataFile.tbl_events = methGetRecordList_UnGrouped("start_date")    '!@! Table Dependent !@!
-		    
-		    If records.Ubound <> -1 Then
-		      // Build the rowtags
-		      dim theRowtags() as lbRowTag
-		      theRowtags = methCreateRowTags(records)
-		      
-		      methCreateTopLevelRows(theRowtags)
-		      
-		    Else
-		      lbEvents.DeleteAllRows
-		    End If
-		    
-		    //Grouped
-		  ElseIf IsGrouped Then
-		    
-		    // Get the Records
-		    dim dictRecords as Dictionary = methGetRecordList_Grouped("start_date")    '!@! Table Dependent !@!
-		    
-		    If dictRecords.Count <> 0 Then
-		      dim theRowtagsGrouped() as lbRowTag
-		      theRowtagsGrouped = methCreateRowTags_dict(dictRecords)
-		      
-		      methCreateTopLevelRows(theRowtagsGrouped)
-		      
-		    Else
-		      lbEvents.DeleteAllRows
-		    End If
-		    
-		  End If
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub OldmethLoadMe_ExpandSingleRecord(oRecord as DataFile.tbl_events)
-		  '!@! Table Dependent In Parameters !@!
-		  
-		  If oRecord <> Nil Then
-		    
-		    // Make the add event button invisible
-		    pbAddEvent.Visible = False
-		    
-		    oParentRecord = oRecord
-		    
-		    dim aroRecords() as DataFile.tbl_events     '!@! Table Dependent !@!
-		    aroRecords.Append(oRecord)
-		    
-		    // Create rowtags based of the record we want to expand
-		    dim oRowTags() as lbRowTag
-		    oRowTags = methCreateRowTags(aroRecords)
-		    
-		    methCreateTopLevelRows(oRowTags(0).aroChildren)
-		    
-		  End If
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub OldmethLoadRow(RowIndex as integer, oRowTag as lbRowTag)
-		  dim lb1 as entListbox = lbEvents    '!@! Table Dependent !@!
-		  
-		  
-		  
-		  dim i1 as integer 
-		  For Each vValue as Variant In oRowTag.vColumnValues
-		    
-		    lb1.CellType(RowIndex,i1) = oRowTag.iCellTypes(i1)
-		    
-		    Select Case lb1.CellType(RowIndex,i1)
-		    Case 0 'default
-		      lb1.Cell(RowIndex,i1) = vValue
-		    Case 1 'text
-		      lb1.Cell(RowIndex,i1) = vValue
-		    Case 2 'CheckBox
-		      If vValue = True then
-		        lb1.CellState(RowIndex,i1) = CheckBox.CheckedStates.Checked
-		      Else
-		        lb1.CellState(RowIndex,i1) = CheckBox.CheckedStates.Unchecked
-		      End If
-		    Case 3 'edit text
-		      lb1.Cell(RowIndex,i1) = vValue
-		    Else
-		      lb1.Cell(RowIndex,i1) = vValue
-		    End Select
-		    
-		    i1 = i1 + 1
-		  Next
-		  
-		  lb1.RowTag(RowIndex) = oRowTag
-		  
-		  // Make it a folder if neccessary
-		  If oRowTag.isFolder Then
-		    lb1.RowisFolder(RowIndex) = True
-		  End If
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub OldmethPopulateLbData(aroStor() as RecordStorageClass)
-		  
-		  // Loop through all storage classes
-		  For Each oStor as RecordStorageClass In aroStor()
-		    
-		    oStor.PopulateLbData( dictFieldNames, dictCellTypes )
-		    
-		    // Check if there are any children
-		    'If oStor.aroChildren.Ubound <> -1 Then methPopulateLbData( oStor.aroChildren )
-		    
-		  Next
-		End Sub
-	#tag EndMethod
-
 
 	#tag Hook, Flags = &h0
 		Event evdefDoubleClick() As Boolean
@@ -1135,7 +777,7 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		oParentRecord As DataFile.tbl_events
+		oParentStor As RecordStorageClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1166,111 +808,60 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub DoubleClick()
-		  dim lbItems as entListbox = lbEvents
 		  
-		  
-		  If evdefDoubleClick Then
-		    
-		    // the event was handled and we do not want to do anything else
-		    
-		  Else
-		    
-		    
-		    dim oRowTag as lbRowTag
-		    
-		    If lbItems.ListIndex <> -1 Then
-		      
-		      oRowTag = lbItems.RowTag(lbItems.ListIndex)
-		      
-		      If oRowTag.vtblRecord <> Nil Then
-		        
-		        // Get the Event name
-		        // Get the item name
-		        dim oRecord as DataFile.tbl_events
-		        oRecord = oRowTag.vtblRecord
-		        dim sEventName as string
-		        sEventName = oRecord.sevent_name
-		        
-		        If oRowTag.uuid <> "" Then
-		          
-		          // load up a inventory item container
-		          dim conEventInst as New contEvent
-		          dim oTabPanel as PagePanel = app.MainWindow.tbMainWindow
-		          
-		          app.MainWindow.AddTab(sEventName)
-		          
-		          conEventInst.EmbedWithinPanel(oTabPanel,oTabPanel.PanelCount - 1 )
-		          
-		          conEventInst.LoadEvent(oRowTag.uuid)
-		          
-		        End If
-		        
-		      End If
-		      
-		    End If
-		    
-		    
-		  End If
+		  methHandleDoubleClick
 		End Sub
 	#tag EndEvent
 	#tag Event
 		Function entContextualMenuAction(hitItem as MenuItem) As Boolean
-		  dim lbItems as entListbox = lbEvents
+		  dim lb as entListbox = lbEvents
 		  
 		  Select Case hitItem.Text
 		  Case "Open"
 		    
-		    If lbItems.ListIndex <> -1 Then
+		    If lb.ListIndex <> -1 Then
 		      
 		      // Grab the rowtag
-		      dim oRowTag as lbRowTag
-		      oRowTag = lbItems.RowTag(lbItems.ListIndex)
+		      dim oStor as RecordStorageClass = lb.RowTag(lb.ListIndex)
 		      
-		      // Get the item name
-		      dim oRecord as DataFile.tbl_events
-		      oRecord = oRowTag.vtblRecord
-		      dim sItemName as string
-		      sItemName = oRecord.sevent_name
+		      // Get the Event name
+		      dim vRecord as Variant = oStor.oTableRecord
+		      dim oRecord as DataFile.tbl_events = vRecord
+		      dim sName as string
+		      sName = oRecord.sevent_name
 		      
-		      If oRowTag.uuid <> "" Then
+		      If oStor.sUUID <> "" Then
 		        
 		        // load up a inventory item container
 		        dim conEventInst as New contEvent
 		        dim oTabPanel as PagePanel = app.MainWindow.tbMainWindow
 		        
-		        app.MainWindow.AddTab(sItemName)
+		        app.MainWindow.AddTab(sName)
 		        
 		        conEventInst.EmbedWithinPanel(oTabPanel,oTabPanel.PanelCount - 1 )
 		        
-		        conEventInst.LoadEvent(oRowTag.uuid)
+		        conEventInst.LoadEvent(oStor.sUUID)
 		      End If
 		    End If
 		    
 		  Case "Break Link"
 		    
-		    dim oRowTags() as lbRowTag
-		    oRowTags = lbItems.GetSelectedRows
-		    
-		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
+		    dim aroStor() as RecordStorageClass
+		    aroStor = lb.GetSelectedRowTags
 		    
 		    dim sYesOrNoToAll as String
 		    
 		    // Loop through each row
-		    For Each oRowTag as lbRowTag in oRowTags
+		    For Each oStor as RecordStorageClass in aroStor
 		      
 		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_events
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
-		      Else
+		      If oStor.oTableRecord = Nil Or oStor.oLinkRecord = Nil Then
 		        Continue
 		      End If
-		      dim oLinkRecord as DataFile.tbl_internal_linking
-		      If oRowTag.vLinkTable <> Nil Then
-		        oLinkRecord = oRowTag.vLinkTable
-		      Else
-		        Continue
-		      End If
+		      dim vRecord as Variant = oStor.oTableRecord
+		      dim oRecord as DataFile.tbl_events = vRecord
+		      dim vLinkRecord as Variant = oStor.oLinkRecord
+		      dim oLinkRecord as DataFile.tbl_internal_linking = vLinkRecord
 		      
 		      // Get the name of the item
 		      dim sName as string
@@ -1293,7 +884,7 @@ End
 		        // Display the window to the user
 		        winWindow.ShowModal
 		        
-		        // Chekc the users response
+		        // Check the users response
 		        bDelete = contDeletePromt.UserResponse
 		        If contDeletePromt.propApplyToAll Then
 		          If bDelete Then
@@ -1317,23 +908,19 @@ End
 		    
 		  Case "Delete Item"
 		    
-		    dim oRowTags() as lbRowTag
-		    oRowTags = lbItems.GetSelectedRows
-		    
-		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
+		    dim aroStor() as RecordStorageClass = lb.GetSelectedRowTags
 		    
 		    dim sYesOrNoToAll as String
 		    
 		    // Loop through each row
-		    For Each oRowTag as lbRowTag in oRowTags
+		    For Each oStor as RecordStorageClass in aroStor
 		      
 		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_events
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
-		      Else
+		      If oStor.oTableRecord = Nil Then
 		        Continue
 		      End If
+		      dim vRecord as Variant = oStor.oTableRecord
+		      dim oRecord as DataFile.tbl_events = vRecord
 		      
 		      // Get the name of the item
 		      dim sName as string
@@ -1406,20 +993,19 @@ End
 	#tag EndEvent
 	#tag Event
 		Function entConstructContextualMenu(base as menuitem, x as integer, y as integer) As Boolean
-		  dim lbItems as entListbox = lbEvents
+		  dim lb as entListbox = lbEvents
 		  
-		  If lbItems.ListIndex <> -1 Then
+		  If lb.ListIndex <> -1 Then
 		    
 		    // Grab the rowtag
-		    dim oRowTag as lbRowTag
-		    oRowTag = lbItems.RowTag(lbItems.ListIndex)
+		    dim oStor as RecordStorageClass = lb.RowTag(lb.ListIndex)
 		    
-		    If oRowTag.vtblRecord <> Nil Then
+		    If oStor.oTableRecord <> Nil Then
 		      
 		      base.Append( New MenuItem("Open") )
 		      base.Append( New MenuItem(MenuItem.TextSeparator) )
 		      
-		      If oRowTag.vLinkTable <> Nil Then
+		      If  oStor.oLinkRecord <> Nil Then
 		        dim mi1 as New MenuItem("Break Link")
 		        mi1.Enabled = False
 		        base.Append( mi1 )
@@ -1433,112 +1019,12 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub CellAction(row as integer, column as integer)
-		  dim lbItems as entListbox = lbEvents
-		  
-		  If lbItems.CellType(row,column) = 2 Then
-		    'its a checkbox
-		    
-		    // Get the state of the checkbox
-		    dim CheckBoxState as CheckBox.CheckedStates
-		    CheckBoxState = lbItems.CellState(row,column)
-		    
-		    // Pull the rowtag
-		    dim oRowTag as lbRowTag
-		    oRowTag = lbItems.RowTag(row)
-		    
-		    // Check if there is a record here
-		    If oRowTag.vtblRecord <> Nil Then
-		      
-		      dim oRecord as DataFile.tbl_events 
-		      oRecord = oRowTag.vtblRecord
-		      
-		      dim bValue as Boolean
-		      Select Case CheckBoxState
-		      Case CheckBox.CheckedStates.Checked
-		        bValue = True
-		      Else
-		        bValue = False
-		      End Select
-		      
-		      oRecord.ChangeMySavedValue(oRowTag.sFieldNames(column),bValue)
-		      
-		    End If
-		    
-		  End If
+		  methHandleCellAction(row,column)
 		End Sub
 	#tag EndEvent
 	#tag Event
 		Sub CellLostFocus(row as integer, col as integer)
-		  dim lbItems as entListbox = lbEvents
-		  
-		  If lbItems.CellType(row,col) = 3 Then
-		    ' its a text edit
-		    
-		    
-		    
-		    // Pull the rowtag
-		    dim oRowTag as lbRowTag
-		    oRowTag = lbItems.RowTag(row)
-		    
-		    dim sFieldName as string
-		    dim sTableName as string
-		    dim n2 as integer
-		    dim s3 as string
-		    s3 = oRowTag.sFieldNames(col)
-		    n2 = s3.InStr(".-.")
-		    if n2 <> 0 Then
-		      sTableName = Left(s3,n2 - 1)
-		      n2 = n2 + 3
-		    Else
-		      sTableName = ""
-		    End If
-		    sFieldName = Mid(s3,n2)
-		    
-		    dim v1 as Variant
-		    
-		    Select Case sTableName
-		    Case ""
-		      
-		      // Check if there is a record here
-		      If oRowTag.vtblRecord <> Nil Then
-		        
-		        dim oRecord as DataFile.tbl_events
-		        oRecord = oRowTag.vtblRecord
-		        
-		        dim vValue as Variant
-		        vValue = lbItems.cell(row,col)
-		        
-		        dim jsFieldValues as JSONItem
-		        
-		        jsFieldValues = oRecord.GetMyFieldValues(True)
-		        
-		        // Pull the keys out of the json item
-		        dim sKeys() as string
-		        sKeys = jsFieldValues.Names
-		        
-		        v1 = jsFieldValues.Value(sFieldName)
-		        
-		        dim n1 as integer
-		        n1 = VarType(v1)
-		        Select Case n1
-		        Case 2 'int32
-		          vValue = val(vValue)
-		        Case 3 'int64
-		          vValue = val(vValue)
-		        Case 8 'string
-		        Case 37 'text
-		        End Select
-		        
-		        oRecord.ChangeMySavedValue(sFieldName,vValue)
-		        
-		      End If
-		      
-		      
-		    End Select
-		    
-		    
-		    
-		  End If
+		  methHandleCellLostFocus(row,col)
 		End Sub
 	#tag EndEvent
 	#tag Event
@@ -1638,7 +1124,7 @@ End
 		  
 		  NewCont.EmbedWithinPanel(app.MainWindow.tbMainWindow, app.MainWindow.tbMainWindow.PanelCount - 1)
 		  
-		  NewCont.LoadEvent(oNew)
+		  NewCont.LoadEvent(oNew.suuid)
 		End Sub
 	#tag EndEvent
 #tag EndEvents

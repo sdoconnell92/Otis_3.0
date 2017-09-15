@@ -1,6 +1,12 @@
 #tag Class
 Protected Class RecordStorageClass
 	#tag Method, Flags = &h0
+		Sub Constructor()
+		  oRowData = New lbData
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function FolderLevel() As Integer
 		  
 		  // Check to see if we have a parent
@@ -13,7 +19,7 @@ Protected Class RecordStorageClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function GetCellTypes(sRowType as String, dictCellTypes as Dictionary) As String()
+		Private Function GetCellTypes(sRowType as String, dictCellTypes as Dictionary) As Integer()
 		  
 		  If dictCellTypes .Keys.IndexOf(sRowType) <> -1 Then
 		    Return dictCellTypes.Value(sRowType)
@@ -42,20 +48,35 @@ Protected Class RecordStorageClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub PopulateColumnValues(arsFieldNames() as String, ariCellTypes() as Intger)
+		Private Sub PopulateColumnValues(arsFieldNames() as String, ariCellTypes() as Integer)
 		  dim jsFieldValues as JSONItem = oTableRecord.GetMyFieldValues(True)
 		  dim sTableName as String = oTableRecord.GetTableName
 		  
 		  redim oRowData.arsColumnValues(-1)
 		  
 		  For Each sFieldName as String In arsFieldNames
-		    dim sDBDotNotation as String = sTableName + "." + sFieldName
+		    dim sDBDotNotation as String
+		    dim sFTable, sFField as string
+		    
+		    // Check if our field name is already in table.field format
+		    dim dotIndex as Integer = sFieldName.InStr( "." )
+		    If dotIndex <> 0 Then
+		      'this is already in dotnotation
+		      sDBDotNotation = sFieldName
+		      dim s1() as string = sFieldName.Split(".")
+		      sFTable = s1(0)
+		      sFField = s1(1)
+		    Else
+		      sDBDotNotation = sTableName + "." + sFieldName
+		      sFField = sFieldName
+		      sFTable = sTableName
+		    End If
 		    
 		    // Check that the field actually exists
-		    If jsFieldValues.Names.IndexOf( sFieldName ) <> -1 Then
+		    If jsFieldValues.Names.IndexOf( sFField ) <> -1 Then
 		      ' the field exists
 		      
-		      dim sValue as String = jsFieldValues.Value( sFieldName )
+		      dim sValue as String = jsFieldValues.Value( sFField )
 		      sValue = str( sValue, modFieldFormatting.GetFormattingString( sDBDotNotation ) )
 		      
 		      oRowData.arsColumnValues.Append( sValue )
@@ -63,6 +84,13 @@ Protected Class RecordStorageClass
 		    End If
 		    
 		  Next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub PopulateFieldNames(arsFieldNames() as string)
+		  
+		  oRowData.arsFieldNames = arsFieldNames()
 		End Sub
 	#tag EndMethod
 
@@ -96,6 +124,7 @@ Protected Class RecordStorageClass
 		  // Start populating the column values based on field names and types
 		  PopulateColumnValues(arsFieldNames, ariCellTypes)
 		  PopulateCellTypes(ariCellTypes)
+		  PopulateFieldNames(arsFieldNames)
 		  
 		End Sub
 	#tag EndMethod
