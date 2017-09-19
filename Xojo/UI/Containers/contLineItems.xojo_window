@@ -835,6 +835,8 @@ End
 		  // Get the records from the database
 		  dim aroStor() as RecordStorageClass = methAcquireRecords( oSQL, sGroupFields, bGetChildren, bGrouped )
 		  
+		  aroStorClass = aroStor
+		  
 		  If aroStor.Ubound <> -1 Then
 		    // Populate RowData values
 		    aroStor.PopulateLbDataList( dictFieldNames, dictCellTypes )
@@ -856,6 +858,8 @@ End
 		  // Get its children
 		  DataFile.GetChildren( oStor )
 		  dim aroChildren() as RecordStorageClass = oStor.aroChildren
+		  
+		  aroStorClass = aroChildren
 		  
 		  aroChildren.PopulateLbDataList( dictFieldNames, dictCellTypes )
 		  
@@ -1608,11 +1612,11 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		oEIPLRecord As DataFile.tbl_eipl
+		oEIPLRecord As RecordStorageClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		oParentRecord As DataFile.tbl_lineitems
+		oParentRecord As RecordStorageClass
 	#tag EndProperty
 
 
