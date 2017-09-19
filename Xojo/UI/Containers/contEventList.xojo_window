@@ -633,6 +633,8 @@ End
 		  // Get the records from the database
 		  dim aroStor() as RecordStorageClass = methAcquireRecords( oSQL, sGroupFields, bGetChildren, bGrouped )
 		  
+		  aroStorClass = aroStor
+		  
 		  If aroStor.Ubound <> -1 Then
 		    // Populate RowData values
 		    aroStor.PopulateLbDataList( dictFieldNames, dictCellTypes )
@@ -658,6 +660,8 @@ End
 		  DataFile.GetChildren( oStor )
 		  dim aroChildren() as RecordStorageClass = oStor.aroChildren
 		  
+		  aroStorClass = aroChildren
+		  
 		  aroChildren.PopulateLbDataList( dictFieldNames, dictCellTypes )
 		  
 		  methPopulateListbox( aroChildren )
@@ -667,6 +671,8 @@ End
 	#tag Method, Flags = &h0
 		Sub methPopulateListbox(aroRecordStor() as RecordStorageClass)
 		  dim lb as entListbox = lbEvents
+		  
+		  lb.DeleteAllRows
 		  
 		  For Each oStor as RecordStorageClass In aroRecordStor()
 		    
