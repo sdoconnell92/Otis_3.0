@@ -431,7 +431,7 @@ End
 		  dim arvValue() as Variant
 		  
 		  // Add the base sql
-		  aroSQL.Append( DataFile.tbl_events.BaseSQL )
+		  aroSQL.Append( DataFile.tbl_lineitems.BaseSQL )
 		  
 		  
 		  // Build condition array
@@ -631,8 +631,8 @@ End
 		        // Get the Event name
 		        dim vRecord as Variant = oStor.oTableRecord
 		        dim oRecord as DataFile.tbl_lineitems = vRecord
-		        dim sEventName as string
-		        sEventName = oRecord.sli_name
+		        dim sItemName as string
+		        sItemName = oRecord.sli_name
 		        
 		        If oStor.sUUID <> "" Then
 		          
@@ -1500,6 +1500,7 @@ End
 		Sub OldmethLoadMe_ExpandSingleRecord(oRecord as DataFile.tbl_lineitems)
 		  '!@! Table Dependent In Parameters !@!
 		  
+		  
 		  If oRecord <> Nil Then
 		    
 		    oParentRecord = oRecord
@@ -1514,6 +1515,7 @@ End
 		    methCreateTopLevelRows(oRowTags(0).aroChildren)
 		    
 		  End If
+		  
 		End Sub
 	#tag EndMethod
 

@@ -1,6 +1,6 @@
 Type=Desktop
-RBProjectVersion=2017.011
-MinIDEVersion=20070100
+RBProjectVersion=2017.021
+MinIDEVersion=20150400
 Class=HTTPSSocket;Kaju Classes/Kaju/HTTPSSocket.xojo_code;&h47867FFF;&h4F5E7FF;false
 Class=UpdateInitiater;Kaju Classes/Kaju/UpdateInitiater.xojo_code;&h54881FFF;&h4F5E7FF;false
 Class=Information;Kaju Classes/Kaju/Information.xojo_code;&h13EB97FF;&h4F5E7FF;false
