@@ -129,6 +129,24 @@ Protected Class RecordStorageClass
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function StorType() As String
+		  dim sRet as string
+		  
+		  if isFolder and not isChild and not isLinker and not isRecord Then
+		    sRet = "GroupFolder"
+		  ElseIf not isChild and not isLinker and isRecord Then
+		    sRet = "GrandParent"
+		  ElseIf isFolder and isChild and isLinker and not isRecord Then
+		    sRet = "LinkedFolder"
+		  ElseIf isChild and not isLinker and isRecord Then
+		    sRet = "Child"
+		  end if
+		  
+		  Return sRet
+		End Function
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h0
 		aroChildren() As RecordStorageClass
