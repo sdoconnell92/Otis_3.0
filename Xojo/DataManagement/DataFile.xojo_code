@@ -325,7 +325,7 @@ Protected Module DataFile
 		    
 		  Next
 		  
-		  
+		  Return oMaster
 		  
 		  
 		End Function
@@ -365,6 +365,15 @@ Protected Module DataFile
 		  Next
 		  
 		  Return aroStors()
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function StorifyRecords(oRecord as DataFile.ActiveRecordBase) As RecordStorageClass
+		  dim aro() as DataFile.ActiveRecordBase
+		  aro.Append( oRecord )
+		  dim aroStor() as RecordStorageClass = StorifyRecords(aro)
+		  Return aroStor(0)
 		End Function
 	#tag EndMethod
 

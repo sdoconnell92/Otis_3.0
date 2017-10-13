@@ -1,13 +1,15 @@
 #tag Module
 Protected Module modPriceCalculations
 	#tag Method, Flags = &h0
-		Function CalculateEIPLTotal(oRecords() as datafile.tbl_lineitems, oEIPLRecord as DataFile.tbl_eipl) As Dictionary
+		Function CalculateEIPLTotal(oRecordStors() as RecordStorageClass, oEIPLStor as RecordStorageClass) As Dictionary
 		  dim iSubTotal, iAfterDiscount, iAfterTax, iDiscountSum, iTaxSum, iDiscount, iBalance, iPaymentSum as Currency
+		  dim v1 as Variant = oEIPLStor.oTableRecord
+		  dim oEIPLRecord as DataFile.tbl_eipl = v1
 		  
 		  ForEIPLTotal = True
 		  
 		  // get the total of the groups
-		  dim retDict as Dictionary = CalculateGroupTotal( oRecords, oEIPLRecord, "" )
+		  dim retDict as Dictionary = CalculateGroupTotal( oRecordStors, oEIPLStor, "" )
 		  iSubTotal = retDict.Value("PreDiscount")
 		  iDiscountSum = retDict.Value("DiscountSum")
 		  iTaxSum = retDict.Value("TaxSum")
@@ -84,13 +86,15 @@ Protected Module modPriceCalculations
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CalculateEIPLTotal(dictGroups as Dictionary, oEIPLRecord as DataFile.tbl_eipl) As Dictionary
+		Function CalculateEIPLTotal(oMaster as RecordStorageClass, oEIPLStor as RecordStorageClass) As Dictionary
 		  dim iSubTotal, iAfterDiscount, iAfterTax, iDiscountSum, iTaxSum, iDiscount, iPaymentSum, iBalance as Currency
+		  dim v1 as Variant = oEIPLStor.oTableRecord
+		  dim oEIPLRecord as DataFile.tbl_eipl = v1
 		  
 		  ForEIPLTotal = True
 		  
 		  // get the total of the groups
-		  dim retDict as Dictionary = CalculateGroupofGroupTotal( dictGroups, oEIPLRecord, "" )
+		  dim retDict as Dictionary = CalculateGroupofGroupTotal( oMaster, oEIPLStor, "" )
 		  iSubTotal = retDict.Value("PreDiscount")
 		  iDiscountSum = retDict.Value("DiscountSum")
 		  iTaxSum = retDict.Value("TaxSum")
@@ -167,8 +171,10 @@ Protected Module modPriceCalculations
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CalculateGroupofGroupTotal(oMaster as RecordStorageClass, oEIPLRecord as DataFile.tbl_eipl, sGroupStructure as string) As Dictionary
+		Function CalculateGroupofGroupTotal(oMaster as RecordStorageClass, oEIPLStor as RecordStorageClass, sGroupStructure as string) As Dictionary
 		  dim iPreDiscount, iAfterDiscount, iTotal, iDiscountSum, iTaxSum as currency
+		  dim v1 as Variant = oEIPLStor.oTableRecord
+		  dim oEIPLRecord as DataFile.tbl_eipl = v1
 		  
 		  
 		  // Loop through each group in the dictionary
@@ -189,7 +195,7 @@ Protected Module modPriceCalculations
 		      
 		      'recipricate this method to dig deeper into groups
 		      dim retDictionary as Dictionary
-		      retDictionary = CalculateGroupofGroupTotal( dictGroups.Value( vKey ), oEIPLRecord, sInnerGroupStructure )
+		      retDictionary = CalculateGroupofGroupTotal( oStor, oEIPLStor, sInnerGroupStructure )
 		      
 		      // Add up totals
 		      If ForEIPLTotal Then
@@ -204,15 +210,18 @@ Protected Module modPriceCalculations
 		      // THis value is an array of records
 		      
 		      'increase the group struccture 
-		      If sGroupStructure <> "" Then
-		        sInnerGroupStructure = sGroupStructure + "." + str( vKey )
-		      Else
-		        sInnerGroupStructure = str( vKey )
-		      End If
+		      'If sGroupStructure <> "" Then
+		      'sInnerGroupStructure = sGroupStructure + "." + str( vKey )
+		      'Else
+		      'sInnerGroupStructure = str( vKey )
+		      'End If
+		      
+		      // Extract the group structure
+		      sInnerGroupStructure = Join( oStor.arsGroupStructure, "." )
 		      
 		      // Send this group to CalculateGroupTotal
 		      dim retDictionary as Dictionary
-		      retDictionary = CalculateGroupTotal( dictGroups.Value( vKey ), oEIPLRecord, sInnerGroupStructure )
+		      retDictionary = CalculateGroupTotal( oStor.aroChildren, oEIPLStor, sInnerGroupStructure )
 		      
 		      // Add up totals
 		      If ForEIPLTotal Then
@@ -306,11 +315,13 @@ Protected Module modPriceCalculations
 	#tag Method, Flags = &h0
 		Function CalculateGroupTotal(aroLIStors() as RecordStorageClass, oEIPlStor as RecordStorageClass, sGroupName as String) As Dictionary
 		  dim iPreDiscount, iAfterDiscount, iDiscountSum, iTaxSum as Currency
-		  dim oEIPlRecord as DataFile.tbl_eipl = oEIPlStor.oTableRecord
+		  dim v1 as Variant = oEIPlStor.oTableRecord
+		  dim oEIPlRecord as DataFile.tbl_eipl = v1
 		  
 		  // Loop through each Line item record
 		  For Each oLIStor as RecordStorageClass In aroLIStors()
-		    dim oLIRecord as DataFile.tbl_lineitems = oLIStor.oTableRecord
+		    dim v as Variant = oLIStor.oTableRecord
+		    dim oLIRecord as DataFile.tbl_lineitems = v
 		    dim retDictionary as Dictionary
 		    retDictionary = CalculateLineItemPrices( oLIStor, oEIPlStor )
 		    If ForEIPLTotal Then
@@ -406,8 +417,10 @@ Protected Module modPriceCalculations
 	#tag Method, Flags = &h0
 		Function CalculateLineItemPrices(oLIStor as RecordStorageClass, oEIStor as RecordStorageClass) As Dictionary
 		  dim d1 as Currency
-		  dim oLIRecord as DataFile.tbl_lineitems = oLIStor.oTableRecord
-		  dim oEIRecord as DataFile.tbl_eipl = oEIStor.oTableRecord
+		  dim v1 as Variant = oLIStor.oTableRecord
+		  dim oLIRecord as DataFile.tbl_lineitems = v1
+		  dim v2 as Variant = oEIStor.oTableRecord
+		  dim oEIRecord as DataFile.tbl_eipl = v2
 		  
 		  '_________________|---------SubTotal----------|-----------------After DIscount--------|
 		  // Calculation is: ( (Price * Quantity * Time) If %: * (discount/100) If $: - discount ) * ( Tax / 100 ) = Total
@@ -484,140 +497,6 @@ Protected Module modPriceCalculations
 		  retDictionary.Value("DiscountSum") = iDiscountSum
 		  
 		  Return retDictionary
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function oldCalculateGroupofGroupTotal(dictGroups as Dictionary, oEIPLRecord as DataFile.tbl_eipl, sGroupStructure as string) As Dictionary
-		  dim iPreDiscount, iAfterDiscount, iTotal, iDiscountSum, iTaxSum as currency
-		  
-		  
-		  // Loop through each group in the dictionary
-		  For Each vKey as Variant In dictGroups.Keys
-		    dim sInnerGroupStructure as string
-		    
-		    If dictGroups.Value( vKey ) IsA Dictionary then
-		      // This value is a group of more groups so we 
-		      'increase the group struccture 
-		      If sGroupStructure <> "" Then
-		        sInnerGroupStructure = sGroupStructure + "." + str( vKey )
-		      Else
-		        sInnerGroupStructure = str( vKey )
-		      End If
-		      
-		      'recipricate this method to dig deeper into groups
-		      dim retDictionary as Dictionary
-		      retDictionary = CalculateGroupofGroupTotal( dictGroups.Value( vKey ), oEIPLRecord, sInnerGroupStructure )
-		      
-		      // Add up totals
-		      If ForEIPLTotal Then
-		        iPreDiscount = iPreDiscount + retDictionary.Value("PreDiscount")
-		      Else
-		        iPreDiscount = iPreDiscount + retDictionary.Value("Total")
-		      End If
-		      iDiscountSum = iDiscountSum + retDictionary.Value("DiscountSum")
-		      iTaxSum = iTaxSum + retDictionary.Value("TaxSum")
-		      
-		    Else
-		      // THis value is an array of records
-		      
-		      'increase the group struccture 
-		      If sGroupStructure <> "" Then
-		        sInnerGroupStructure = sGroupStructure + "." + str( vKey )
-		      Else
-		        sInnerGroupStructure = str( vKey )
-		      End If
-		      
-		      // Send this group to CalculateGroupTotal
-		      dim retDictionary as Dictionary
-		      retDictionary = CalculateGroupTotal( dictGroups.Value( vKey ), oEIPLRecord, sInnerGroupStructure )
-		      
-		      // Add up totals
-		      If ForEIPLTotal Then
-		        iPreDiscount = iPreDiscount + retDictionary.Value("PreDiscount")
-		      Else
-		        iPreDiscount = iPreDiscount + retDictionary.Value("Total")
-		      End If
-		      iDiscountSum = iDiscountSum + retDictionary.Value("DiscountSum")
-		      iTaxSum = iTaxSum + retDictionary.Value("TaxSum")
-		      
-		    End If
-		    
-		    
-		  Next
-		  
-		  // Now we can determine discounts
-		  iAfterDiscount = iPreDiscount
-		  
-		  'grab discounts relating to this group structure and eipl
-		  dim aroDiscounts() as DataFile.tbl_group_discounts
-		  aroDiscounts = DataFile.tbl_group_discounts.List( " fkeipl = '" + oEIPLRecord.suuid + "' And group_name = '" + sGroupStructure + "'" )
-		  
-		  For Each oDiscount as DataFile.tbl_group_discounts In aroDiscounts()
-		    
-		    dim iDiscountAmount, iDiscountPercent as Double
-		    dim sDiscountPercent, sDiscountAmount, arsDiscount() as String
-		    arsDiscount() = oDiscount.sgroup_discount.Split(":")
-		    
-		    For i1 as integer = 0 To arsDiscount.Ubound
-		      dim sDiscount as string = arsDiscount(i1)
-		      If InStr( sDiscount , "%") > 0 Then
-		        ' discount is a percent
-		        iDiscountPercent = val( Methods.StripNonDigitsDecimals(sDiscount) ) /100
-		      Else
-		        iDiscountAmount = val( Methods.StripNonDigitsDecimals(sDiscount) )
-		      End If
-		    Next
-		    
-		    iAfterDiscount = iAfterDiscount - ( iDiscountPercent * iAfterDiscount ) - iDiscountAmount
-		    
-		    '// Put the group discount into a number variable
-		    'dim iDiscount as Double = val( Methods.StripNonDigitsDecimals( oDiscount.sgroup_discount ) )
-		    
-		    'If InStr( oDiscount.sgroup_discount, "%" ) > 0 Then
-		    '// the discount is a percent
-		    'iAfterDiscount = iAfterDiscount - ( ( iDiscount / 100 ) * iAfterDiscount )
-		    'Else 
-		    '// the discount is a dollar sum
-		    'iAfterDiscount = iAfterDiscount - iDiscount
-		    'End If
-		    
-		  Next
-		  
-		  iDiscountSum = iDiscountSum + ( iPreDiscount - iAfterDiscount )
-		  
-		  iAfterDiscount = round(iAfterDiscount*100)/100
-		  iPreDiscount = round(iPreDiscount*100)/100
-		  iDiscountSum = round(iDiscountSum*100)/100
-		  iTaxSum = round(iTaxSum*100)/100
-		  
-		  dim retDictionary as New Dictionary
-		  retDictionary.Value( "Total" ) = iAfterDiscount
-		  retDictionary.Value( "PreDiscount" ) = iPreDiscount
-		  retDictionary.Value( "DiscountSum" ) = iDiscountSum
-		  retDictionary.Value( "TaxSum" ) = iTaxSum
-		  
-		  Return retDictionary
-		  
-		  
 		  
 		  
 		  

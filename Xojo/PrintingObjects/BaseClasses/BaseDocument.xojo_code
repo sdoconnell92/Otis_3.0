@@ -1,19 +1,36 @@
 #tag Class
 Protected Class BaseDocument
 	#tag Method, Flags = &h0
-		Sub DrawInfoBoxes()
+		Sub Go(p as Picture)
+		  dim Fullg as Graphics = p.Graphics
 		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub Go(sOutputType as String)
-		  Select Case sOutputType
-		  Case "Image"
+		  // reduce the area we are working with by the margins
+		  dim g as Graphics
+		  g = Fullg.Clip(margin, margin, Fullg.Width - (Margin * 2), fullg.Height - (Margin*2) )
+		  
+		  dim x, y as integer
+		  
+		  For Each oStory as BaseStoryObject In aroStory()
 		    
-		  Case "Printer"
+		    dim iClipWidth, iClipHeight as integer
+		    If oStory.Height = -1 Then
+		      iClipHeight = g.Height
+		    Else
+		      iClipHeight = oStory.Height
+		    End If
+		    If oStory.Width = -1 Then
+		      iClipWidth = g.Width
+		    Else
+		      iClipWidth = oStory.Width
+		    End If
+		    dim gClip as Graphics = g.Clip(x,y, iClipWidth, iClipHeight)
 		    
-		  End Select
+		    oStory.Draw(gClip)
+		    
+		    y = y + iClipHeight + StorySpacing
+		  Next
+		  
+		  
 		End Sub
 	#tag EndMethod
 
@@ -36,11 +53,19 @@ Protected Class BaseDocument
 
 
 	#tag Property, Flags = &h0
+		aroStory() As BaseStoryObject
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		bPrintDone As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		vStory() As Variant
+		Margin As Integer = 40
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		StorySpacing As Integer = 10
 	#tag EndProperty
 
 
@@ -65,10 +90,22 @@ Protected Class BaseDocument
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Margin"
+			Group="Behavior"
+			InitialValue="40"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Name"
 			Visible=true
 			Group="ID"
 			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="StorySpacing"
+			Group="Behavior"
+			InitialValue="10"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

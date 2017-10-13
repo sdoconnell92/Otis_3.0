@@ -442,11 +442,9 @@ End
 		    arvValue.Append( "%" + sSearchString + "%" )
 		  End If
 		  
-		  ' Build the Hidden Items Condition
-		  If bShowHidden Then
-		  Else
-		    arsConditions.Append( "(hide <> 1 Or hide Is Null)" )
-		  End If
+		  arsConditions.Append("fkeipl = ?")
+		  ariTypes.Append( SQLitePreparedStatement.SQLITE_TEXT )
+		  arvValue.Append( oEIPLRecord.oTableRecord.suuid )
 		  
 		  If arsConditions.Ubound <> -1 Then
 		    aroSQL.Append( "Where" )
@@ -678,7 +676,7 @@ End
 		    lb1.RowTag(lb1.LastIndex) = oChild
 		    
 		    // Load the row
-		    methPopulateRow( lbEvents.LastIndex, oChild )
+		    methPopulateRow( lbItems.LastIndex, oChild )
 		    
 		  Next
 		  
@@ -822,15 +820,16 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub methLoadMe(bGrouped as Boolean = False, sGroupFields as String = "", bGetChildren as boolean = True)
+		Sub methLoadMe(bGrouped as Boolean = True, sGroupFields as String = "", bGetChildren as boolean = True)
 		  dim lb as entListbox = lbItems
 		  
 		  
 		  // Prepare the sql statement to get our records
-		  dim bHidden as Boolean = chbShowHidden.Value
+		  dim bHidden as Boolean = False
 		  dim sSearchString as String = scSearchField.Text
 		  dim sOrderBy as String = "li_department"
 		  dim oSQL as SQLStorageClass = methBuildSQL( bHidden, sSearchString, sOrderBy )
+		  sGroupFields = sOrderBy
 		  
 		  // Get the records from the database
 		  dim aroStor() as RecordStorageClass = methAcquireRecords( oSQL, sGroupFields, bGetChildren, bGrouped )
@@ -845,25 +844,6 @@ End
 		  Else
 		    lb.DeleteAllRows
 		  End If
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub methLoadMe(oStor as RecordStorageClass)
-		  // THis version of loadme is for expanding on a single record and displaying children below it only
-		  
-		  // Store the Record so we know who the parent is later
-		  oParentStor = oStor
-		  
-		  // Get its children
-		  DataFile.GetChildren( oStor )
-		  dim aroChildren() as RecordStorageClass = oStor.aroChildren
-		  
-		  aroStorClass = aroChildren
-		  
-		  aroChildren.PopulateLbDataList( dictFieldNames, dictCellTypes )
-		  
-		  methPopulateListbox( aroChildren )
 		End Sub
 	#tag EndMethod
 
@@ -900,8 +880,13 @@ End
 		    // Set the cell type
 		    lb.CellType( iRowIndex, iCellIndex ) = iColumnType
 		    
-		    // Format the value
-		    sColumnValue = str( sColumnValue, modFieldFormatting.GetFormattingString( sDotNotation ) )
+		    // Check if this is a calculated field
+		    Select Case sFieldName
+		    Case "CalcTotal"
+		      dim d as Dictionary = modPriceCalculations.CalculateLineItemPrices(oStor, oEIPLRecord)
+		      sColumnValue = d.Value("SubTotal")
+		      sColumnValue = str( sColumnValue, "\$#,###,###,###.00" )
+		    End Select
 		    
 		    Select Case iColumnType
 		    Case 0 'default
@@ -1030,54 +1015,32 @@ End
 		  Select Case hitItem.Text
 		  Case "Open"
 		    
-		    If lbItems.ListIndex <> -1 Then
-		      
-		      // Grab the rowtag
-		      dim oRowTag as lbRowTag
-		      oRowTag = lbItems.RowTag(lbItems.ListIndex)
-		      
-		      // Get the item name
-		      dim oRecord as DataFile.tbl_inventory
-		      oRecord = oRowTag.vtblRecord
-		      dim sItemName as string
-		      sItemName = oRecord.sitem_name
-		      
-		      If oRowTag.uuid <> "" Then
-		        
-		        // load up a inventory item container
-		        dim conItem as New contInventoryItem
-		        dim oTabPanel as PagePanel = app.MainWindow.tbMainWindow
-		        
-		        app.MainWindow.AddTab(sItemName)
-		        
-		        conItem.EmbedWithinPanel(oTabPanel,oTabPanel.PanelCount - 1 )
-		        
-		        conItem.LoadItem(oRowTag.uuid)
-		      End If
-		    End If
+		    
 		    
 		  Case "Break Link"
 		    
-		    dim oRowTags() as lbRowTag
-		    oRowTags = lbItems.GetSelectedRows
+		    dim oRowTags() as RecordStorageClass
+		    oRowTags = lbItems.GetSelectedRowTags
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
 		    dim sYesOrNoToAll as String
 		    
 		    // Loop through each row
-		    For Each oRowTag as lbRowTag in oRowTags
+		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
 		      // Get the table record out of the rowtag
 		      dim oRecord as DataFile.tbl_lineitems
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
+		      If oRowTag.oTableRecord <> Nil Then
+		        dim v as Variant = oRowTag.oTableRecord
+		        oRecord = v
 		      Else
 		        Continue
 		      End If
 		      dim oLinkRecord as DataFile.tbl_internal_linking
-		      If oRowTag.vLinkTable <> Nil Then
-		        oLinkRecord = oRowTag.vLinkTable
+		      If oRowTag.oLinkRecord <> Nil Then
+		        dim v as Variant = oRowTag.oLinkRecord
+		        oLinkRecord = v
 		      Else
 		        Continue
 		      End If
@@ -1127,20 +1090,21 @@ End
 		    
 		  Case "Delete Item"
 		    
-		    dim oRowTags() as lbRowTag
-		    oRowTags = lbItems.GetSelectedRows
+		    dim oRowTags() as RecordStorageClass
+		    oRowTags = lbItems.GetSelectedRowTags
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
 		    dim sYesOrNoToAll as String
 		    
 		    // Loop through each row
-		    For Each oRowTag as lbRowTag in oRowTags
+		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
 		      // Get the table record out of the rowtag
 		      dim oRecord as DataFile.tbl_lineitems
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
+		      If oRowTag.oTableRecord <> Nil Then
+		        dim v as Variant = oRowTag.oTableRecord
+		        oRecord = v
 		      Else
 		        Continue
 		      End If
@@ -1191,30 +1155,19 @@ End
 		    
 		  Case "Maintenance Logs"
 		    
-		    // Grab the rowtag
-		    dim oRowTag as lbRowTag
-		    oRowTag = lbItems.RowTag(lbItems.ListIndex)
 		    
-		    dim oItem as DataFile.tbl_inventory
-		    oItem = oRowTag.vtblRecord
-		    
-		    dim cont1 as New contMaintenenceLog
-		    
-		    app.MainWindow.AddTab("Maintenance Log")
-		    
-		    cont1.EmbedWithinPanel(app.MainWindow.tbMainWindow,app.MainWindow.tbMainWindow.PanelCount - 1)
-		    cont1.LoadUniversalInfo(oItem.suuid)
 		    
 		  Case "Calculate Line Total"
 		    
-		    dim oRowTag as lbRowTag
+		    dim oRowTag as RecordStorageClass
 		    oRowTag = lbItems.RowTag(lbItems.ListIndex)
 		    
-		    If oRowTag.vtblRecord <> Nil Then
-		      If oRowTag.vtblRecord IsA DataFile.tbl_lineitems Then
-		        dim oLIRecord as DataFile.tbl_lineitems = oRowTag.vtblRecord
+		    If oRowTag.oTableRecord <> Nil Then
+		      If oRowTag.isRecord Then
+		        dim v as Variant = oRowTag.oTableRecord
+		        dim oLIRecord as DataFile.tbl_lineitems = v
 		        
-		        dim dictReturn as Dictionary = CalculateLineItemPrices( oLIRecord, oEIPLRecord )
+		        dim dictReturn as Dictionary = CalculateLineItemPrices( oRowTag, oEIPLRecord )
 		        
 		        MsgBox( str( dictReturn.Value("Total" ) ) )
 		        
@@ -1223,15 +1176,16 @@ End
 		    
 		  Case "Calculate Group Total"
 		    
-		    dim oRowTag as lbRowTag
+		    dim oRowTag as RecordStorageClass
 		    oRowTag = lbItems.RowTag(lbItems.ListIndex)
 		    
 		    dim dictReturn as Dictionary
-		    If oRowTag.vGroupingData IsA Dictionary Then
-		      dictReturn = CalculateGroupofGroupTotal( oRowTag.vGroupingData, oEIPLRecord, oRowTag.sGroupDataStructure )
-		    Else
-		      dictReturn = CalculateGroupTotal( oRowTag.vGroupingData, oEIPLRecord, oRowTag.sGroupDataStructure )
-		    End If
+		    'If oRowTag.vGroupingData IsA Dictionary Then
+		    'dictReturn = CalculateGroupofGroupTotal( oRowTag.vGroupingData, oEIPLRecord, oRowTag.sGroupDataStructure )
+		    'Else
+		    'dictReturn = CalculateGroupTotal( oRowTag.vGroupingData, oEIPLRecord, oRowTag.sGroupDataStructure )
+		    'End If
+		    dictReturn = CalculateGroupofGroupTotal( oRowTag, oEIPLRecord, "" )
 		    
 		    MsgBox( str(dictReturn.Value("Total")) )
 		    
@@ -1248,16 +1202,16 @@ End
 		  If lbItems.ListIndex <> -1 Then
 		    
 		    // Grab the rowtag
-		    dim oRowTag as lbRowTag
+		    dim oRowTag as RecordStorageClass
 		    oRowTag = lbItems.RowTag(lbItems.ListIndex)
 		    
-		    If oRowTag.vtblRecord <> Nil Then
+		    If oRowTag.oTableRecord <> Nil Then
 		      
 		      'base.Append( New MenuItem("Open") )
 		      'base.Append( New MenuItem("Maintenance Logs") )
 		      'base.Append( New MenuItem(MenuItem.TextSeparator) )
 		      
-		      If oRowTag.vLinkTable <> Nil Then
+		      If oRowTag.oLinkRecord <> Nil Then
 		        base.Append( New MenuItem("Break Link") )
 		      End If
 		      
@@ -1270,7 +1224,7 @@ End
 		    
 		    base.Append( New MenuItem( "Calculate Group Total" ) )
 		    
-		    base.Append( New MenuItem( oRowTag.sGroupDataStructure ) )
+		    base.Append( New MenuItem( Join( oRowTag.arsGroupStructure, ".") ) )
 		    
 		    dim boo as Boolean
 		    boo = evdefConstructContextualMenu(base, x, y)

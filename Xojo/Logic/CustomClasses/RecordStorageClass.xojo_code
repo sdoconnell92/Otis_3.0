@@ -40,6 +40,12 @@ Protected Class RecordStorageClass
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function JoinedGroupStructure() As String
+		  Return Join(arsGroupStructure, ".")
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub PopulateCellTypes(ariColumnTypes() as Integer)
 		  
@@ -49,41 +55,46 @@ Protected Class RecordStorageClass
 
 	#tag Method, Flags = &h21
 		Private Sub PopulateColumnValues(arsFieldNames() as String, ariCellTypes() as Integer)
-		  dim jsFieldValues as JSONItem = oTableRecord.GetMyFieldValues(True)
-		  dim sTableName as String = oTableRecord.GetTableName
-		  
-		  redim oRowData.arsColumnValues(-1)
-		  
-		  For Each sFieldName as String In arsFieldNames
-		    dim sDBDotNotation as String
-		    dim sFTable, sFField as string
+		  If StorType = "GroupFolder" or StorType = "LinkedFolder" Then
+		    oRowData.arsColumnValues.Append(sFolderName)
+		  ElseIf StorType = "GrandParent" or StorType.InStr("Child -") > 0 Then
 		    
-		    // Check if our field name is already in table.field format
-		    dim dotIndex as Integer = sFieldName.InStr( "." )
-		    If dotIndex <> 0 Then
-		      'this is already in dotnotation
-		      sDBDotNotation = sFieldName
-		      dim s1() as string = sFieldName.Split(".")
-		      sFTable = s1(0)
-		      sFField = s1(1)
-		    Else
-		      sDBDotNotation = sTableName + "." + sFieldName
-		      sFField = sFieldName
-		      sFTable = sTableName
-		    End If
+		    dim jsFieldValues as JSONItem = oTableRecord.GetMyFieldValues(True)
+		    dim sTableName as String = oTableRecord.GetTableName
 		    
-		    // Check that the field actually exists
-		    If jsFieldValues.Names.IndexOf( sFField ) <> -1 Then
-		      ' the field exists
-		      
-		      dim sValue as String = jsFieldValues.Value( sFField )
-		      sValue = str( sValue, modFieldFormatting.GetFormattingString( sDBDotNotation ) )
-		      
-		      oRowData.arsColumnValues.Append( sValue )
-		      
-		    End If
+		    redim oRowData.arsColumnValues(-1)
 		    
-		  Next
+		    For Each sFieldName as String In arsFieldNames
+		      dim sDBDotNotation as String
+		      dim sFTable, sFField as string
+		      
+		      // Check if our field name is already in table.field format
+		      dim dotIndex as Integer = sFieldName.InStr( "." )
+		      If dotIndex <> 0 Then
+		        'this is already in dotnotation
+		        sDBDotNotation = sFieldName
+		        dim s1() as string = sFieldName.Split(".")
+		        sFTable = s1(0)
+		        sFField = s1(1)
+		      Else
+		        sDBDotNotation = sTableName + "." + sFieldName
+		        sFField = sFieldName
+		        sFTable = sTableName
+		      End If
+		      
+		      // Check that the field actually exists
+		      If jsFieldValues.Names.IndexOf( sFField ) <> -1 Then
+		        ' the field exists
+		        
+		        dim sValue as String = jsFieldValues.Value( sFField )
+		        sValue = str( sValue, modFieldFormatting.GetFormattingString( sDBDotNotation ) )
+		        
+		        oRowData.arsColumnValues.Append( sValue )
+		        
+		      End If
+		      
+		    Next
+		  End If
 		End Sub
 	#tag EndMethod
 

@@ -441,7 +441,7 @@ End
 	#tag Method, Flags = &h0
 		Sub methHandleDoubleClick()
 		  dim lb as entListbox = lbEvents
-		  Break
+		  
 		  
 		  If evdefDoubleClick Then
 		    
