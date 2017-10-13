@@ -54,12 +54,12 @@ Inherits Application
 		  
 		  // Launch main windows
 		  app.db = DataFile.ConnectDB
-		  'dim winMain as New winMain_1TabPanel
-		  'app.MainWindow = winMain
-		  'app.MainWindow.Show
+		  dim winMain as New winMain_1TabPanel
+		  app.MainWindow = winMain
+		  app.MainWindow.Show
 		  
-		  dim winPP as New winPrintPreview
-		  winPP.Show
+		  'dim winPP as New winPrintPreview
+		  'winPP.Show
 		End Sub
 	#tag EndMethod
 

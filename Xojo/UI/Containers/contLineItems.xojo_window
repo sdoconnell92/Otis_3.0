@@ -721,6 +721,7 @@ End
 		    s1 = "Name,Category,Description,Time,Rate,Qty,Price,Discount,Total,Tax"
 		    s2() = Split(s1,",")
 		    lbItems.Heading = s2()
+		    arsHeaders() = s2()
 		    
 		    
 		    // **********
@@ -948,6 +949,10 @@ End
 
 	#tag Property, Flags = &h0
 		aroStorClass() As RecordStorageClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		arsHeaders() As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

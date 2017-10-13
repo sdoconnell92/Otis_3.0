@@ -43,9 +43,8 @@ Begin ContainerControl contEI
       Scope           =   0
       TabIndex        =   2
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   22
-      Value           =   1
+      Value           =   0
       Visible         =   True
       Width           =   901
       Begin contLineItems instLineItemList
@@ -61,7 +60,6 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   355
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
          LastSearchValue =   ""
@@ -94,7 +92,6 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   475
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
          LastSearchValue =   ""
@@ -126,7 +123,6 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   181
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   343
          LockBottom      =   False
@@ -240,7 +236,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "EIPL Name"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -275,7 +270,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   4
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "EIPL Type"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -341,7 +335,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   6
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "Due Date"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -418,7 +411,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   8
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "Tax Rate"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -485,7 +477,6 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   120
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   262
          LockBottom      =   False
@@ -514,7 +505,6 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   181
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   343
          LockBottom      =   True
@@ -554,7 +544,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   12
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "Discounts"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -589,7 +578,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   1
-         TabStop         =   True
          Text            =   "EIPL Number"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -624,7 +612,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   13
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "EIPL Discount"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -691,7 +678,6 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   179
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   20
          LockBottom      =   True
@@ -731,7 +717,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   16
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "Contactables"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -766,7 +751,6 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   17
          TabPanelIndex   =   2
-         TabStop         =   True
          Text            =   "Payments"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -778,6 +762,37 @@ Begin ContainerControl contEI
          Underline       =   False
          Visible         =   True
          Width           =   100
+      End
+      Begin PushButton pbPrintPreview
+         AutoDeactivate  =   True
+         Bold            =   False
+         ButtonStyle     =   "0"
+         Cancel          =   False
+         Caption         =   "Print"
+         Default         =   False
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "ppEIPLSwitcher"
+         Italic          =   False
+         Left            =   821
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Scope           =   0
+         TabIndex        =   4
+         TabPanelIndex   =   1
+         TabStop         =   True
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   24
+         Underline       =   False
+         Visible         =   True
+         Width           =   80
       End
    End
    Begin TabPanel tbEIPLSwitcher
@@ -807,7 +822,7 @@ Begin ContainerControl contEI
       TextUnit        =   0
       Top             =   0
       Underline       =   False
-      Value           =   1
+      Value           =   0
       Visible         =   True
       Width           =   901
    End
@@ -1357,6 +1372,112 @@ End
 		  oCurrentRecord.Save
 		  
 		  me.Text = modFieldFormatting.FormatDiscountFields(oCurrentRecord.sdiscount)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events pbPrintPreview
+	#tag Event
+		Sub Action()
+		  dim oEst as New EstimateDocument
+		  
+		  // Create the Header
+		  dim oHeader as New BaseStoryObject
+		  oHeader.Height = 80
+		  
+		  // Create Logo for header
+		  dim oLogoImage as New InnerImage(oEst)
+		  oLogoImage.Content = img0old
+		  
+		  oHeader.aroInnerObjects.Append(oLogoImage)
+		  
+		  // Create RIght side text
+		  dim oHeaderText as New InnerText( Array( "Estimate", "Event Name", "Estimate Name" ), oEst )
+		  oHeaderText.Bold = Array( True, False, False )
+		  oHeaderText.FontSize = Array(16,12,12)
+		  oHeaderText.JustificationHor = 0
+		  oHeaderText.xPosition = "0.75%"
+		  oHeaderText.yPosition = "0.1%"
+		  
+		  oHeader.aroInnerObjects.Append(oHeaderText)
+		  
+		  // Append the story items to the document
+		  oEst.aroStory.Append(oHeader)
+		  
+		  
+		  
+		  dim oLargeBoxStory as New BaseStoryObject
+		  oLargeBoxStory.Height = 104
+		  
+		  dim oBoxes as New InnerBoxes(oEst)
+		  oBoxes.AddBox( Array( "Contact", "Company Name", "Contact Name", "Address Line 1", "Address Line 2", "City State, Zip", "Phone Number", "Email Address" ) )
+		  oBoxes.AddBox( Array( "Venue / Site", "Venue Name", "Address Line 1", "City State, Zip", "Phone Number" ) )
+		  oBoxes.BoxSpacing = 15
+		  oBoxes.ChangeFontSizes( Array( 11,10,10,10,10,10,10,10) )
+		  
+		  oLargeBoxStory.aroInnerObjects.Append(oBoxes)
+		  
+		  oEst.aroStory.Append(oLargeBoxStory)
+		  
+		  dim oSmallBoxStory as New BaseStoryObject
+		  oSmallBoxStory.Height = 36
+		  
+		  dim oSmBoxes1 as New InnerBoxes(oEst)
+		  oSmBoxes1.AddBox( Array( "Account Manager", "Name Here" ), 0 )
+		  oSmBoxes1.AddBox( Array( "Event Start", "Start Time", "Start Date" ), 0 )
+		  oSmBoxes1.AddBox( Array( "Event End", "End Time", "End Date" ), 0 )
+		  oSmBoxes1.AddBox( Array( "Load-In", "Load-In Time", "Load-In Date" ), 0 )
+		  oSmBoxes1.ChangeFontSizes( Array( 10,9,9 ) )
+		  
+		  oSmallBoxStory.aroInnerObjects.Append(oSmBoxes1)
+		  
+		  oEst.aroStory.Append(oSmallBoxStory)
+		  
+		  
+		  dim oSmallBoxStory2 as New BaseStoryObject
+		  oSmallBoxStory2.Height = 36
+		  
+		  dim oSmBoxes2 as New InnerBoxes(oEst)
+		  oSmBoxes2.AddBox( Array( "Load-Out", "Load-Out Time", "Load-Out Date" ), 0 )
+		  oSmBoxes2.AddBox( Array( "Discount", "0%" ), 0 )
+		  oSmBoxes2.AddBox( Array( "Tax", "0%" ), 0 )
+		  oSmBoxes2.ChangeFontSizes( Array( 10,9,9 ) )
+		  
+		  oSmallBoxStory2.aroInnerObjects.Append(oSmBoxes2)
+		  
+		  oEst.aroStory.Append(oSmallBoxStory2)
+		  
+		  dim oLIStory as New LineItemStory(instLineItemList.aroStorClass(), instLineItemList.dictFieldNames, instLineItemList.arsHeaders)
+		  
+		  
+		  oEst.aroStory.Append(oLIStory)
+		  
+		  dim winPP as New winPrintPreview
+		  dim p as New Picture(593, 773)
+		  dim iWidth,iHeight as integer
+		  
+		  
+		  oEst.Go(p)
+		  
+		  dim p1 as New Picture(winPP.Canvas1.Width,winPP.Canvas1.Height)
+		  dim iRatio as double = p1.Height / p.Height
+		  iWidth = Floor( p.Width * iRatio )
+		  iHeight = p1.Height
+		  p1.Graphics.DrawPicture(p, 0,0,iWidth,iHeight, 0,0,p.Width, p.Height)
+		  
+		  winPP.Canvas1.Backdrop = p1
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents

@@ -3,6 +3,8 @@ Protected Class RecordStorageClass
 	#tag Method, Flags = &h0
 		Sub Constructor()
 		  oRowData = New lbData
+		  oPrintData = New printData
+		  oPrintData.oParent = me
 		End Sub
 	#tag EndMethod
 
@@ -140,6 +142,91 @@ Protected Class RecordStorageClass
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Sub PopulatePrintColumnValues(arsFieldNames() as String)
+		  If StorType = "GroupFolder" or StorType = "LinkedFolder" Then
+		    oPrintData.arsColumnValues.Append(sFolderName)
+		  ElseIf StorType = "GrandParent" or StorType.InStr("Child -") > 0 Then
+		    
+		    dim jsFieldValues as JSONItem = oTableRecord.GetMyFieldValues(True)
+		    dim sTableName as String = oTableRecord.GetTableName
+		    
+		    redim oPrintData.arsColumnValues(-1)
+		    
+		    For Each sFieldName as String In arsFieldNames
+		      dim sDBDotNotation as String
+		      dim sFTable, sFField as string
+		      
+		      // Check if our field name is already in table.field format
+		      dim dotIndex as Integer = sFieldName.InStr( "." )
+		      If dotIndex <> 0 Then
+		        'this is already in dotnotation
+		        sDBDotNotation = sFieldName
+		        dim s1() as string = sFieldName.Split(".")
+		        sFTable = s1(0)
+		        sFField = s1(1)
+		      Else
+		        sDBDotNotation = sTableName + "." + sFieldName
+		        sFField = sFieldName
+		        sFTable = sTableName
+		      End If
+		      
+		      // Check that the field actually exists
+		      If jsFieldValues.Names.IndexOf( sFField ) <> -1 Then
+		        ' the field exists
+		        
+		        dim sValue as String = jsFieldValues.Value( sFField )
+		        sValue = str( sValue, modFieldFormatting.GetFormattingString( sDBDotNotation ) )
+		        
+		        oPrintData.arsColumnValues.Append( sValue )
+		        
+		      End If
+		      
+		    Next
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub PopulatePrintData(dictFieldNames as Dictionary, oParentStory as LineItemStory)
+		  dim arsFieldNames() as String
+		  
+		  
+		  // Get the cell types and field names
+		  Select Case StorType
+		  Case "GroupFolder"
+		    // This Stor is a Group Folder
+		    arsFieldNames() = GetFieldNames( "GroupFolder", dictFieldNames )
+		  Case "GrandParent"
+		    // This is a Grandparent
+		    arsFieldNames() = GetFieldNames( "GrandParent", dictFieldNames )
+		  Case "LinkedFolder"
+		    // This is a linked Folder
+		    arsFieldNames() = GetFieldNames( "LinkedFolder", dictFieldNames )
+		  Else
+		    If StorType.InStr("Child -") > 0 Then
+		      // This is a Child Record
+		      dim s1 as string = "Child - " + oParentStor.sFolderName
+		      arsFieldNames() = GetFieldNames( s1, dictFieldNames )
+		    End If
+		  End Select
+		  
+		  
+		  // Start populating the column values based on field names and types
+		  PopulatePrintColumnValues(arsFieldNames)
+		  PopulatePrintFieldNames(arsFieldNames)
+		  
+		  oPrintData.oParentStory = oParentStory
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub PopulatePrintFieldNames(arsFieldNames() as string)
+		  
+		  oRowData.arsFieldNames = arsFieldNames()
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h0
 		Function StorType() As String
 		  dim sRet as string
@@ -189,6 +276,10 @@ Protected Class RecordStorageClass
 
 	#tag Property, Flags = &h0
 		oParentStor As RecordStorageClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		oPrintData As printData
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
