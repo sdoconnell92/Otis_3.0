@@ -24,7 +24,7 @@ Begin Window winPrintPreview
    Placement       =   0
    Resizeable      =   True
    Title           =   "Untitled"
-   Visible         =   True
+   Visible         =   False
    Width           =   776
    Begin PushButton PushButton1
       AutoDeactivate  =   True
@@ -89,6 +89,13 @@ End
 #tag EndWindow
 
 #tag WindowCode
+	#tag Event
+		Sub Close()
+		  Canvas1.Close
+		End Sub
+	#tag EndEvent
+
+
 #tag EndWindowCode
 
 #tag Events PushButton1

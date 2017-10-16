@@ -12,33 +12,12 @@ Inherits BaseStoryObject
 
 	#tag Method, Flags = &h0
 		Sub Draw(g as Graphics)
-		  dim iTextHeight as integer
-		  dim iLineBuffer as integer = 1
-		  Break
-		  g.TextSize = FontSize
-		  iTextHeight = g.TextHeight
+		  
 		  
 		  // Find the true widths
 		  PopulateTrueWidths(g)
 		  
-		  dim yIndex as integer
-		  For Each oLine as RecordStorageClass In aroLineItems()
-		    
-		    oLine.PopulatePrintData(dictFieldNames, me)
-		    
-		    dim iLeftOffset as integer = (oLine.arsGroupStructure.Ubound + 1) * 10
-		    dim gClip as Graphics
-		    dim iClipWidth, iClipHeight as integer
-		    iClipWidth = g.Width - iLeftOffset
-		    iClipHeight = iTextHeight + iLineBuffer + iLineBuffer
-		    
-		    gClip = g.Clip( iLeftOffset, yIndex, iClipWidth, iClipHeight )
-		    gClip.TextSize = FontSize
-		    yIndex = yIndex + iClipHeight
-		    
-		    oLine.oPrintData.Draw(gClip, iLeftOffset)
-		    
-		  Next
+		  dim y as integer = RecipricateThroughLI(g, aroLineItems)
 		End Sub
 	#tag EndMethod
 
@@ -72,6 +51,44 @@ Inherits BaseStoryObject
 		    Next
 		  End If
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function RecipricateThroughLI(g as Graphics, aroLines() as RecordStorageClass,  yIndexInput as integer = 0) As integer
+		  dim iTextHeight as integer
+		  dim iLineBuffer as integer = 1
+		  
+		  g.TextSize = FontSize
+		  iTextHeight = g.TextHeight
+		  
+		  dim yIndex as integer = yIndexInput
+		  For Each oLine as RecordStorageClass In aroLines()
+		    
+		    oLine.PopulatePrintData(dictFieldNames, me)
+		    
+		    dim iLeftOffset as integer = (oLine.arsGroupStructure.Ubound + 1) * 10
+		    dim gClip as Graphics
+		    dim iClipWidth, iClipHeight as integer
+		    iClipWidth = g.Width - iLeftOffset
+		    iClipHeight = iTextHeight + iLineBuffer + iLineBuffer
+		    
+		    gClip = g.Clip( iLeftOffset, yIndex, iClipWidth, iClipHeight )
+		    gClip.TextSize = FontSize
+		    
+		    
+		    oLine.oPrintData.Draw(gClip, iLeftOffset)
+		    
+		    yIndex = yIndex + iClipHeight
+		    
+		    // Check if this Record has children
+		    If oLine.aroChildren.Ubound <> -1 Then
+		      yIndex = yIndex + RecipricateThroughLI(g, oLine.aroChildren, yIndex)
+		    End If
+		    
+		  Next
+		  
+		  Return yIndex
+		End Function
 	#tag EndMethod
 
 
@@ -108,6 +125,12 @@ Inherits BaseStoryObject
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Height"
+			Group="Behavior"
+			InitialValue="-1"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -138,6 +161,12 @@ Inherits BaseStoryObject
 			Visible=true
 			Group="Position"
 			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Width"
+			Group="Behavior"
+			InitialValue="-1"
 			Type="Integer"
 		#tag EndViewProperty
 	#tag EndViewBehavior

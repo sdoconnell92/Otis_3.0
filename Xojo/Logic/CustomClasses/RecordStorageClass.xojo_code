@@ -191,6 +191,7 @@ Protected Class RecordStorageClass
 		Sub PopulatePrintData(dictFieldNames as Dictionary, oParentStory as LineItemStory)
 		  dim arsFieldNames() as String
 		  
+		  oPrintData = New printData
 		  
 		  // Get the cell types and field names
 		  Select Case StorType

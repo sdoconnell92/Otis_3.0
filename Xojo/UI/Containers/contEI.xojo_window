@@ -1452,6 +1452,7 @@ End
 		  oEst.aroStory.Append(oLIStory)
 		  
 		  dim winPP as New winPrintPreview
+		  winPP.Canvas1.Backdrop = New Picture(winPP.Canvas1.Width, winPP.Canvas1.Height)
 		  dim p as New Picture(593, 773)
 		  dim iWidth,iHeight as integer
 		  
@@ -1467,7 +1468,7 @@ End
 		  winPP.Canvas1.Backdrop = p1
 		  
 		  
-		  
+		  winPP.Visible = True
 		  
 		  
 		  
