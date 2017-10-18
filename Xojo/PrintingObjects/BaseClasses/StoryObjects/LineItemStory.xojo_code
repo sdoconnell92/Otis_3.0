@@ -17,6 +17,14 @@ Inherits BaseStoryObject
 		  // Find the true widths
 		  PopulateTrueWidths(g)
 		  
+		  If aroLineItems(0).StorType <> "Header" Then
+		    // Create a record storage object to write the headers
+		    dim oHeaderRecord as New RecordStorageClass
+		    oHeaderRecord.oPrintData.arsColumnValues = arsHeaders()
+		    
+		    aroLineItems.Insert(0, oHeaderRecord)
+		  End If
+		  
 		  dim y as integer = RecipricateThroughLI(g, aroLineItems)
 		End Sub
 	#tag EndMethod
@@ -54,43 +62,58 @@ Inherits BaseStoryObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function RecipricateThroughLI(g as Graphics, aroLines() as RecordStorageClass,  yIndexInput as integer = 0) As integer
+		Function RecipricateThroughLI(g as Graphics, aroLines() as RecordStorageClass,  yIndexInput as integer = 0, iLineStart as integer = 0) As integer
 		  dim iTextHeight as integer
 		  dim iLineBuffer as integer = 1
 		  
 		  g.TextSize = FontSize
 		  iTextHeight = g.TextHeight
 		  
+		  ariCursorLocation.Append(0)
+		  dim iCursorUbound as integer = ariCursorLocation.Ubound
+		  
 		  dim yIndex as integer = yIndexInput
-		  For Each oLine as RecordStorageClass In aroLines()
+		  For iLineIndex as integer = iLineStart To aroLines.Ubound
+		    dim oLine as RecordStorageClass = aroLines(iLineIndex)
+		    ariCursorLocation(iCursorUbound) = iLineIndex
 		    
 		    oLine.PopulatePrintData(dictFieldNames, me)
 		    
 		    dim iLeftOffset as integer = (oLine.arsGroupStructure.Ubound + 1) * 10
 		    dim gClip as Graphics
 		    dim iClipWidth, iClipHeight as integer
-		    iClipWidth = g.Width - iLeftOffset
-		    iClipHeight = iTextHeight + iLineBuffer + iLineBuffer
+		    iClipWidth = g.Width
+		    iClipHeight = (iTextHeight + iLineBuffer + iLineBuffer) * oLine.oPrintData.StringLines
 		    
-		    gClip = g.Clip( iLeftOffset, yIndex, iClipWidth, iClipHeight )
+		    gClip = g.Clip( 0, yIndex, iClipWidth, iClipHeight )
 		    gClip.TextSize = FontSize
 		    
 		    
 		    oLine.oPrintData.Draw(gClip, iLeftOffset)
 		    
-		    yIndex = yIndex + iClipHeight
 		    
 		    // Check if this Record has children
 		    If oLine.aroChildren.Ubound <> -1 Then
-		      yIndex = yIndex + RecipricateThroughLI(g, oLine.aroChildren, yIndex)
+		      yIndex = yIndex + RecipricateThroughLI(g, oLine.aroChildren, yIndex + iClipHeight)
+		    else
+		      yIndex = yIndex + iClipHeight
 		    End If
 		    
 		  Next
+		  
+		  ariCursorLocation.Remove(iCursorUbound)
+		  If ariCursorLocation.Ubound = -1 Then
+		    bComplete = True
+		  End If
 		  
 		  Return yIndex
 		End Function
 	#tag EndMethod
 
+
+	#tag Property, Flags = &h0
+		ariCursorLocation() As Integer
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		ariTrueWidths() As Integer
@@ -109,6 +132,10 @@ Inherits BaseStoryObject
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		bComplete As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		dictFieldNames As Dictionary
 	#tag EndProperty
 
@@ -118,6 +145,11 @@ Inherits BaseStoryObject
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="bComplete"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="FontSize"
 			Group="Behavior"

@@ -1,5 +1,8 @@
 #tag Module
 Protected Module ValueRef
+	#tag Constant, Name = DefualtPrintColJust, Type = Double, Dynamic = False, Default = \"1", Scope = Public
+	#tag EndConstant
+
 	#tag Constant, Name = EIPLTypes, Type = String, Dynamic = False, Default = \"", Scope = Public
 		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Estimate\x2CInvoice\x2CPack List"
 	#tag EndConstant

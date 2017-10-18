@@ -2,9 +2,24 @@
 Protected Class printData
 	#tag Method, Flags = &h0
 		Sub Draw(g as Graphics, iLeftOffset as integer)
+		  dim bBold as Boolean
+		  dim iFontSize as integer
+		  
+		  Select Case oParent.StorType
+		  Case "Header"
+		    bBold = True
+		    iFontSize = oParentStory.FontSize
+		  Else
+		    bBold = False
+		    iFontSize = oParentStory.FontSize
+		  End Select
 		  
 		  dim runningX as integer
 		  For iColIndex as integer = 0 To arsColumnValues.Ubound
+		    
+		    if iColIndex > ariJustification.Ubound Then
+		      ariJustification.Append(0)
+		    end if
 		    
 		    dim sColVal as String = arsColumnValues(iColIndex)
 		    dim iClipWidth as integer = oParentStory.ariTrueWidths(iColIndex)
@@ -15,13 +30,79 @@ Protected Class printData
 		    dim iClipY as integer = 0
 		    
 		    dim gClip as Graphics = g.Clip(iClipX, iClipY, iClipWidth, iClipHeight)
-		    gClip.DrawString( sColVal, 0, g.TextAscent, gClip.Width )
+		    
+		    gClip.Bold = bBold
+		    gClip.TextSize = iFontSize
+		    
+		    dim iTextX, iTextWidth, iTextHalf, iJustification, iClipHalf, iClipHalfX as integer
+		    iTextWidth = gClip.StringWidth(sColVal)
+		    iTextHalf = iTextWidth / 2
+		    iClipHalf = iClipWidth / 2
+		    iClipHalfX = iClipHalf
+		    if ariJustification(iColIndex) = 0 Then
+		      iJustification = ValueRef.DefualtPrintColJust
+		    end if
+		    
+		    Select Case iJustification
+		    Case 1
+		      iTextX = 0
+		    Case 2
+		      iTextX = iClipHalfX - iTextHalf
+		    Case 3
+		      iTextX = iClipX + iClipWidth - iTextWidth
+		    End Select
+		    
+		    
+		    
+		    gClip.DrawString( sColVal, iTextX, g.TextAscent, gClip.Width )
 		    
 		    runningX = iClipX + iClipWidth
 		  Next
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function StringLines() As Integer
+		  dim bBold as Boolean
+		  dim iFontSize as integer
+		  dim maxHeight as integer
+		  
+		  Select Case oParent.StorType
+		  Case "Header"
+		    bBold = True
+		    iFontSize = oParentStory.FontSize
+		  Else
+		    bBold = False
+		    iFontSize = oParentStory.FontSize
+		  End Select
+		  
+		  dim p as new Picture(50,50)
+		  dim g as Graphics = p.Graphics
+		  g.TextSize = iFontSize
+		  g.Bold = bBold
+		  For iColIndex as integer = 0 To arsColumnValues.Ubound
+		    dim iHeight as integer
+		    iHeight = g.StringHeight(arsColumnValues(iColIndex), oParentStory.ariTrueWidths(iColIndex))
+		    If iHeight > maxHeight Then maxHeight = iHeight
+		    
+		  Next
+		  
+		  dim i1 as double
+		  i1 = maxHeight / g.TextAscent
+		  Return Ceil(i1)
+		End Function
+	#tag EndMethod
+
+
+	#tag Property, Flags = &h0
+		#tag Note
+			0 = Default
+			1 = Left
+			2 = Center
+			3 = Right
+		#tag EndNote
+		ariJustification() As Integer
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		arsColumnValues() As String
@@ -64,11 +145,6 @@ Protected Class printData
 			Visible=true
 			Group="ID"
 			Type="String"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="oParent"
-			Group="Behavior"
-			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

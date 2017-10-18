@@ -882,12 +882,12 @@ End
 		    lb.CellType( iRowIndex, iCellIndex ) = iColumnType
 		    
 		    // Check if this is a calculated field
-		    Select Case sFieldName
-		    Case "CalcTotal"
-		      dim d as Dictionary = modPriceCalculations.CalculateLineItemPrices(oStor, oEIPLRecord)
-		      sColumnValue = d.Value("SubTotal")
-		      sColumnValue = str( sColumnValue, "\$#,###,###,###.00" )
-		    End Select
+		    'Select Case sFieldName
+		    'Case "CalcTotal"
+		    'dim d as Dictionary = modPriceCalculations.CalculateLineItemPrices(oStor, oEIPLRecord)
+		    'sColumnValue = d.Value("SubTotal")
+		    'sColumnValue = str( sColumnValue, "\$#,###,###,###.00" )
+		    'End Select
 		    
 		    Select Case iColumnType
 		    Case 0 'default

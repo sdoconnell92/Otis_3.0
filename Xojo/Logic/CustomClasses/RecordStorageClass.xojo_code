@@ -31,6 +31,27 @@ Protected Class RecordStorageClass
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function GetEIPLRecord() As RecordStorageClass
+		  dim retStor as RecordStorageClass
+		  
+		  If oTableRecord IsA DataFile.tbl_lineitems Then
+		    
+		    dim v1 as Variant = oTableRecord
+		    dim oLI as DataFile.tbl_lineitems = v1
+		    
+		    dim oEIPLRecord as DataFile.tbl_eipl = DataFile.tbl_eipl.FindByID( oLI.sfkeipl )
+		    If oEIPLRecord <> Nil Then
+		      retStor = DataFile.StorifyRecords(oEIPLRecord)
+		    End If
+		    
+		    
+		  End If
+		  
+		  Return retStor
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Function GetFieldNames(sRowType as String, dictFieldNames as Dictionary) As String()
 		  
@@ -93,6 +114,17 @@ Protected Class RecordStorageClass
 		        
 		        oRowData.arsColumnValues.Append( sValue )
 		        
+		      Else
+		        // Check if this is a calculated field
+		        Select Case sFieldName
+		        Case "CalcTotal"
+		          dim d as Dictionary = modPriceCalculations.CalculateLineItemPrices(me, GetEIPLRecord)
+		          dim sColumnValue as String
+		          sColumnValue = d.Value("SubTotal")
+		          sColumnValue = str( sColumnValue, "\$#,###,###,###.00" )
+		          
+		          oRowData.arsColumnValues.Append( sColumnValue )
+		        End Select
 		      End If
 		      
 		    Next
@@ -180,6 +212,18 @@ Protected Class RecordStorageClass
 		        
 		        oPrintData.arsColumnValues.Append( sValue )
 		        
+		      Else
+		        // Check if this is a calculated field
+		        Select Case sFieldName
+		        Case "CalcTotal"
+		          dim d as Dictionary = modPriceCalculations.CalculateLineItemPrices(me, GetEIPLRecord)
+		          dim sColumnValue as String
+		          sColumnValue = d.Value("SubTotal")
+		          sColumnValue = str( sColumnValue, "\$#,###,###,###.00" )
+		          
+		          oPrintData.arsColumnValues.Append( sColumnValue )
+		        End Select
+		        
 		      End If
 		      
 		    Next
@@ -191,26 +235,36 @@ Protected Class RecordStorageClass
 		Sub PopulatePrintData(dictFieldNames as Dictionary, oParentStory as LineItemStory)
 		  dim arsFieldNames() as String
 		  
-		  oPrintData = New printData
-		  
 		  // Get the cell types and field names
 		  Select Case StorType
 		  Case "GroupFolder"
 		    // This Stor is a Group Folder
+		    oPrintData = New printData
 		    arsFieldNames() = GetFieldNames( "GroupFolder", dictFieldNames )
 		  Case "GrandParent"
 		    // This is a Grandparent
+		    oPrintData = New printData
 		    arsFieldNames() = GetFieldNames( "GrandParent", dictFieldNames )
 		  Case "LinkedFolder"
 		    // This is a linked Folder
+		    oPrintData = New printData
 		    arsFieldNames() = GetFieldNames( "LinkedFolder", dictFieldNames )
+		  Case "Header"
+		    // This is a header
+		    oPrintData.oParentStory = oParentStory
+		    Return
 		  Else
 		    If StorType.InStr("Child -") > 0 Then
 		      // This is a Child Record
+		      oPrintData = New printData
 		      dim s1 as string = "Child - " + oParentStor.sFolderName
 		      arsFieldNames() = GetFieldNames( s1, dictFieldNames )
 		    End If
 		  End Select
+		  
+		  if oPrintData.oParent = Nil Then
+		    oPrintData.oParent = me
+		  end if
 		  
 		  
 		  // Start populating the column values based on field names and types
@@ -240,6 +294,8 @@ Protected Class RecordStorageClass
 		    sRet = "LinkedFolder"
 		  ElseIf isChild and not isLinker and isRecord Then
 		    sRet = "Child"
+		  ElseIf not isFolder and not isChild and not isLinker and not isRecord Then
+		    sRet = "Header"
 		  end if
 		  
 		  Return sRet
