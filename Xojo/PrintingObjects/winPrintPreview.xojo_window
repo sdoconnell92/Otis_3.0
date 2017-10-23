@@ -25,7 +25,7 @@ Begin Window winPrintPreview
    Resizeable      =   True
    Title           =   "Untitled"
    Visible         =   False
-   Width           =   776
+   Width           =   650
    Begin Canvas Canvas1
       AcceptFocus     =   False
       AcceptTabs      =   False
@@ -39,10 +39,10 @@ Begin Window winPrintPreview
       Index           =   -2147483648
       InitialParent   =   ""
       Left            =   0
-      LockBottom      =   False
+      LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
-      LockRight       =   False
+      LockRight       =   True
       LockTop         =   True
       Scope           =   0
       TabIndex        =   1
@@ -52,7 +52,7 @@ Begin Window winPrintPreview
       Transparent     =   True
       UseFocusRing    =   True
       Visible         =   True
-      Width           =   776
+      Width           =   650
    End
    Begin PushButton pbBack
       AutoDeactivate  =   True
@@ -67,12 +67,12 @@ Begin Window winPrintPreview
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   355
-      LockBottom      =   False
+      Left            =   293
+      LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   False
-      LockTop         =   True
+      LockTop         =   False
       Scope           =   0
       TabIndex        =   2
       TabPanelIndex   =   0
@@ -80,7 +80,7 @@ Begin Window winPrintPreview
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   692
+      Top             =   691
       Underline       =   False
       Visible         =   True
       Width           =   32
@@ -98,12 +98,12 @@ Begin Window winPrintPreview
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   388
-      LockBottom      =   False
+      Left            =   326
+      LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   False
-      LockTop         =   True
+      LockTop         =   False
       Scope           =   0
       TabIndex        =   3
       TabPanelIndex   =   0
@@ -111,7 +111,7 @@ Begin Window winPrintPreview
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   692
+      Top             =   691
       Underline       =   False
       Visible         =   True
       Width           =   32
@@ -142,14 +142,14 @@ End
 		  dim p as Picture = arp(picIndex)
 		  iCurrentPic = picIndex
 		  
-		  dim iWidth, iHeight as integer
-		  dim p1 as New Picture(Canvas1.Width, Canvas1.Height)
-		  dim iRatio as double = p1.Height / p.Height
-		  iWidth = Floor( p.Width * iRatio )
-		  iHeight = p1.Height
-		  p1.Graphics.DrawPicture(p, 0,0,iWidth,iHeight, 0,0,p.Width, p.Height)
+		  'dim iWidth, iHeight as integer
+		  'dim p1 as New Picture(Canvas1.Width, Canvas1.Height)
+		  'dim iRatio as double = p1.Height / p.Height
+		  'iWidth = Floor( p.Width * iRatio )
+		  'iHeight = p1.Height
+		  'p1.Graphics.DrawPicture(p, 0,0,iWidth,iHeight, 0,0,p.Width, p.Height)
 		  
-		  Canvas1.Backdrop = p1
+		  Canvas1.Backdrop = p
 		End Sub
 	#tag EndMethod
 
@@ -264,6 +264,12 @@ End
 		Visible=true
 		Group="Size"
 		InitialValue="400"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="iCurrentPic"
+		Group="Behavior"
+		InitialValue="-1"
 		Type="Integer"
 	#tag EndViewProperty
 	#tag ViewProperty

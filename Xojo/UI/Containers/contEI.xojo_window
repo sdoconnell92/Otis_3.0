@@ -1456,7 +1456,7 @@ End
 		  dim arp() as Picture
 		  
 		  
-		  arp = oEst.PrintPreview
+		  arp = oEst.PrintPreview(winPP.Canvas1.Width, winPP.Canvas1.Height)
 		  
 		  winPP.NewArray(arp)
 		  

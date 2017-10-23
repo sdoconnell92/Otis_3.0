@@ -33,7 +33,7 @@ Protected Class BaseDocument
 		    
 		    dim iClipWidth, iClipHeight as integer
 		    If oStory.Height = -1 Then
-		      iClipHeight = g.Height
+		      iClipHeight = g.Height - y
 		    Else
 		      iClipHeight = oStory.Height
 		    End If
@@ -46,7 +46,7 @@ Protected Class BaseDocument
 		    
 		    oStory.Draw(gClip)
 		    
-		    y = y + iClipHeight + StorySpacing
+		    y = y + gClip.Height + StorySpacing
 		  Next
 		  
 		  
@@ -71,13 +71,12 @@ Protected Class BaseDocument
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function PrintPreview() As Picture()
+		Function PrintPreview(iWidth as integer = 593, iHeight as integer = 773) As Picture()
 		  dim arp() as Picture
 		  
 		  
 		  While not bPrintDone
-		    dim p as New Picture(593, 773)
-		    dim iWidth,iHeight as integer
+		    dim p as New Picture(iWidth, iHeight)
 		    
 		    Go(p.Graphics)
 		    

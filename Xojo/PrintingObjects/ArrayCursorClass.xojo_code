@@ -39,7 +39,9 @@ Protected Class ArrayCursorClass
 
 	#tag Method, Flags = &h0
 		Sub IncreaseCurrentDepth(iAmount as integer = 1)
-		  ariCursor(iCursorIndex) = ariCursor(iCursorIndex) + 1
+		  If iCursorIndex = ariCursor.Ubound Then
+		    ariCursor(iCursorIndex) = ariCursor(iCursorIndex) + 1
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -53,6 +55,16 @@ Protected Class ArrayCursorClass
 		Sub MoveOut()
 		  iCursorIndex = iCursorIndex - 1
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function onFirst() As Boolean
+		  If iCursorIndex = 0 Then
+		    Return True
+		  Else
+		    Return False
+		  End If
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -78,7 +90,7 @@ Protected Class ArrayCursorClass
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="ariCursor()"
+			Name="iCursorIndex"
 			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty

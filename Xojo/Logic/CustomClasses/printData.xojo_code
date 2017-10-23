@@ -1,9 +1,18 @@
 #tag Class
 Protected Class printData
 	#tag Method, Flags = &h0
-		Sub Draw(g as Graphics, iLeftOffset as integer)
+		Function DetermineLeftOffset() As Integer
+		  // Determine the left offset
+		  dim iLeftOffset as integer = (oParent.arsGroupStructure.Ubound + 1) * 10
+		  Return iLeftOffset
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Draw(g as Graphics)
 		  dim bBold as Boolean
 		  dim iFontSize as integer
+		  dim iLeftOffset as integer = DetermineLeftOffset
 		  
 		  Select Case oParent.StorType
 		  Case "Header"
@@ -53,8 +62,8 @@ Protected Class printData
 		    End Select
 		    
 		    
-		    
-		    gClip.DrawString( sColVal, iTextX, g.TextAscent, gClip.Width )
+		    dim www as integer = gClip.StringHeight(sColVal, gClip.Width)
+		    gClip.DrawString( sColVal, iTextX, gClip.TextAscent, gClip.Width )
 		    
 		    runningX = iClipX + iClipWidth
 		  Next
@@ -82,7 +91,13 @@ Protected Class printData
 		  g.Bold = bBold
 		  For iColIndex as integer = 0 To arsColumnValues.Ubound
 		    dim iHeight as integer
-		    iHeight = g.StringHeight(arsColumnValues(iColIndex), oParentStory.ariTrueWidths(iColIndex))
+		    dim iWidth as integer 
+		    If iColIndex = 0 Then
+		      iWidth = oParentStory.ariTrueWidths(iColIndex) - DetermineLeftOffset
+		    Else
+		      iWidth = oParentStory.ariTrueWidths(iColIndex)
+		    End If
+		    iHeight = g.StringHeight(arsColumnValues(iColIndex), iWidth)
 		    If iHeight > maxHeight Then maxHeight = iHeight
 		    
 		  Next

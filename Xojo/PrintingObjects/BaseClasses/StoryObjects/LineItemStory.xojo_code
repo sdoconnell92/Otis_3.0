@@ -17,7 +17,7 @@ Inherits BaseStoryObject
 		  dim gClip as Graphics
 		  dim iClipWidth, iClipHeight as integer
 		  iClipWidth = g.Width
-		  iClipHeight = (iTextHeight + iLineBuffer + iLineBuffer) * oLine.oPrintData.StringLines
+		  iClipHeight = (iTextHeight * oLine.oPrintData.StringLines) + (iLineBuffer * 2)
 		  
 		  gClip = g.Clip( 0, yIndex, iClipWidth, iClipHeight )
 		  
@@ -28,7 +28,7 @@ Inherits BaseStoryObject
 	#tag Method, Flags = &h0
 		Sub Draw(g as Graphics)
 		  
-		  Break
+		  
 		  // Find the true widths
 		  PopulateTrueWidths(g)
 		  
@@ -54,10 +54,9 @@ Inherits BaseStoryObject
 	#tag Method, Flags = &h0
 		Sub DrawLine(g as Graphics, oLine as RecordStorageClass)
 		  
-		  // Determine the left offset
-		  dim iLeftOffset as integer = (oLine.arsGroupStructure.Ubound + 1) * 10
 		  
-		  oLine.oPrintData.Draw(g, iLeftOffset)
+		  
+		  oLine.oPrintData.Draw(g)
 		End Sub
 	#tag EndMethod
 
@@ -120,7 +119,14 @@ Inherits BaseStoryObject
 		    
 		    If oCurs.OnLast Then
 		      // Draw this line
-		      
+		      if oLine.oTableRecord <> Nil Then
+		        dim v as Variant = oLine.oTableRecord
+		        dim oll as DataFile.tbl_lineitems = v
+		        if oll.sli_name = "Swivel Backrest Stool" Then
+		          'Break
+		        End If
+		        
+		      End If
 		      // Create graphics clip
 		      dim gClip as Graphics = CreateClip(g, oLine, yIndex)
 		      gClip.TextSize = FontSize
@@ -147,7 +153,12 @@ Inherits BaseStoryObject
 		      oCurs.MoveIn
 		      yIndex = RecipricateThroughLI(g, oLine.aroChildren, yIndex)
 		    End If
-		    oCurs.IncreaseCurrentDepth
+		    
+		    If oCurs.onLast Then
+		      oCurs.IncreaseCurrentDepth
+		    else
+		      exit
+		    End If
 		  Next
 		  
 		  // Check if we have made it through all of the lines
@@ -157,6 +168,8 @@ Inherits BaseStoryObject
 		    If oCurs.CursorRemoved Then
 		      bComplete = True
 		    End If
+		  Elseif not oCurs.onFirst Then
+		    oCurs.MoveOut
 		  End If
 		  
 		  Return yIndex
@@ -210,6 +223,11 @@ Inherits BaseStoryObject
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="bRepeatEveryPage"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="FontSize"
 			Group="Behavior"
 			InitialValue="9"
@@ -219,6 +237,12 @@ Inherits BaseStoryObject
 			Name="Height"
 			Group="Behavior"
 			InitialValue="-1"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="iLineBuffer"
+			Group="Behavior"
+			InitialValue="1"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
