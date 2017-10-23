@@ -11,22 +11,65 @@ Inherits BaseStoryObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function CreateClip(g as Graphics, oLine as RecordStorageClass, yIndex as integer) As Graphics
+		  dim iTextHeight as integer = g.TextHeight
+		  
+		  dim gClip as Graphics
+		  dim iClipWidth, iClipHeight as integer
+		  iClipWidth = g.Width
+		  iClipHeight = (iTextHeight + iLineBuffer + iLineBuffer) * oLine.oPrintData.StringLines
+		  
+		  gClip = g.Clip( 0, yIndex, iClipWidth, iClipHeight )
+		  
+		  Return gClip
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Draw(g as Graphics)
 		  
-		  
+		  Break
 		  // Find the true widths
 		  PopulateTrueWidths(g)
 		  
-		  If aroLineItems(0).StorType <> "Header" Then
-		    // Create a record storage object to write the headers
-		    dim oHeaderRecord as New RecordStorageClass
-		    oHeaderRecord.oPrintData.arsColumnValues = arsHeaders()
-		    
-		    aroLineItems.Insert(0, oHeaderRecord)
-		  End If
+		  dim yIndex as integer
+		  // Create a record storage object to write the headers
+		  dim oHeaderRecord as New RecordStorageClass
+		  oHeaderRecord.oPrintData.arsColumnValues = arsHeaders()
+		  oHeaderRecord.oPrintData.oParentStory = me
 		  
-		  dim y as integer = RecipricateThroughLI(g, aroLineItems)
+		  // Create graphics clip
+		  dim gClip as Graphics = CreateClip(g, oHeaderRecord, yindex)
+		  gClip.TextSize = FontSize
+		  
+		  // Draw the Header
+		  DrawLine(gClip, oHeaderRecord)
+		  
+		  yIndex = yIndex + gClip.Height
+		  
+		  dim y as integer = RecipricateThroughLI(g, aroLineItems, yIndex)
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub DrawLine(g as Graphics, oLine as RecordStorageClass)
+		  
+		  // Determine the left offset
+		  dim iLeftOffset as integer = (oLine.arsGroupStructure.Ubound + 1) * 10
+		  
+		  oLine.oPrintData.Draw(g, iLeftOffset)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function HaveSpaceForLine(g as Graphics, gClip as Graphics, yIndex as integer) As Boolean
+		  
+		  if yIndex + gClip.Height > g.Height Then
+		    Return False
+		  Else
+		    Return True
+		  end if
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -62,51 +105,63 @@ Inherits BaseStoryObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function RecipricateThroughLI(g as Graphics, aroLines() as RecordStorageClass,  yIndexInput as integer = 0, iLineStart as integer = 0) As integer
-		  dim iTextHeight as integer
-		  dim iLineBuffer as integer = 1
-		  
+		Function RecipricateThroughLI(g as Graphics, aroLines() as RecordStorageClass, yIndexPar as integer = 0) As integer
 		  g.TextSize = FontSize
-		  iTextHeight = g.TextHeight
 		  
-		  ariCursorLocation.Append(0)
-		  dim iCursorUbound as integer = ariCursorLocation.Ubound
+		  If oCurs = Nil Then
+		    // Create a Cursor Object
+		    oCurs = New ArrayCursorClass
+		  End If
 		  
-		  dim yIndex as integer = yIndexInput
-		  For iLineIndex as integer = iLineStart To aroLines.Ubound
+		  dim yIndex as integer = yIndexPar
+		  For iLineIndex as integer = oCurs.GetCurrentIndex To aroLines.Ubound
 		    dim oLine as RecordStorageClass = aroLines(iLineIndex)
-		    ariCursorLocation(iCursorUbound) = iLineIndex
-		    
 		    oLine.PopulatePrintData(dictFieldNames, me)
 		    
-		    dim iLeftOffset as integer = (oLine.arsGroupStructure.Ubound + 1) * 10
-		    dim gClip as Graphics
-		    dim iClipWidth, iClipHeight as integer
-		    iClipWidth = g.Width
-		    iClipHeight = (iTextHeight + iLineBuffer + iLineBuffer) * oLine.oPrintData.StringLines
-		    
-		    gClip = g.Clip( 0, yIndex, iClipWidth, iClipHeight )
-		    gClip.TextSize = FontSize
-		    
-		    
-		    oLine.oPrintData.Draw(gClip, iLeftOffset)
-		    
-		    
-		    // Check if this Record has children
-		    If oLine.aroChildren.Ubound <> -1 Then
-		      yIndex = yIndex + RecipricateThroughLI(g, oLine.aroChildren, yIndex + iClipHeight)
-		    else
-		      yIndex = yIndex + iClipHeight
+		    If oCurs.OnLast Then
+		      // Draw this line
+		      
+		      // Create graphics clip
+		      dim gClip as Graphics = CreateClip(g, oLine, yIndex)
+		      gClip.TextSize = FontSize
+		      
+		      // Check if we are going to go past the edge of the page
+		      If Not HaveSpaceForLine(g, gClip, yIndex) Then
+		        Exit
+		      End If
+		      
+		      // Draw the line
+		      DrawLine(gClip, oLine)
+		      
+		      yIndex = yIndex + gClip.Height
+		      
+		      // Check if this line has children
+		      If oLine.aroChildren.Ubound <> -1 Then
+		        oCurs.DrillIn
+		        yIndex = RecipricateThroughLI(g, oLine.aroChildren, yIndex)
+		      End If
+		      
+		      
+		    Else
+		      // Relaunch this method with the children of this line
+		      oCurs.MoveIn
+		      yIndex = RecipricateThroughLI(g, oLine.aroChildren, yIndex)
 		    End If
-		    
+		    oCurs.IncreaseCurrentDepth
 		  Next
 		  
-		  ariCursorLocation.Remove(iCursorUbound)
-		  If ariCursorLocation.Ubound = -1 Then
-		    bComplete = True
+		  // Check if we have made it through all of the lines
+		  If oCurs.GetCurrentIndex >= aroLines.Ubound Then
+		    // all lines have been completed for this level let us step out
+		    oCurs.DrillOut
+		    If oCurs.CursorRemoved Then
+		      bComplete = True
+		    End If
 		  End If
 		  
 		  Return yIndex
+		  
+		  
 		End Function
 	#tag EndMethod
 
@@ -132,15 +187,19 @@ Inherits BaseStoryObject
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		bComplete As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
 		dictFieldNames As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		FontSize As Integer = 9
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		iLineBuffer As Integer = 1
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		oCurs As ArrayCursorClass
 	#tag EndProperty
 
 
@@ -175,6 +234,12 @@ Inherits BaseStoryObject
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="MultiPage"
+			Group="Behavior"
+			InitialValue="False"
+			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Name"

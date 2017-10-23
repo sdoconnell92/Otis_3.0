@@ -121,6 +121,7 @@ Class=BorderClass;PrintingObjects/BaseClasses/BorderClass.xojo_code;&h75C287FF;&
 MultiImage=img0old;PrintingObjects/img0old.xojo_image;&h64945FFF;&h8FD5FFF;false
 Window=winPrintPreview;PrintingObjects/winPrintPreview.xojo_window;&h73EED7FF;&h8FD5FFF;false
 Class=printData;Logic/CustomClasses/printData.xojo_code;&h347D7FF;&h1DE9FFFF;false
+Class=ArrayCursorClass;PrintingObjects/ArrayCursorClass.xojo_code;&h69D277FF;&h8FD5FFF;false
 AppMenuBar=MainMenuBar
 MajorVersion=1
 MinorVersion=0

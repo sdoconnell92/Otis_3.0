@@ -88,8 +88,8 @@ Protected Class printData
 		  Next
 		  
 		  dim i1 as double
-		  i1 = maxHeight / g.TextAscent
-		  Return Ceil(i1)
+		  i1 = maxHeight / g.StringHeight("Tg", 50)
+		  Return Floor(i1)
 		End Function
 	#tag EndMethod
 

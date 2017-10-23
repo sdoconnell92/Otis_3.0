@@ -9,7 +9,7 @@ Begin Window winPrintPreview
    FullScreen      =   False
    FullScreenButton=   False
    HasBackColor    =   False
-   Height          =   688
+   Height          =   718
    ImplicitInstance=   False
    LiveResize      =   True
    MacProcID       =   0
@@ -26,37 +26,6 @@ Begin Window winPrintPreview
    Title           =   "Untitled"
    Visible         =   False
    Width           =   776
-   Begin PushButton PushButton1
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "OK"
-      Default         =   True
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   0
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   0
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   0
-      Underline       =   False
-      Visible         =   True
-      Width           =   80
-   End
    Begin Canvas Canvas1
       AcceptFocus     =   False
       AcceptTabs      =   False
@@ -85,6 +54,68 @@ Begin Window winPrintPreview
       Visible         =   True
       Width           =   776
    End
+   Begin PushButton pbBack
+      AutoDeactivate  =   True
+      Bold            =   False
+      ButtonStyle     =   "0"
+      Cancel          =   False
+      Caption         =   "<"
+      Default         =   False
+      Enabled         =   True
+      Height          =   22
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   355
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   2
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   692
+      Underline       =   False
+      Visible         =   True
+      Width           =   32
+   End
+   Begin PushButton pbForward
+      AutoDeactivate  =   True
+      Bold            =   False
+      ButtonStyle     =   "0"
+      Cancel          =   False
+      Caption         =   ">"
+      Default         =   False
+      Enabled         =   True
+      Height          =   22
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   388
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      Scope           =   0
+      TabIndex        =   3
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   692
+      Underline       =   False
+      Visible         =   True
+      Width           =   32
+   End
 End
 #tag EndWindow
 
@@ -96,25 +127,63 @@ End
 	#tag EndEvent
 
 
-#tag EndWindowCode
-
-#tag Events PushButton1
-	#tag Event
-		Sub Action()
-		  dim oEstimate as new EstimateDocument
-		  dim p as New Picture(593, 773)
-		  dim iWidth,iHeight as integer
+	#tag Method, Flags = &h0
+		Sub CyclePics(ForBack as integer)
+		  dim picIndex as integer
 		  
+		  If iCurrentPic + ForBack > arp.Ubound Then
+		    picIndex = 0
+		  ElseIf iCurrentPic + ForBack < 0 Then
+		    picIndex = arp.Ubound
+		  Else
+		    picIndex = iCurrentPic + ForBack
+		  End If
 		  
-		  oEstimate.Go(p)
+		  dim p as Picture = arp(picIndex)
+		  iCurrentPic = picIndex
 		  
-		  dim p1 as New Picture(Canvas1.Width,Canvas1.Height)
+		  dim iWidth, iHeight as integer
+		  dim p1 as New Picture(Canvas1.Width, Canvas1.Height)
 		  dim iRatio as double = p1.Height / p.Height
 		  iWidth = Floor( p.Width * iRatio )
 		  iHeight = p1.Height
 		  p1.Graphics.DrawPicture(p, 0,0,iWidth,iHeight, 0,0,p.Width, p.Height)
 		  
 		  Canvas1.Backdrop = p1
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub NewArray(arppar() as Picture)
+		  arp() = arppar()
+		  iCurrentPic = 0
+		  CyclePics(0)
+		End Sub
+	#tag EndMethod
+
+
+	#tag Property, Flags = &h0
+		arp() As Picture
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		iCurrentPic As Integer = -1
+	#tag EndProperty
+
+
+#tag EndWindowCode
+
+#tag Events pbBack
+	#tag Event
+		Sub Action()
+		  CyclePics(-1)
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events pbForward
+	#tag Event
+		Sub Action()
+		  CyclePics(1)
 		End Sub
 	#tag EndEvent
 #tag EndEvents

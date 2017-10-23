@@ -1453,19 +1453,12 @@ End
 		  
 		  dim winPP as New winPrintPreview
 		  winPP.Canvas1.Backdrop = New Picture(winPP.Canvas1.Width, winPP.Canvas1.Height)
-		  dim p as New Picture(593, 773)
-		  dim iWidth,iHeight as integer
+		  dim arp() as Picture
 		  
 		  
-		  oEst.Go(p)
+		  arp = oEst.PrintPreview
 		  
-		  dim p1 as New Picture(winPP.Canvas1.Width,winPP.Canvas1.Height)
-		  dim iRatio as double = p1.Height / p.Height
-		  iWidth = Floor( p.Width * iRatio )
-		  iHeight = p1.Height
-		  p1.Graphics.DrawPicture(p, 0,0,iWidth,iHeight, 0,0,p.Width, p.Height)
-		  
-		  winPP.Canvas1.Backdrop = p1
+		  winPP.NewArray(arp)
 		  
 		  
 		  winPP.Visible = True

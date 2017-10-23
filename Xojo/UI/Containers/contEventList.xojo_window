@@ -1048,52 +1048,10 @@ End
 		  
 		  sSearchValue = scSearchField.Text
 		  
-		  If len(sSearchValue) <> 0 Then
-		    ' there is something to be searched
-		    
-		    // Check if there used is a previous search value
-		    If len(LastSearchValue) = 0 Then
-		      ' Nothing was last searched
-		      
-		      // Get UIState
-		      dim oUIState as lbUIState
-		      oUIState = lb1.GetUIState
-		      LastUIState = oUIState
-		      
-		    End If
-		    
-		  End If
 		  
 		  // Populate listbox with filterd inventory
 		  methLoadMe()
 		  
-		  
-		  If len(sSearchValue) = 0 Then
-		    ' There is nothing in the search field
-		    
-		    If len(LastSearchValue) <> 0 Then
-		      ' there is a previous search value
-		      
-		      // Close all the folders by passing a nil array
-		      dim nilarray() as lbRowTag
-		      lb1.reopenFolders(nilarray)
-		      
-		      If LastUIState <> Nil Then
-		        lb1.ResetUIState(LastUIState)
-		        LastUIState = Nil 
-		      Else
-		        
-		      End If
-		      
-		    End If
-		    
-		  Else
-		    '  there is something in the search field
-		    
-		    // Open all the top level folders
-		    methExpandAllRows(True)
-		    
-		  End If
 		  
 		  
 		  

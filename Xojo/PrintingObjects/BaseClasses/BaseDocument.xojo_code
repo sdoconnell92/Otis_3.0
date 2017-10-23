@@ -1,8 +1,20 @@
 #tag Class
 Protected Class BaseDocument
 	#tag Method, Flags = &h0
-		Sub Go(p as Picture)
-		  dim Fullg as Graphics = p.Graphics
+		Function AllDone() As Boolean
+		  
+		  For Each oStory as BaseStoryObject in aroStory()
+		    if not oStory.bComplete Then
+		      Return False
+		    end if
+		  Next
+		  Return True
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Go(Fullg as Graphics)
+		  dim bDone as Boolean = False
 		  
 		  // reduce the area we are working with by the margins
 		  dim g as Graphics
@@ -10,7 +22,14 @@ Protected Class BaseDocument
 		  
 		  dim x, y as integer
 		  
-		  For Each oStory as BaseStoryObject In aroStory()
+		  For i1 as integer = 0 to aroStory.Ubound
+		    dim oStory as BaseStoryObject = aroStory(i1)
+		    
+		    if oStory.bComplete then
+		      if not oStory.bRepeatEveryPage then
+		        Continue
+		      end if
+		    end if
 		    
 		    dim iClipWidth, iClipHeight as integer
 		    If oStory.Height = -1 Then
@@ -49,6 +68,27 @@ Protected Class BaseDocument
 		    End If
 		  End If
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function PrintPreview() As Picture()
+		  dim arp() as Picture
+		  
+		  
+		  While not bPrintDone
+		    dim p as New Picture(593, 773)
+		    dim iWidth,iHeight as integer
+		    
+		    Go(p.Graphics)
+		    
+		    arp.Append(p)
+		    
+		    if AllDone Then bPrintDone = True
+		    
+		  Wend
+		  
+		  Return arp()
+		End Function
 	#tag EndMethod
 
 
