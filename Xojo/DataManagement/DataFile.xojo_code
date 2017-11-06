@@ -53,6 +53,16 @@ Protected Module DataFile
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Copy(Extends arsSource() as String) As String()
+		  dim retS() as string
+		  For Each s as string In arsSource()
+		    retS.Append(s)
+		  Next
+		  Return retS()
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Sub CreateNumbersForOfflineEIPLs()
 		  dim oEIPLS() as DataFile.tbl_eipl
@@ -252,7 +262,7 @@ Protected Module DataFile
 	#tag Method, Flags = &h1
 		Protected Function GroupRecords(aroStors() as RecordStorageClass, sGroupBy as String) As RecordStorageClass()
 		  dim oMaster() as RecordStorageClass
-		  
+		  Break
 		  // Check if there is a specified field to group by
 		  If sGroupBy = "" Then
 		    // Exit the method since we have nothing to group by
@@ -262,11 +272,14 @@ Protected Module DataFile
 		  dim arsGroupFields() as String = sGroupBy.Split(",")
 		  For Each oRecordStor as RecordStorageClass In aroStors()
 		    
+		    dim iLev as integer
+		    
 		    // Get the fields and values out of the record
 		    dim jsFieldValues as JSONItem = oRecordStor.oTableRecord.GetMyFieldValues(True)
 		    dim arsGroupStructure() as String
 		    
 		    dim aroCurrent() as RecordStorageClass = oMaster()
+		    dim arsGroupStIndexofAdded as integer = - 1
 		    // Loop through the list of fields we are grouping by
 		    For i1 as integer = 0 To arsGroupFields.Ubound
 		      dim bLastField as Boolean
@@ -282,20 +295,26 @@ Protected Module DataFile
 		      End If
 		      
 		      dim sFieldValue as String = jsFieldValues.Value(sFieldName).StringValue
+		      
+		      If i1 <> arsGroupStIndexofAdded Then
+		        // Add this group to the group structure
+		        arsGroupStructure.Append(sFieldValue)
+		        arsGroupStIndexofAdded = i1
+		      End If
+		      
+		      
 		      // Check if any of the Storage classes have the same value as the current record
 		      dim iMatchIndex as Integer = aroCurrent.IndexOfFolderName(sFieldValue)
 		      If iMatchIndex <> -1 Then
 		        // There is a match for this field value 
-		        
-		        // Add this group to the group structure
-		        arsGroupStructure.Append(sFieldValue)
 		        
 		        // Check if we are on the last grouping field or if we need to go deeper
 		        If bLastField Then
 		          ' we are on the last field
 		          // Add the current record to the children of this category
 		          oRecordStor.oParentStor = aroCurrent(iMatchIndex)
-		          oRecordStor.arsGroupStructure = arsGroupStructure
+		          oRecordStor.arsGroupStructure = arsGroupStructure.Copy
+		          oRecordStor.iLevel = iLev
 		          aroCurrent(iMatchIndex).aroChildren.Append(oRecordStor)
 		          Exit
 		          
@@ -304,6 +323,7 @@ Protected Module DataFile
 		          
 		          // Set aroCurrent to the child array of this storage class
 		          aroCurrent() = aroCurrent(iMatchIndex).aroChildren
+		          iLev = iLev + 1
 		          Continue
 		        End If
 		        
@@ -313,7 +333,9 @@ Protected Module DataFile
 		        // Create a New stor class for this field value
 		        dim oNewStor as New RecordStorageClass
 		        oNewStor.sFolderName = sFieldValue
+		        oNewStor.arsGroupStructure = arsGroupStructure.Copy
 		        oNewStor.isFolder = True
+		        oNewStor.iLevel = iLev
 		        aroCurrent.Append(oNewStor)
 		        
 		        // Reset the group field index back one so we can match the field value to this new class in the next loop

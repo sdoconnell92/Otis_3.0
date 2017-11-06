@@ -2,8 +2,8 @@
 Protected Module EICalculations
 	#tag Method, Flags = &h0
 		Function CalculateGroup(aroLIStor() as RecordStorageClass, bApplyEIPLDiscount as Boolean = False) As TotalsClass
-		  dim oRetTots as TotalsClass
-		  
+		  dim oRetTots as New TotalsClass
+		  Break
 		  For Each oLine as RecordStorageClass In aroLIStor()
 		    dim oCurrentTots as TotalsClass = CalculateSingleLine(oLine)
 		    
@@ -33,7 +33,11 @@ Protected Module EICalculations
 		        End If
 		      Next
 		      
-		      oRetTots.b_PostDiscount = oRetTots.a_SubTotal * iDiscountPercent
+		      If iDiscountPercent <> 0 Then
+		        oRetTots.b_PostDiscount = oRetTots.a_SubTotal * iDiscountPercent
+		      Else
+		        oRetTots.b_PostDiscount = oRetTots.a_SubTotal
+		      End If
 		      oRetTots.b_PostDiscount = oRetTots.b_PostDiscount - iDiscountAmount
 		      
 		      oRetTots.LocalDiscountSum = oRetTots.a_SubTotal - oRetTots.b_PostDiscount
@@ -79,6 +83,8 @@ Protected Module EICalculations
 		    // Get the discounts for this group
 		    dim aroDiscountRecords() as DataFile.tbl_group_discounts
 		    aroDiscountRecords() = DataFile.tbl_group_discounts.List( "fkeipl = '" + sEIPLuuid + "' And group_name = '" + Join(oLIStor.arsGroupStructure,".") + "'" )
+		    
+		    oRetTotals.b_PostDiscount = oRetTotals.a_SubTotal
 		    
 		    For Each oDiscount as DataFile.tbl_group_discounts In aroDiscountRecords()
 		      
@@ -190,6 +196,7 @@ Protected Module EICalculations
 		      iTaxSum = round( iTaxSum*100)/100
 		      
 		      // Fill in values in the return classssss
+		      oRetTotals.PreAllDisc = iSubTotal
 		      oRetTotals.a_SubTotal = iSubTotal
 		      oRetTotals.b_PostDiscount = iPostDiscount
 		      oRetTotals.c_Total = iTotal

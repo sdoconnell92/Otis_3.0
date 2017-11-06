@@ -9,6 +9,16 @@ Protected Class RecordStorageClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function FindDepth() As integer
+		  dim i as integer = 1
+		  If me.oParentStor <> Nil Then
+		    i = i + me.oParentStor.FindDepth
+		  End If
+		  Return i
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function FolderLevel() As Integer
 		  
 		  // Check to see if we have a parent
@@ -309,6 +319,10 @@ Protected Class RecordStorageClass
 
 	#tag Property, Flags = &h0
 		arsGroupStructure() As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		iLevel As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

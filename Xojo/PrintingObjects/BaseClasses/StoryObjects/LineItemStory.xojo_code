@@ -6,7 +6,7 @@ Inherits BaseStoryObject
 		  Break
 		  For Each oLine as RecordStorageClass In aroLineItems()
 		    
-		    dim retTotals as TotalsClass = CalculateGroup(oLine.aroChildren)
+		    dim retTotals as TotalsClass = CalculateSingleLine(oLine)
 		    
 		    dim oTotalLine1 as New RecordStorageClass
 		    oTotalLine1.oParentStor = oLine
@@ -18,7 +18,7 @@ Inherits BaseStoryObject
 		    oTotalLine2.oParentStor = oLine
 		    oTotalLine2.oPrintData.oParentStory = me
 		    oTotalLine2.isTotal = True
-		    oTotalLine2.oPrintData.arsColumnValues = Array("Total", str(retTotals.LocalDiscountSum, "\$###,###,###,###.00"))
+		    oTotalLine2.oPrintData.arsColumnValues = Array("Discount", str(retTotals.LocalDiscountSum, "\$###,###,###,###.00"))
 		    
 		    dim oTotalLine3 as New RecordStorageClass
 		    oTotalLine3.oParentStor = oLine
@@ -30,6 +30,27 @@ Inherits BaseStoryObject
 		    oLine.aroChildren.Append(oTotalLine2)
 		    oLine.aroChildren.Append(oTotalLine3)
 		  Next
+		  
+		  dim retTotals as TotalsClass = CalculateGroup(aroLineItems, True)
+		  
+		  dim oTotalLine1 as New RecordStorageClass
+		  oTotalLine1.oPrintData.oParentStory = me
+		  oTotalLine1.isTotal = True
+		  oTotalLine1.oPrintData.arsColumnValues = Array("SubTotal", str(retTotals.PreAllDisc, "\$###,###,###,###.00"))
+		  
+		  dim oTotalLine2 as New RecordStorageClass
+		  oTotalLine2.oPrintData.oParentStory = me
+		  oTotalLine2.isTotal = True
+		  oTotalLine2.oPrintData.arsColumnValues = Array("Discount", str(retTotals.RunningDiscountSum, "\$###,###,###,###.00"))
+		  
+		  dim oTotalLine3 as New RecordStorageClass
+		  oTotalLine3.oPrintData.oParentStory = me
+		  oTotalLine3.isTotal = True
+		  oTotalLine3.oPrintData.arsColumnValues = Array("Grand Total", str(retTotals.c_Total, "\$###,###,###,###.00"))
+		  
+		  aroLineItems.Append(oTotalLine1)
+		  aroLineItems.Append(oTotalLine2)
+		  aroLineItems.Append(oTotalLine3)
 		End Sub
 	#tag EndMethod
 
@@ -107,17 +128,24 @@ Inherits BaseStoryObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function iTotalCenter(g as Graphics) As Integer
+		Function iTotalCenter(g as Graphics, bFinalTotals as Boolean = False) As Integer
 		  dim iRet as integer
+		  dim itc as string
 		  
-		  If kiTotalCenter.InStr("%") <> 0  Then
+		  If bFinalTotals Then
+		    itc = kiMasterTotalCenter
+		  Else
+		    itc = kiTotalCenter
+		  End If
+		  
+		  If itc.InStr("%") <> 0  Then
 		    // THere is a % in the string
 		    
-		    dim i1 as double = val( Methods.StripNonDigitsDecimals(kiTotalCenter) ) / 100
+		    dim i1 as double = val( Methods.StripNonDigitsDecimals(itc) ) / 100
 		    iRet = i1 * g.Width
 		    
 		  Else
-		    iRet = val( Methods.StripNonDigitsDecimals(kiTotalCenter) )
+		    iRet = val( Methods.StripNonDigitsDecimals(itc) )
 		  End If
 		  
 		  Return iRet
@@ -267,7 +295,7 @@ Inherits BaseStoryObject
 
 
 	#tag Constant, Name = kiMasterTotalCenter, Type = String, Dynamic = False, Default = \"", Scope = Public
-		#Tag Instance, Platform = Any, Language = Default, Definition  = \"70%"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"65%"
 	#tag EndConstant
 
 	#tag Constant, Name = kiTotalCenter, Type = String, Dynamic = False, Default = \"", Scope = Public

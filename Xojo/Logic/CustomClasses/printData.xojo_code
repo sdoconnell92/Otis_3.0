@@ -3,7 +3,7 @@ Protected Class printData
 	#tag Method, Flags = &h0
 		Function DetermineLeftOffset() As Integer
 		  // Determine the left offset
-		  dim iLeftOffset as integer = (oParent.arsGroupStructure.Ubound + 1) * 10
+		  dim iLeftOffset as integer = (oParent.FindDepth - 1) * 10
 		  Return iLeftOffset
 		End Function
 	#tag EndMethod
@@ -23,7 +23,12 @@ Protected Class printData
 		    dim iCenterBuffer as integer = 4
 		    
 		    // Get the center x mark of the totals section
-		    dim iTC as integer = oParentStory.iTotalCenter(g) + DetermineLeftOffset
+		    dim iTC as integer
+		    If oParent.oParentStor = Nil Then
+		      itc = oParentStory.iTotalCenter(g, True)
+		    Else
+		      itc = oParentStory.iTotalCenter(g) + DetermineLeftOffset
+		    End If
 		    
 		    For i1 as integer = 0 To 1
 		      dim tuple() as string = arsColumnValues

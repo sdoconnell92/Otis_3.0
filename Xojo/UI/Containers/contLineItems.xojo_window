@@ -1182,7 +1182,7 @@ End
 		    End If
 		    
 		  Case "Calculate Group Total"
-		    
+		    Break
 		    dim oRowTag as RecordStorageClass
 		    oRowTag = lbItems.RowTag(lbItems.ListIndex)
 		    

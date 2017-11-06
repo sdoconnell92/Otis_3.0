@@ -10,6 +10,7 @@ Protected Class TotalsClass
 
 	#tag Method, Flags = &h0
 		Sub AddTotalsSmart(oTots as TotalsClass)
+		  PreAllDisc = PreAllDisc + oTots.PreAllDisc
 		  a_SubTotal = a_SubTotal + oTots.b_PostDiscount
 		  TaxSum = TaxSum + oTots.TaxSum
 		  RunningDiscountSum = RunningDiscountSum + oTots.RunningDiscountSum
@@ -20,6 +21,7 @@ Protected Class TotalsClass
 
 	#tag Method, Flags = &h0
 		Sub AddTotalsStraight(oTots as TotalsClass)
+		  PreAllDisc = PreAllDisc + oTots.PreAllDisc
 		  a_SubTotal = a_SubTotal + oTots.a_SubTotal
 		  b_PostDiscount = b_PostDiscount + oTots.b_PostDiscount
 		  c_Total = c_Total + oTots.c_Total
@@ -57,6 +59,10 @@ Protected Class TotalsClass
 
 	#tag Property, Flags = &h0
 		LocalDiscountSum As Currency
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PreAllDisc As Currency
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
