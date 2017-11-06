@@ -118,10 +118,9 @@ Protected Class RecordStorageClass
 		        // Check if this is a calculated field
 		        Select Case sFieldName
 		        Case "CalcTotal"
-		          dim d as Dictionary = modPriceCalculations.CalculateLineItemPrices(me, GetEIPLRecord)
+		          dim retTots as TotalsClass = CalculateSingleLine(me)
 		          dim sColumnValue as String
-		          sColumnValue = d.Value("SubTotal")
-		          sColumnValue = str( sColumnValue, "\$#,###,###,###.00" )
+		          sColumnValue = str( retTots.a_SubTotal, "\$#,###,###,###.00" )
 		          
 		          oRowData.arsColumnValues.Append( sColumnValue )
 		        End Select
@@ -216,10 +215,9 @@ Protected Class RecordStorageClass
 		        // Check if this is a calculated field
 		        Select Case sFieldName
 		        Case "CalcTotal"
-		          dim d as Dictionary = modPriceCalculations.CalculateLineItemPrices(me, GetEIPLRecord)
+		          dim retTots as TotalsClass = CalculateSingleLine(me)
 		          dim sColumnValue as String
-		          sColumnValue = d.Value("SubTotal")
-		          sColumnValue = str( sColumnValue, "\$#,###,###,###.00" )
+		          sColumnValue = str( retTots.a_SubTotal, "\$#,###,###,###.00" )
 		          
 		          oPrintData.arsColumnValues.Append( sColumnValue )
 		        End Select
@@ -387,6 +385,11 @@ Protected Class RecordStorageClass
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="isRecord"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="isTotal"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty

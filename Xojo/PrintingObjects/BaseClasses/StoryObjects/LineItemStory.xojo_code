@@ -5,27 +5,26 @@ Inherits BaseStoryObject
 		Sub AddTotals()
 		  Break
 		  For Each oLine as RecordStorageClass In aroLineItems()
-		    dim oMaster as New RecordStorageClass
-		    oMaster.aroChildren = aroLineItems
-		    dim dictTotals as Dictionary = modPriceCalculations.CalculateGroupofGroupTotal(oMaster, oParentEIPLDoc.oEIPL, oLine.sFolderName)
+		    
+		    dim retTotals as TotalsClass = CalculateGroup(oLine.aroChildren)
 		    
 		    dim oTotalLine1 as New RecordStorageClass
 		    oTotalLine1.oParentStor = oLine
 		    oTotalLine1.oPrintData.oParentStory = me
 		    oTotalLine1.isTotal = True
-		    oTotalLine1.oPrintData.arsColumnValues = Array("SubTotal", str(dictTotals.Value("PreDiscount"), "\$###,###,###,###.00"))
+		    oTotalLine1.oPrintData.arsColumnValues = Array("SubTotal", str(retTotals.a_SubTotal, "\$###,###,###,###.00"))
 		    
 		    dim oTotalLine2 as New RecordStorageClass
 		    oTotalLine2.oParentStor = oLine
 		    oTotalLine2.oPrintData.oParentStory = me
 		    oTotalLine2.isTotal = True
-		    oTotalLine2.oPrintData.arsColumnValues = Array("Total", str(dictTotals.Value("DiscountSum"), "\$###,###,###,###.00"))
+		    oTotalLine2.oPrintData.arsColumnValues = Array("Total", str(retTotals.LocalDiscountSum, "\$###,###,###,###.00"))
 		    
 		    dim oTotalLine3 as New RecordStorageClass
 		    oTotalLine3.oParentStor = oLine
 		    oTotalLine3.oPrintData.oParentStory = me
 		    oTotalLine3.isTotal = True
-		    oTotalLine3.oPrintData.arsColumnValues = Array("Total", str(dictTotals.Value("Total"), "\$###,###,###,###.00"))
+		    oTotalLine3.oPrintData.arsColumnValues = Array("Total", str(retTotals.c_Total, "\$###,###,###,###.00"))
 		    
 		    oLine.aroChildren.Append(oTotalLine1)
 		    oLine.aroChildren.Append(oTotalLine2)

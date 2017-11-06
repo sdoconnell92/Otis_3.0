@@ -31,12 +31,13 @@ Protected Class TotalsClass
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub Constructor()
+	#tag Method, Flags = &h0
+		Sub Constructor()
 		  a_SubTotal = 0
 		  b_PostDiscount = 0
 		  c_Total = 0
-		  DiscountSum = 0
+		  localDiscountSum = 0
+		  RunningDiscountSum = 0
 		  TaxSum = 0
 		End Sub
 	#tag EndMethod
