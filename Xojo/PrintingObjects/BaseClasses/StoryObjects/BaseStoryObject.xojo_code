@@ -45,6 +45,11 @@ Protected Class BaseStoryObject
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="bRepeatEveryPage"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Height"
 			Group="Behavior"
 			InitialValue="-1"

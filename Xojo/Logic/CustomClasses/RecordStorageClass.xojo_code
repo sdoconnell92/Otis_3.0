@@ -286,7 +286,9 @@ Protected Class RecordStorageClass
 		Function StorType() As String
 		  dim sRet as string
 		  
-		  if isFolder and not isChild and not isLinker and not isRecord Then
+		  If isTotal Then
+		    sRet = "Total"
+		  Elseif isFolder and not isChild and not isLinker and not isRecord Then
 		    sRet = "GroupFolder"
 		  ElseIf not isChild and not isLinker and isRecord Then
 		    sRet = "GrandParent"
@@ -325,6 +327,10 @@ Protected Class RecordStorageClass
 
 	#tag Property, Flags = &h0
 		isRecord As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		isTotal As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

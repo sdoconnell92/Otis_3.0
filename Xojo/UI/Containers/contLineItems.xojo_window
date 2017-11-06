@@ -39,6 +39,7 @@ Begin ContainerControl contLineItems
       HasHeading      =   True
       Height          =   388
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   3
       LockBottom      =   True
@@ -233,6 +234,7 @@ Begin ContainerControl contLineItems
       Selectable      =   False
       TabIndex        =   13
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "EIPL Total:"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -267,6 +269,7 @@ Begin ContainerControl contLineItems
       Selectable      =   False
       TabIndex        =   14
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "SubTotal: "
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -301,6 +304,7 @@ Begin ContainerControl contLineItems
       Selectable      =   False
       TabIndex        =   15
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Disc Sum: "
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -335,6 +339,7 @@ Begin ContainerControl contLineItems
       Selectable      =   False
       TabIndex        =   16
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Tax:"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -369,6 +374,7 @@ Begin ContainerControl contLineItems
       Selectable      =   False
       TabIndex        =   17
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Balance"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -856,11 +862,13 @@ End
 		  
 		  For Each oStor as RecordStorageClass In aroRecordStor()
 		    
-		    lb.AddRow("")
-		    dim iLastIndex as integer = lb.LastIndex
-		    
-		    // Populate the row
-		    methPopulateRow( iLastIndex, oStor )
+		    If oStor.StorType <> "Total" Then
+		      lb.AddRow("")
+		      dim iLastIndex as integer = lb.LastIndex
+		      
+		      // Populate the row
+		      methPopulateRow( iLastIndex, oStor )
+		    End If
 		    
 		  Next
 		End Sub

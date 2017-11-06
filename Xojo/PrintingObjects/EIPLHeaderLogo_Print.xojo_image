@@ -1,0 +1,46 @@
+#tag MultiImage
+Image EIPLHeaderLogo_Print
+	#tag ImageRepresentation
+		SaveInfo = APHRcwECAQAAAABIQzpcVXNlcnNcc2VhblxXb3J0aFNhdmluZ1xyZXBvc1xPdGlzXzMuMFxJbWFnZXNcRUlQTEhlYWRlckxvZ29fUHJpbnQucG5nAwAAAAABAAQAAAAAAQAAAAAAAAA=
+		FullPath = C:\Users\sean\WorthSaving\repos\Otis_3.0\Images\EIPLHeaderLogo_Print.png
+		PartialPath = ..\Images\EIPLHeaderLogo_Print.png
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = -1.00
+			Orientation = Any
+			Platform = 15
+			PPI = 72
+			VSize = -1.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+	#tag ImageRepresentation
+		SaveInfo = APHRcwECAQAAAABIQzpcVXNlcnNcc2VhblxXb3J0aFNhdmluZ1xyZXBvc1xPdGlzXzMuMFxJbWFnZXNcRUlQTEhlYWRlckxvZ29fUHJpbnQucG5nAwAAAAABAAQAAAAAAQAAAAAAAAA=
+		FullPath = C:\Users\sean\WorthSaving\repos\Otis_3.0\Images\EIPLHeaderLogo_Print.png
+		PartialPath = ..\Images\EIPLHeaderLogo_Print.png
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = -1.00
+			Orientation = Any
+			Platform = 15
+			PPI = 144
+			VSize = -1.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+	#tag ImageRepresentation
+		SaveInfo = APHRcwECAQAAAABIQzpcVXNlcnNcc2VhblxXb3J0aFNhdmluZ1xyZXBvc1xPdGlzXzMuMFxJbWFnZXNcRUlQTEhlYWRlckxvZ29fUHJpbnQucG5nAwAAAAABAAQAAAAAAQAAAAAAAAA=
+		FullPath = C:\Users\sean\WorthSaving\repos\Otis_3.0\Images\EIPLHeaderLogo_Print.png
+		PartialPath = ..\Images\EIPLHeaderLogo_Print.png
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = -1.00
+			Orientation = Any
+			Platform = 15
+			PPI = 216
+			VSize = -1.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+End Image
+#tag EndMultiImage

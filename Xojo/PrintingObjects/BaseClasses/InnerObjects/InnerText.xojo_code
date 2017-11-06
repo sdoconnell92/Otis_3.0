@@ -342,10 +342,27 @@ Inherits InnerObjectBase
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="Height"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="JustificationHor"
+			Group="Behavior"
+			InitialValue="-1"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="JustificationVert"
+			Group="Behavior"
+			InitialValue="-1"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -379,6 +396,23 @@ Inherits InnerObjectBase
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Width"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="xPosition"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="yPosition"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

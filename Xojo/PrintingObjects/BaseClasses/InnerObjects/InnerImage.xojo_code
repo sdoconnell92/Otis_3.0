@@ -88,11 +88,12 @@ Inherits InnerObjectBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub HandleDraw(g as Graphics)
+		Sub HandleDraw(gdog as Graphics)
 		  dim iWidth,iHeight, iLeft, iTop as integer
 		  
+		  
 		  // Determine the image size
-		  dim iRet() as Integer = DetermineImageSize(g)
+		  dim iRet() as Integer = DetermineImageSize(gdog)
 		  iWidth = iRet(0)
 		  iHeight = iRet(1)
 		  
@@ -100,9 +101,12 @@ Inherits InnerObjectBase
 		  iLeft = iRet(0)
 		  iTop = iRet(1)
 		  
-		  g.DrawPicture( Content, _
-		  iLeft, iTop, iWidth, iHeight, _
-		  0, 0, Content.Width, Content.Height )
+		  //gdog.DrawString("jsojeondfonsodksdnfokansdofineoinslkdnflinslinselinflksnlienlskndlinsflinslinelknslkndlineflinsef", 0, gdog.TextAscent)
+		  //gdog.DrawPicture(EIPLHeaderLogo_Print_v20,5,5, iWidth, iHeight, 0,0,EIPLHeaderLogo_Print_v20.Width, EIPLHeaderLogo_Print_v20.Height) 
+		  gdog.DrawPicture( EIPLHeaderLogo_Print_v20, 0, 0 )
+		  // g.DrawPicture( Content, _
+		  // iLeft, iTop, iWidth, iHeight, _
+		  // 0, 0, Content.Width, Content.Height )
 		End Sub
 	#tag EndMethod
 
@@ -123,10 +127,27 @@ Inherits InnerObjectBase
 			Type="Picture"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Height"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="JustificationHor"
+			Group="Behavior"
+			InitialValue="-1"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="JustificationVert"
+			Group="Behavior"
+			InitialValue="-1"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -160,6 +181,23 @@ Inherits InnerObjectBase
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Width"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="xPosition"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="yPosition"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

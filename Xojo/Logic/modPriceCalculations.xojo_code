@@ -443,7 +443,6 @@ Protected Module modPriceCalculations
 		  iPrice = val( Methods.StripNonDigitsDecimals( oLIRecord.sli_price ) )
 		  iQuantity = val( Methods.StripNonDigitsDecimals( oLIRecord.sli_quantity ) )
 		  iTime = val( Methods.StripNonDigitsDecimals(  oLIRecord.sli_time ) )
-		  'iDiscount = val( Methods.StripNonDigitsDecimals( oLIRecord.sli_discount ) )
 		  iTax = val( Methods.StripNonDigitsDecimals( oEIRecord.seipl_tax_rate ) )
 		  
 		  

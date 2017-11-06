@@ -277,6 +277,10 @@ Inherits DataFile.ActiveRecordBase
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		buse_children_total As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		sfkeipl As String
 	#tag EndProperty
 

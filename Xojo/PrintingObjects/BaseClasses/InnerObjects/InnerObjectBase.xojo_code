@@ -245,7 +245,6 @@ Protected Class InnerObjectBase
 	#tag Property, Flags = &h0
 		#tag Note
 			As percent or exact
-			
 		#tag EndNote
 		xPosition As String
 	#tag EndProperty
@@ -256,7 +255,7 @@ Protected Class InnerObjectBase
 
 	#tag Property, Flags = &h0
 		#tag Note
-			 or exact
+			or exact
 			
 			As Percent
 		#tag EndNote

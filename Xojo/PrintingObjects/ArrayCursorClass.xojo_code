@@ -32,6 +32,12 @@ Protected Class ArrayCursorClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub DrillToTotal()
+		  ariCursor(iCursorIndex) = -1
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetCurrentIndex() As Integer
 		  Return ariCursor(iCursorIndex)
 		End Function

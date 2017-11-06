@@ -1378,15 +1378,16 @@ End
 #tag Events pbPrintPreview
 	#tag Event
 		Sub Action()
-		  dim oEst as New EstimateDocument
+		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oCurrentRecord)
+		  dim oEst as New EstimateDocument(oStor)
 		  
 		  // Create the Header
 		  dim oHeader as New BaseStoryObject
-		  oHeader.Height = 80
+		  oHeader.Height = 100
 		  
 		  // Create Logo for header
 		  dim oLogoImage as New InnerImage(oEst)
-		  oLogoImage.Content = img0old
+		  oLogoImage.Content = EIPLHeaderLogo_Print_v20
 		  
 		  oHeader.aroInnerObjects.Append(oLogoImage)
 		  
@@ -1446,7 +1447,7 @@ End
 		  
 		  oEst.aroStory.Append(oSmallBoxStory2)
 		  
-		  dim oLIStory as New LineItemStory(instLineItemList.aroStorClass(), instLineItemList.dictFieldNames, instLineItemList.arsHeaders)
+		  dim oLIStory as New LineItemStory(instLineItemList.aroStorClass(), instLineItemList.dictFieldNames, instLineItemList.arsHeaders, oEst)
 		  
 		  
 		  oEst.aroStory.Append(oLIStory)
@@ -1464,7 +1465,7 @@ End
 		  winPP.Visible = True
 		  
 		  
-		  
+		  // oEst.Print
 		  
 		  
 		  

@@ -2,11 +2,47 @@
 Protected Class LineItemStory
 Inherits BaseStoryObject
 	#tag Method, Flags = &h0
-		Sub Constructor(aroLIs() as RecordStorageClass, pdictFieldNames as Dictionary, parsHeaders() as String, sColWidths as string = "")
+		Sub AddTotals()
+		  Break
+		  For Each oLine as RecordStorageClass In aroLineItems()
+		    dim oMaster as New RecordStorageClass
+		    oMaster.aroChildren = aroLineItems
+		    dim dictTotals as Dictionary = modPriceCalculations.CalculateGroupofGroupTotal(oMaster, oParentEIPLDoc.oEIPL, oLine.sFolderName)
+		    
+		    dim oTotalLine1 as New RecordStorageClass
+		    oTotalLine1.oParentStor = oLine
+		    oTotalLine1.oPrintData.oParentStory = me
+		    oTotalLine1.isTotal = True
+		    oTotalLine1.oPrintData.arsColumnValues = Array("SubTotal", str(dictTotals.Value("PreDiscount"), "\$###,###,###,###.00"))
+		    
+		    dim oTotalLine2 as New RecordStorageClass
+		    oTotalLine2.oParentStor = oLine
+		    oTotalLine2.oPrintData.oParentStory = me
+		    oTotalLine2.isTotal = True
+		    oTotalLine2.oPrintData.arsColumnValues = Array("Total", str(dictTotals.Value("DiscountSum"), "\$###,###,###,###.00"))
+		    
+		    dim oTotalLine3 as New RecordStorageClass
+		    oTotalLine3.oParentStor = oLine
+		    oTotalLine3.oPrintData.oParentStory = me
+		    oTotalLine3.isTotal = True
+		    oTotalLine3.oPrintData.arsColumnValues = Array("Total", str(dictTotals.Value("Total"), "\$###,###,###,###.00"))
+		    
+		    oLine.aroChildren.Append(oTotalLine1)
+		    oLine.aroChildren.Append(oTotalLine2)
+		    oLine.aroChildren.Append(oTotalLine3)
+		  Next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub Constructor(aroLIs() as RecordStorageClass, pdictFieldNames as Dictionary, parsHeaders() as String, EDoc as EstimateDocument, sColWidths as string = "")
 		  aroLineItems = aroLIs
 		  dictFieldNames = pdictFieldNames
 		  arsColWidths = split( sColWidths, ",")
 		  arsHeaders = parsHeaders
+		  oParentEIPLDoc = EDoc
+		  
+		  AddTotals
 		End Sub
 	#tag EndMethod
 
@@ -72,6 +108,24 @@ Inherits BaseStoryObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function iTotalCenter(g as Graphics) As Integer
+		  dim iRet as integer
+		  
+		  If kiTotalCenter.InStr("%") <> 0  Then
+		    // THere is a % in the string
+		    
+		    dim i1 as double = val( Methods.StripNonDigitsDecimals(kiTotalCenter) ) / 100
+		    iRet = i1 * g.Width
+		    
+		  Else
+		    iRet = val( Methods.StripNonDigitsDecimals(kiTotalCenter) )
+		  End If
+		  
+		  Return iRet
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub PopulateTrueWidths(g as Graphics)
 		  
 		  If arsColWidths().Ubound <> arsHeaders.ubound Then
@@ -119,14 +173,7 @@ Inherits BaseStoryObject
 		    
 		    If oCurs.OnLast Then
 		      // Draw this line
-		      if oLine.oTableRecord <> Nil Then
-		        dim v as Variant = oLine.oTableRecord
-		        dim oll as DataFile.tbl_lineitems = v
-		        if oll.sli_name = "Swivel Backrest Stool" Then
-		          'Break
-		        End If
-		        
-		      End If
+		      
 		      // Create graphics clip
 		      dim gClip as Graphics = CreateClip(g, oLine, yIndex)
 		      gClip.TextSize = FontSize
@@ -147,7 +194,6 @@ Inherits BaseStoryObject
 		        yIndex = RecipricateThroughLI(g, oLine.aroChildren, yIndex)
 		      End If
 		      
-		      
 		    Else
 		      // Relaunch this method with the children of this line
 		      oCurs.MoveIn
@@ -163,7 +209,8 @@ Inherits BaseStoryObject
 		  
 		  // Check if we have made it through all of the lines
 		  If oCurs.GetCurrentIndex >= aroLines.Ubound Then
-		    // all lines have been completed for this level let us step out
+		    // all lines have been completed for this level 
+		    // let us step out
 		    oCurs.DrillOut
 		    If oCurs.CursorRemoved Then
 		      bComplete = True
@@ -214,6 +261,19 @@ Inherits BaseStoryObject
 	#tag Property, Flags = &h0
 		oCurs As ArrayCursorClass
 	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		oParentEIPLDoc As EstimateDocument
+	#tag EndProperty
+
+
+	#tag Constant, Name = kiMasterTotalCenter, Type = String, Dynamic = False, Default = \"", Scope = Public
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"70%"
+	#tag EndConstant
+
+	#tag Constant, Name = kiTotalCenter, Type = String, Dynamic = False, Default = \"", Scope = Public
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"75%"
+	#tag EndConstant
 
 
 	#tag ViewBehavior

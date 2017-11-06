@@ -18,6 +18,39 @@ Protected Class printData
 		  Case "Header"
 		    bBold = True
 		    iFontSize = oParentStory.FontSize
+		  Case "Total"
+		    
+		    dim iCenterBuffer as integer = 4
+		    
+		    // Get the center x mark of the totals section
+		    dim iTC as integer = oParentStory.iTotalCenter(g) + DetermineLeftOffset
+		    
+		    For i1 as integer = 0 To 1
+		      dim tuple() as string = arsColumnValues
+		      
+		      // Create Graphics Clip
+		      dim bb as Boolean = g.Bold
+		      g.Bold = True
+		      dim iClipWidth, iClipHeight, X, Y as integer
+		      iClipWidth = g.StringWidth(tuple(0) + ":") + iCenterBuffer * 2 + g.StringWidth(tuple(1))
+		      iClipHeight = g.Height
+		      X = iTC - oParentStory.iLineBuffer - g.StringWidth(tuple(0) + ":")
+		      Y = 0
+		      g.Bold = bb
+		      
+		      dim gClip as Graphics = g.Clip(X,Y,iClipWidth,iClipHeight)
+		      
+		      // Draw the Title
+		      gClip.TextSize = g.TextSize
+		      gClip.Bold = True
+		      gClip.DrawString(tuple(0) + ":", 0, gClip.TextAscent)
+		      
+		      // Draw the content
+		      gClip.DrawString(tuple(1), g.StringWidth(tuple(0) + ":") + iCenterBuffer * 2, gClip.TextAscent)
+		    Next
+		    
+		    Return
+		    
 		  Else
 		    bBold = False
 		    iFontSize = oParentStory.FontSize

@@ -55,13 +55,23 @@ Protected Class BaseDocument
 
 	#tag Method, Flags = &h0
 		Sub Print()
+		  dim arp() as Picture
+		  
 		  Dim ps As New PrinterSetup
 		  If ps.PageSetupDialog Then
 		    Dim g As Graphics
 		    g = OpenPrinterDialog(ps)
 		    If g <> Nil Then
 		      
-		      While Not bPrintDone
+		      While not bPrintDone
+		        
+		        Go(g)
+		        
+		        
+		        if AllDone Then bPrintDone = True
+		        if not bPrintDone then
+		          g.NextPage
+		        end if
 		        
 		      Wend
 		      
