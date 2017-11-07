@@ -89,6 +89,58 @@ Inherits DataFile.ActiveRecordBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function FindPrimaryEmail() As DataFile.tbl_contact_methods
+		  dim retMethod as new DataFile.tbl_contact_methods
+		  
+		  // First try to find a linked contactable that has been designated primary
+		  dim sql1 as string = _
+		  "Select b.uuid "_
+		  + "From tbl_contactables as a, tbl_contact_methods as b "_
+		  + "Where a.uuid = ? "_
+		  + "And a.uuid = b.fkcontactables "_
+		  + "And b.method_type = 'Email' "_
+		  + "And b.primary_method = True;"
+		  dim ps1 as SQLitePreparedStatement = DB.Prepare(sql1)
+		  ps1.BindType(0,SQLitePreparedStatement.SQLITE_TEXT)
+		  ps1.Bind(0, suuid)
+		  dim rs1 as RecordSet = ps1.SQLSelect()
+		  
+		  If rs1 <> Nil Then
+		    dim Methoduuid as string = rs1.Field("uuid").StringValue
+		    retMethod = DataFile.tbl_contact_methods.FindByID(Methoduuid)
+		  End If
+		  
+		  Return retMethod
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function FindPrimaryPhone() As DataFile.tbl_contact_methods
+		  dim retMethod as New DataFile.tbl_contact_methods
+		  
+		  // First try to find a linked contactable that has been designated primary
+		  dim sql1 as string = _
+		  "Select b.uuid "_
+		  + "From tbl_contactables as a, tbl_contact_methods as b "_
+		  + "Where a.uuid = ? "_
+		  + "And a.uuid = b.fkcontactables "_
+		  + "And b.method_type = 'Phone' "_
+		  + "And b.primary_method = True;"
+		  dim ps1 as SQLitePreparedStatement = DB.Prepare(sql1)
+		  ps1.BindType(0,SQLitePreparedStatement.SQLITE_TEXT)
+		  ps1.Bind(0, suuid)
+		  dim rs1 as RecordSet = ps1.SQLSelect()
+		  
+		  If rs1 <> Nil Then
+		    dim Methoduuid as string = rs1.Field("uuid").StringValue
+		    retMethod = DataFile.tbl_contact_methods.FindByID(Methoduuid)
+		  End If
+		  
+		  Return retMethod
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Shared Function List(stmt as PreparedSQLStatement) As DataFile.tbl_contactables()
 		  //Note: You should use this method if your query contains user entered data. Using this method will help prevent SQL injection attacks
 		  dim aro() as DataFile.tbl_contactables
@@ -454,12 +506,6 @@ Inherits DataFile.ActiveRecordBase
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="scompany"
-			Group="Behavior"
-			Type="String"
-			EditorType="MultiLineEditor"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="sfkconven"
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"

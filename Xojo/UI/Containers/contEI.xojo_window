@@ -1378,6 +1378,78 @@ End
 #tag Events pbPrintPreview
 	#tag Event
 		Sub Action()
+		  dim oEstimateInit as New EstimateInitObject
+		  
+		  // Gather Event Based Data
+		  dim oEvent as DataFile.tbl_events = oCurrentRecord.FindParentEvent
+		  dim sEventName as String 
+		  If oEvent <> Nil Then
+		    sEventName = oEvent.sevent_name
+		  End If
+		  
+		  // Gather eipl based data
+		  dim sDiscPerc, sDiscAmt as string
+		  
+		  
+		  // Gather Contact Data
+		  dim oContact as DataFile.tbl_contactables = oCurrentRecord.FindPrimaryContact
+		  If oContact <> Nil Then
+		    dim oPhone as New DataFile.tbl_contact_methods = oContact.FindPrimaryPhone
+		    dim oEmail as New DataFile.tbl_contact_methods = oContact.FindPrimaryEmail
+		    
+		    oEstimateInit.BoxA_CompanyName = oContact.scompany
+		    oEstimateInit.BoxA_ContactName = oContact.sname_first + " " + oContact.sname_last
+		    oEstimateInit.BoxA_AddressLine1 = oContact.saddress_line1
+		    oEstimateInit.BoxA_AddressLine2 = oContact.saddress_line2
+		    oEstimateInit.BoxA_City = oContact.saddress_city
+		    oEstimateInit.BoxA_State = oContact.saddress_state
+		    oEstimateInit.BoxA_Zip = oContact.saddress_zip
+		    If oPhone <> Nil Then oEstimateInit.BoxA_Phone = oPhone.smethod
+		    If oEmail <> Nil Then oEstimateInit.BoxA_Email = oEmail.smethod
+		  End If
+		  
+		  // Gather Venue Data
+		  dim oVenue as DataFile.tbl_contactables = oCurrentRecord.FindPrimaryVenue
+		  dim oPhone as New DataFile.tbl_contact_methods = oVenue.FindPrimaryPhone
+		  dim oEmail as New DataFile.tbl_contact_methods = oVenue.FindPrimaryEmail
+		  If oVenue <> Nil Then
+		    dim oPhone as New DataFile.tbl_contact_methods = oVenue.FindPrimaryPhone
+		    dim oEmail as New DataFile.tbl_contact_methods = oVenue.FindPrimaryEmail
+		    
+		    oEstimateInit.BoxB_VenueName = oVenue.sname_first + " " + oVenue.sname_last
+		    oEstimateInit.BoxB_AddressLine1 = oVenue.saddress_line1
+		    oEstimateInit.BoxB_AddressLine2 = oVenue.saddress_line2
+		    oEstimateInit.BoxB_City = oVenue.saddress_city
+		    oEstimateInit.BoxB_State = oVenue.saddress_state
+		    oEstimateInit.BoxB_Zip = oVenue.saddress_zip
+		    If oPhone <>  Nil Then oEstimateInit.BoxB_Phone = oPhone.smethod
+		    If oEmail <> Nil Then oEstimateInit.BoxB_Email = oEmail.smethod
+		  End If
+		  
+		  
+		  oEstimateInit.HeaderLine1 = oCurrentRecord.seipl_type
+		  oEstimateInit.HeaderLine2 = sEventName
+		  oEstimateInit.HeaderLine3 = oCurrentRecord.seipl_name
+		  oEstimateInit.LogoImage = EIPLHeaderLogo_Print_v20
+		  
+		  
+		  oEstimateInit.Box1_AccountManager = oEvent.saccount_manager
+		  oEstimateInit.Box2_EventStartTime = oEvent.sstart_time
+		  oEstimateInit.Box2_EventStartDate = oEvent.sstart_date
+		  oEstimateInit.Box3_EventEndTime = oEvent.send_time
+		  oEstimateInit.Box3_EventEndDate = oEvent.send_date
+		  oEstimateInit.Box4_LoadInTime = oEvent.sloadin_time
+		  oEstimateInit.Box4_LoadInDate = oEvent.sloadin_date
+		  oEstimateInit.Box5_LoadOutTime = oEvent.sloadout_time
+		  oEstimateInit.Box5_LoadOutDate = oEvent.sloadout_date
+		  oEstimateInit.Box6_DiscountPercent = oCurrentRecord
+		  
+		  
+		  
+		  
+		  
+		  
+		  
 		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oCurrentRecord)
 		  dim oEst as New EstimateDocument(oStor)
 		  

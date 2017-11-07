@@ -113,11 +113,16 @@ Protected Class printData
 		  dim bBold as Boolean
 		  dim iFontSize as integer
 		  dim maxHeight as integer
+		  dim isTotal as Boolean = oParent.isTotal
 		  
 		  Select Case oParent.StorType
 		  Case "Header"
 		    bBold = True
 		    iFontSize = oParentStory.FontSize
+		  Case "Total"
+		    bBold = True
+		    iFontSize = oParentStory.FontSize
+		    Return 1
 		  Else
 		    bBold = False
 		    iFontSize = oParentStory.FontSize

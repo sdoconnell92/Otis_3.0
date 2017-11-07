@@ -3,7 +3,7 @@ Protected Module EICalculations
 	#tag Method, Flags = &h0
 		Function CalculateGroup(aroLIStor() as RecordStorageClass, bApplyEIPLDiscount as Boolean = False) As TotalsClass
 		  dim oRetTots as New TotalsClass
-		  Break
+		  
 		  For Each oLine as RecordStorageClass In aroLIStor()
 		    dim oCurrentTots as TotalsClass = CalculateSingleLine(oLine)
 		    
@@ -86,16 +86,18 @@ Protected Module EICalculations
 		    
 		    oRetTotals.b_PostDiscount = oRetTotals.a_SubTotal
 		    
+		    dim sDiscountPercent as String
 		    For Each oDiscount as DataFile.tbl_group_discounts In aroDiscountRecords()
 		      
 		      dim iDiscountAmount, iDiscountPercent as Double
-		      dim sDiscountPercent, sDiscountAmount, arsDiscount() as String
+		      dim sDiscountAmount, arsDiscount() as String
 		      arsDiscount() = oDiscount.sgroup_discount.Split(":")
 		      
 		      For i1 as integer = 0 To arsDiscount.Ubound
 		        dim sDiscount as string = arsDiscount(i1)
 		        If InStr( sDiscount , "%") > 0 Then
 		          ' discount is a percent
+		          sDiscountPercent = sDiscount
 		          iDiscountPercent = val( Methods.StripNonDigitsDecimals(sDiscount) ) /100
 		        Else
 		          iDiscountAmount = val( Methods.StripNonDigitsDecimals(sDiscount) )
@@ -117,6 +119,7 @@ Protected Module EICalculations
 		    oRetTotals.LocalDiscountSum = round(oRetTotals.LocalDiscountSum*100)/100
 		    oRetTotals.RunningDiscountSum = round(oRetTotals.RunningDiscountSum*100)/100
 		    oRetTotals.TaxSum = round( oRetTotals.TaxSum*100)/100
+		    oRetTotals.sDiscountPercent = sDiscountPercent
 		    
 		  Case "GrandParent", "Child"
 		    

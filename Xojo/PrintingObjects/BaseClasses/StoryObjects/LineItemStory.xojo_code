@@ -3,7 +3,7 @@ Protected Class LineItemStory
 Inherits BaseStoryObject
 	#tag Method, Flags = &h0
 		Sub AddTotals()
-		  Break
+		  
 		  For Each oLine as RecordStorageClass In aroLineItems()
 		    
 		    dim retTotals as TotalsClass = CalculateSingleLine(oLine)
@@ -18,7 +18,13 @@ Inherits BaseStoryObject
 		    oTotalLine2.oParentStor = oLine
 		    oTotalLine2.oPrintData.oParentStory = me
 		    oTotalLine2.isTotal = True
-		    oTotalLine2.oPrintData.arsColumnValues = Array("Discount", str(retTotals.LocalDiscountSum, "\$###,###,###,###.00"))
+		    dim sTitle as String
+		    If val(methods.StripNonDigitsDecimals(retTotals.sDiscountPercent)) <> 0 Then
+		      sTitle = "Discount(" + retTotals.sDiscountPercent + ")"
+		    Else
+		      sTitle = "Discount"
+		    End If
+		    oTotalLine2.oPrintData.arsColumnValues = Array(sTitle, str(retTotals.LocalDiscountSum, "\$###,###,###,###.00"))
 		    
 		    dim oTotalLine3 as New RecordStorageClass
 		    oTotalLine3.oParentStor = oLine

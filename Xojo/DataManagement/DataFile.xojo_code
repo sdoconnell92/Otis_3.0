@@ -262,7 +262,7 @@ Protected Module DataFile
 	#tag Method, Flags = &h1
 		Protected Function GroupRecords(aroStors() as RecordStorageClass, sGroupBy as String) As RecordStorageClass()
 		  dim oMaster() as RecordStorageClass
-		  Break
+		  
 		  // Check if there is a specified field to group by
 		  If sGroupBy = "" Then
 		    // Exit the method since we have nothing to group by

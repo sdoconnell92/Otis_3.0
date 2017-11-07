@@ -70,6 +70,10 @@ Protected Class TotalsClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		sDiscountPercent As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		sEIPLuuid As string
 	#tag EndProperty
 
@@ -98,6 +102,11 @@ Protected Class TotalsClass
 			Visible=true
 			Group="ID"
 			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="sEIPLuuid"
+			Group="Behavior"
+			Type="string"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

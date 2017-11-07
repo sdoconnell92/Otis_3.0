@@ -66,6 +66,105 @@ Inherits DataFile.ActiveRecordBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function FindParentEvent() As DataFile.tbl_events
+		  dim retEvent as DataFile.tbl_events
+		  
+		  If sfkevents <> "" Then
+		    retEvent = DataFile.tbl_events.FindByID(sfkevents)
+		  End If
+		  
+		  Return retEvent
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function FindPrimaryContact() As DataFile.tbl_contactables
+		  dim retContact as New DataFile.tbl_contactables
+		  
+		  
+		  dim oLink as DataFile.tbl_contactable_linking
+		  
+		  // First try to find a linked contactable that has been designated primary
+		  dim sql1 as string = _
+		  "Select a.uuid "_
+		  + "From tbl_contactable_linking, tbl_contactables as a "_
+		  + "Where parent_table = 'tbl_eipl' And fk_parent = ? "_
+		  + "And fk_child = a.uuid And a.type = 'Contact' "_
+		  + "And primary_contactable = True;"
+		  dim ps1 as SQLitePreparedStatement = DB.Prepare(sql1)
+		  ps1.BindType(0,SQLitePreparedStatement.SQLITE_TEXT)
+		  ps1.Bind(0, suuid)
+		  dim rs1 as RecordSet = ps1.SQLSelect()
+		  
+		  If rs1 <> Nil Then
+		    dim Contactuuid as string = rs1.Field("uuid").StringValue
+		    retContact = DataFile.tbl_contactables.FindByID(Contactuuid)
+		  End If
+		  
+		  Return retContact
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function FindPrimaryVenue() As DataFile.tbl_contactables
+		  dim retVenue as New DataFile.tbl_contactables
+		  
+		  
+		  dim oLink as DataFile.tbl_contactable_linking
+		  
+		  // First try to find a linked contactable that has been designated primary
+		  dim sql1 as string = _
+		  "Select a.uuid "_
+		  + "From tbl_contactable_linking, tbl_contactables as a "_
+		  + "Where parent_table = 'tbl_eipl' And fk_parent = ? "_
+		  + "And fk_child = a.uuid And a.type = 'Venue' "_
+		  + "And primary_contactable = True;"
+		  dim ps1 as SQLitePreparedStatement = DB.Prepare(sql1)
+		  ps1.BindType(0,SQLitePreparedStatement.SQLITE_TEXT)
+		  ps1.Bind(0, suuid)
+		  dim rs1 as RecordSet = ps1.SQLSelect()
+		  
+		  If rs1 <> Nil Then
+		    dim Contactuuid as string = rs1.Field("uuid").StringValue
+		    retVenue = DataFile.tbl_contactables.FindByID(Contactuuid)
+		  End If
+		  
+		  Return retVenue
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetDiscounts() As String()
+		  dim retS() as string
+		  dim sDiscountPercent, sDiscountAmount, arsDiscount() as String
+		  arsDiscount() = sdiscount.Split(":")
+		  
+		  For i1 as integer = 0 To arsDiscount.Ubound
+		    dim sDiscount as string = arsDiscount(i1)
+		    If InStr( sDiscount , "%") > 0 Then
+		      ' discount is a percent
+		      sDiscountPercent = sDiscount
+		    Else
+		      sDiscountAmount = str( sDiscount, "\$###,###,###,###.00" )
+		    End If
+		  Next
+		  
+		  If val(Methods.StripNonDigitsDecimals(sDiscountPercent)) <> 0 Then
+		    retS.Append(sDiscountPercent)
+		  Else
+		    retS.Append("")
+		  End If
+		  If val(Methods.StripNonDigitsDecimals(sDiscountAmount)) <> 0 Then
+		    retS.Append(sDiscountAmount)
+		  Else
+		    retS.Append("")
+		  End If
+		  
+		  Return retS
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Shared Function List(stmt as PreparedSQLStatement) As DataFile.tbl_eipl()
 		  //Note: You should use this method if your query contains user entered data. Using this method will help prevent SQL injection attacks
 		  dim aro() as DataFile.tbl_eipl
