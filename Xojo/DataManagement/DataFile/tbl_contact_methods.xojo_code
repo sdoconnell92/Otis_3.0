@@ -39,6 +39,9 @@ Inherits DataFile.ActiveRecordBase
 		  dim s as string
 		  s = "Select * from tbl_contact_methods Where uuid = '" + str(id) + "'"
 		  
+		  if db.Error Then
+		  end if
+		  
 		  dim rs as RecordSet = DB.SQLSelect(s)
 		  
 		  if DB.error then
@@ -84,6 +87,8 @@ Inherits DataFile.ActiveRecordBase
 		  dim aro() as DataFile.tbl_contact_methods
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_contact_methods.BaseSQL
 		  if sCriteria.Trim <> "" then
@@ -144,6 +149,8 @@ Inherits DataFile.ActiveRecordBase
 		  //Using this method with user entered data could expose you to SQL injection attacks.
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_contact_methods.BaseSQL(True)
 		  if sCriteria<>"" then

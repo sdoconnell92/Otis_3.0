@@ -3,16 +3,18 @@ Protected Class LineItemStory
 Inherits BaseStoryObject
 	#tag Method, Flags = &h0
 		Sub AddTotals()
+		  DeleteTotals(aroLineItems)
 		  
 		  For Each oLine as RecordStorageClass In aroLineItems()
 		    
 		    dim retTotals as TotalsClass = CalculateSingleLine(oLine)
+		    dim gn as string = oLine.sFolderName
 		    
 		    dim oTotalLine1 as New RecordStorageClass
 		    oTotalLine1.oParentStor = oLine
 		    oTotalLine1.oPrintData.oParentStory = me
 		    oTotalLine1.isTotal = True
-		    oTotalLine1.oPrintData.arsColumnValues = Array("SubTotal", str(retTotals.a_SubTotal, "\$###,###,###,###.00"))
+		    oTotalLine1.oPrintData.arsColumnValues = Array( gn +" SubTotal", str(retTotals.a_SubTotal, "\$###,###,###,###.00"))
 		    
 		    dim oTotalLine2 as New RecordStorageClass
 		    oTotalLine2.oParentStor = oLine
@@ -20,9 +22,9 @@ Inherits BaseStoryObject
 		    oTotalLine2.isTotal = True
 		    dim sTitle as String
 		    If val(methods.StripNonDigitsDecimals(retTotals.sDiscountPercent)) <> 0 Then
-		      sTitle = "Discount(" + retTotals.sDiscountPercent + ")"
+		      sTitle = gn + " Discount(" + retTotals.sDiscountPercent + ")"
 		    Else
-		      sTitle = "Discount"
+		      sTitle = gn + " Discount"
 		    End If
 		    oTotalLine2.oPrintData.arsColumnValues = Array(sTitle, str(retTotals.LocalDiscountSum, "\$###,###,###,###.00"))
 		    
@@ -30,10 +32,10 @@ Inherits BaseStoryObject
 		    oTotalLine3.oParentStor = oLine
 		    oTotalLine3.oPrintData.oParentStory = me
 		    oTotalLine3.isTotal = True
-		    oTotalLine3.oPrintData.arsColumnValues = Array("Total", str(retTotals.c_Total, "\$###,###,###,###.00"))
+		    oTotalLine3.oPrintData.arsColumnValues = Array( gn + " Total", str(retTotals.c_Total, "\$###,###,###,###.00"))
 		    
-		    oLine.aroChildren.Append(oTotalLine1)
-		    oLine.aroChildren.Append(oTotalLine2)
+		    If retTotals.LocalDiscountSum <> 0 Then oLine.aroChildren.Append(oTotalLine1)
+		    If retTotals.LocalDiscountSum <> 0 Then oLine.aroChildren.Append(oTotalLine2)
 		    oLine.aroChildren.Append(oTotalLine3)
 		  Next
 		  
@@ -55,7 +57,7 @@ Inherits BaseStoryObject
 		  oTotalLine3.oPrintData.arsColumnValues = Array("Grand Total", str(retTotals.c_Total, "\$###,###,###,###.00"))
 		  
 		  aroLineItems.Append(oTotalLine1)
-		  aroLineItems.Append(oTotalLine2)
+		  If retTotals.RunningDiscountSum <> 0 Then aroLineItems.Append(oTotalLine2)
 		  aroLineItems.Append(oTotalLine3)
 		End Sub
 	#tag EndMethod
@@ -88,6 +90,24 @@ Inherits BaseStoryObject
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub DeleteTotals(aro() as RecordStorageClass)
+		  For i1 as integer = aro.Ubound DownTo 0
+		    dim oLine as RecordStorageClass = aro(i1)
+		    
+		    If oLine.StorType = "Total" Then 
+		      aro.Remove(i1)
+		      Continue
+		    End If
+		    
+		    If oLine.aroChildren.Ubound <> -1 Then
+		      DeleteTotals(oLine.aroChildren)
+		    End If
+		    
+		  Next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub Draw(g as Graphics)
 		  
 		  
@@ -99,6 +119,7 @@ Inherits BaseStoryObject
 		  dim oHeaderRecord as New RecordStorageClass
 		  oHeaderRecord.oPrintData.arsColumnValues = arsHeaders()
 		  oHeaderRecord.oPrintData.oParentStory = me
+		  oHeaderRecord.oPrintData.ariJustification = oParentEIPLDoc.InitObject.LI_Justification
 		  
 		  // Create graphics clip
 		  dim gClip as Graphics = CreateClip(g, oHeaderRecord, yindex)
@@ -200,12 +221,19 @@ Inherits BaseStoryObject
 		  End If
 		  
 		  dim yIndex as integer = yIndexPar
+		  dim NoSpace as Boolean
 		  For iLineIndex as integer = oCurs.GetCurrentIndex To aroLines.Ubound
 		    dim oLine as RecordStorageClass = aroLines(iLineIndex)
-		    oLine.PopulatePrintData(dictFieldNames, me)
+		    oLine.PopulatePrintData(dictFieldNames,oParentEIPLDoc.InitObject.LI_Justification, me)
 		    
 		    If oCurs.OnLast Then
 		      // Draw this line
+		      
+		      If oCurs.iCursorIndex = 0 Then
+		        If oLine.StorType = "Total" And oParentEIPLDoc.RemitY = 0 Then
+		          oParentEIPLDoc.RemitY = yIndex
+		        End If
+		      End If
 		      
 		      // Create graphics clip
 		      dim gClip as Graphics = CreateClip(g, oLine, yIndex)
@@ -213,6 +241,7 @@ Inherits BaseStoryObject
 		      
 		      // Check if we are going to go past the edge of the page
 		      If Not HaveSpaceForLine(g, gClip, yIndex) Then
+		        NoSpace = True
 		        Exit
 		      End If
 		      
@@ -244,9 +273,11 @@ Inherits BaseStoryObject
 		  If oCurs.GetCurrentIndex >= aroLines.Ubound Then
 		    // all lines have been completed for this level 
 		    // let us step out
-		    oCurs.DrillOut
-		    If oCurs.CursorRemoved Then
-		      bComplete = True
+		    If Not NoSpace Then
+		      oCurs.DrillOut
+		      If oCurs.CursorRemoved Then
+		        bComplete = True
+		      End If
 		    End If
 		  Elseif not oCurs.onFirst Then
 		    oCurs.MoveOut
@@ -288,7 +319,11 @@ Inherits BaseStoryObject
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		iLineBuffer As Integer = 1
+		iLineBuffer As Integer = 0
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		iLinesonPage As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -316,6 +351,11 @@ Inherits BaseStoryObject
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="bOnlyLastPage"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="bRepeatEveryPage"
 			Group="Behavior"
 			Type="Boolean"
@@ -336,6 +376,11 @@ Inherits BaseStoryObject
 			Name="iLineBuffer"
 			Group="Behavior"
 			InitialValue="1"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="iLinesonPage"
+			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty

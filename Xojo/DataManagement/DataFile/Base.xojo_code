@@ -112,7 +112,7 @@ Protected Class Base
 		  dim db as SQLiteDatabase = app.db
 		  
 		  If db <> Nil Then
-		    sql = "Commit;"
+		    sql = "End Transaction;"
 		    db.SQLExecute(sql)
 		  End If
 		End Sub

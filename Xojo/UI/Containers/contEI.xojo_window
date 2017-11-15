@@ -779,8 +779,8 @@ Begin ContainerControl contEI
          Left            =   821
          LockBottom      =   False
          LockedInPosition=   False
-         LockLeft        =   True
-         LockRight       =   False
+         LockLeft        =   False
+         LockRight       =   True
          LockTop         =   True
          Scope           =   0
          TabIndex        =   4
@@ -789,7 +789,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   24
+         Top             =   23
          Underline       =   False
          Visible         =   True
          Width           =   80
@@ -1079,6 +1079,269 @@ End
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function methPrintingColWidths() As String
+		  
+		  dim s as string
+		  
+		  // Check database to see if there are any lineitems with discounts
+		  dim sql as string =_
+		  "Select disc_a, disc_b, Count(disc_a) as iCnt From "_
+		  + "(SELECT "_
+		  + "substr(li_discount, 1, instr(li_discount, ':') - 1) AS disc_a, "_
+		  + "substr(li_discount,    instr(li_discount, ':') + 1) AS disc_b "_
+		  + "FROM tbl_lineitems "_
+		  + "Where fkeipl = ?) "_
+		  + "Where (disc_a <> '' and disc_a <> '0%' and Cast(disc_a as decimal) <> 0 ) "_
+		  + "Or (disc_b <> '' and disc_b <> '0%' and Cast(disc_b as decimal) <> 0);"
+		  dim ps as SQLitePreparedStatement = app.db.Prepare(sql)
+		  ps.BindType(0, SQLitePreparedStatement.SQLITE_TEXT)
+		  ps.Bind(0, oCurrentRecord.suuid)
+		  dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
+		  
+		  If discount_count = 0 Then
+		    s = "25%,30%,5%,6%,5%,8%,13%"
+		  Else
+		    s = "25%,30%,5%,6%,5%,8%,8%,13%"
+		  End If
+		  
+		  Return s
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function methPrintingFieldNames() As Dictionary
+		  dim s1,s2() as string
+		  
+		  dim sRowType as string
+		  
+		  // Initialize dictionaries
+		  dim dictFieldNames as New Dictionary
+		  
+		  // Check database to see if there are any lineitems with discounts
+		  dim sql as string =_
+		  "Select disc_a, disc_b, Count(disc_a) as iCnt From "_
+		  + "(SELECT "_
+		  + "substr(li_discount, 1, instr(li_discount, ':') - 1) AS disc_a, "_
+		  + "substr(li_discount,    instr(li_discount, ':') + 1) AS disc_b "_
+		  + "FROM tbl_lineitems "_
+		  + "Where fkeipl = ?) "_
+		  + "Where (disc_a <> '' and disc_a <> '0%' and Cast(disc_a as decimal) <> 0 ) "_
+		  + "Or (disc_b <> '' and disc_b <> '0%' and Cast(disc_b as decimal) <> 0);"
+		  dim ps as SQLitePreparedStatement = app.db.Prepare(sql)
+		  ps.BindType(0, SQLitePreparedStatement.SQLITE_TEXT)
+		  ps.Bind(0, oCurrentRecord.suuid)
+		  dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
+		  
+		  If discount_count = 0 Then
+		    s1 = "li_name,li_description,li_time,li_rate,li_quantity,li_price,CalcTotal"
+		  Else
+		    s1 = "li_name,li_description,li_time,li_rate,li_quantity,li_price,li_discount,CalcTotal"
+		  End If
+		  
+		  // **********
+		  // Set up the cell types and field names for each type of row
+		  
+		  // Group Folders
+		  sRowType = "GroupFolder"
+		  'field names
+		  dictFieldNames.Value(sRowType) = Array("")
+		  
+		  // GrandParent
+		  sRowType = "GrandParent"
+		  'field names
+		  s2() = Split(s1,",")
+		  dictFieldNames.Value(sRowType) = s2
+		  
+		  // Linking Type Folder
+		  sRowType = "LinkingTypeFolder"
+		  'field names
+		  dictFieldNames.Value(sRowType) = Array("")
+		  
+		  // LinkedItem - Version
+		  sRowType = "Child - version"
+		  'field names
+		  s2() = Split(s1,",")
+		  dictFieldNames.Value(sRowType) = s2
+		  
+		  // LinkedItem - Contained
+		  sRowType = "Child - contained"
+		  'field names
+		  s2() = Split(s1,",")
+		  dictFieldNames.Value(sRowType) = s2
+		  
+		  // LinkedItem - Contained
+		  sRowType = "Child - kit"
+		  'field names
+		  s2() = Split(s1,",")
+		  dictFieldNames.Value(sRowType) = s2
+		  
+		  // LinkedItem - Contained
+		  sRowType = "Child - package"
+		  'field names
+		  s2() = Split(s1,",")
+		  dictFieldNames.Value(sRowType) = s2
+		  
+		  Return dictFieldNames
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function methPrintingHeaders() As String()
+		  dim s1, s2() as string
+		  dim arsHeaders() as String
+		  
+		  // Check database to see if there are any lineitems with discounts
+		  dim sql as string =_
+		  "Select disc_a, disc_b, Count(disc_a) as iCnt From "_
+		  + "(SELECT "_
+		  + "substr(li_discount, 1, instr(li_discount, ':') - 1) AS disc_a, "_
+		  + "substr(li_discount,    instr(li_discount, ':') + 1) AS disc_b "_
+		  + "FROM tbl_lineitems "_
+		  + "Where fkeipl = ?) "_
+		  + "Where (disc_a <> '' and disc_a <> '0%' and Cast(disc_a as decimal) <> 0 ) "_
+		  + "Or (disc_b <> '' and disc_b <> '0%' and Cast(disc_b as decimal) <> 0);"
+		  dim ps as SQLitePreparedStatement = app.db.Prepare(sql)
+		  ps.BindType(0, SQLitePreparedStatement.SQLITE_TEXT)
+		  ps.Bind(0, oCurrentRecord.suuid)
+		  dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
+		  
+		  If discount_count = 0 Then
+		    s1 = "Name,Description,Time,Rate,Qty,Price,Total"
+		  Else
+		    s1 = "Name,Description,Time,Rate,Qty,Price,Discount,Total"
+		  End If
+		  
+		  // Set header names
+		  s2() = Split(s1,",")
+		  arsHeaders() = s2()
+		  
+		  Return arsHeaders
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function methPrintingJustification() As Integer()
+		  
+		  dim ari() as integer
+		  
+		  // Check database to see if there are any lineitems with discounts
+		  dim sql as string =_
+		  "Select disc_a, disc_b, Count(disc_a) as iCnt From "_
+		  + "(SELECT "_
+		  + "substr(li_discount, 1, instr(li_discount, ':') - 1) AS disc_a, "_
+		  + "substr(li_discount,    instr(li_discount, ':') + 1) AS disc_b "_
+		  + "FROM tbl_lineitems "_
+		  + "Where fkeipl = ?) "_
+		  + "Where (disc_a <> '' and disc_a <> '0%' and Cast(disc_a as decimal) <> 0 ) "_
+		  + "Or (disc_b <> '' and disc_b <> '0%' and Cast(disc_b as decimal) <> 0);"
+		  dim ps as SQLitePreparedStatement = app.db.Prepare(sql)
+		  ps.BindType(0, SQLitePreparedStatement.SQLITE_TEXT)
+		  ps.Bind(0, oCurrentRecord.suuid)
+		  dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
+		  
+		  If discount_count = 0 Then
+		    ari = Array(1,1,2,2,2,3,3)
+		  Else
+		    ari = Array(1,1,2,2,2,3,2,3)
+		  End If
+		  
+		  Return ari()
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function SetUpPrintDocument() As BaseDocument
+		  dim oEstimateInit as New EstimateInitObject
+		  
+		  // Gather Event Based Data
+		  dim oEvent as DataFile.tbl_events = oCurrentRecord.FindParentEvent
+		  dim sEventName as String 
+		  If oEvent <> Nil Then
+		    sEventName = oEvent.sevent_name
+		  End If
+		  
+		  // Gather eipl based data
+		  dim sDiscPerc, sDiscAmt as string
+		  
+		  
+		  // Gather Contact Data
+		  dim oContact as DataFile.tbl_contactables = oCurrentRecord.FindPrimaryContact
+		  If oContact <> Nil Then
+		    dim oPhone as DataFile.tbl_contact_methods = oContact.FindPrimaryPhone
+		    dim oEmail as DataFile.tbl_contact_methods = oContact.FindPrimaryEmail
+		    
+		    oEstimateInit.BoxA_CompanyName = oContact.scompany
+		    oEstimateInit.BoxA_ContactName = oContact.sname_first + " " + oContact.sname_last
+		    oEstimateInit.BoxA_AddressLine1 = oContact.saddress_line1
+		    oEstimateInit.BoxA_AddressLine2 = oContact.saddress_line2
+		    oEstimateInit.BoxA_City = oContact.saddress_city
+		    oEstimateInit.BoxA_State = oContact.saddress_state
+		    oEstimateInit.BoxA_Zip = oContact.saddress_zip
+		    If oPhone <> Nil Then oEstimateInit.BoxA_Phone = oPhone.smethod
+		    If oEmail <> Nil Then oEstimateInit.BoxA_Email = oEmail.smethod
+		  End If
+		  
+		  // Gather Venue Data
+		  dim oVenue as DataFile.tbl_contactables = oCurrentRecord.FindPrimaryVenue
+		  If oVenue <> Nil Then
+		    dim oPhone as DataFile.tbl_contact_methods = oVenue.FindPrimaryPhone
+		    dim oEmail as DataFile.tbl_contact_methods = oVenue.FindPrimaryEmail
+		    
+		    oEstimateInit.BoxB_VenueName = oVenue.sname_first + " " + oVenue.sname_last
+		    oEstimateInit.BoxB_AddressLine1 = oVenue.saddress_line1
+		    oEstimateInit.BoxB_AddressLine2 = oVenue.saddress_line2
+		    oEstimateInit.BoxB_City = oVenue.saddress_city
+		    oEstimateInit.BoxB_State = oVenue.saddress_state
+		    oEstimateInit.BoxB_Zip = oVenue.saddress_zip
+		    If oPhone <>  Nil Then oEstimateInit.BoxB_Phone = oPhone.smethod
+		    If oEmail <> Nil Then oEstimateInit.BoxB_Email = oEmail.smethod
+		  End If
+		  
+		  
+		  oEstimateInit.HeaderLine1 = oCurrentRecord.seipl_type
+		  oEstimateInit.HeaderLine2 = sEventName
+		  oEstimateInit.HeaderLine3 = oCurrentRecord.seipl_name
+		  oEstimateInit.LogoImage = EIPLHeaderLogo_Print
+		  
+		  
+		  oEstimateInit.Box1_AccountManager = oEvent.saccount_manager
+		  oEstimateInit.Box2_EventStartTime = oEvent.sstart_time
+		  oEstimateInit.Box2_EventStartDate = oEvent.sstart_date
+		  oEstimateInit.Box3_EventEndTime = oEvent.send_time
+		  oEstimateInit.Box3_EventEndDate = oEvent.send_date
+		  oEstimateInit.Box4_LoadInTime = oEvent.sloadin_time
+		  oEstimateInit.Box4_LoadInDate = oEvent.sloadin_date
+		  oEstimateInit.Box5_LoadOutTime = oEvent.sloadout_time
+		  oEstimateInit.Box5_LoadOutDate = oEvent.sloadout_date
+		  dim arsDisc() as String = oCurrentRecord.GetDiscounts  ' Get the discounts
+		  If arsDisc(0) <> "" Then oEstimateInit.Box6_DiscountPercent = arsDisc(0)
+		  If arsDisc(1) <> "" Then oEstimateInit.Box6_DiscountAmount = arsDisc(1)
+		  oEstimateInit.Box7_Tax = oCurrentRecord.seipl_tax_rate
+		  oEstimateInit.Box8_PaymentDue = oCurrentRecord.sdue_date
+		  
+		  oEstimateInit.LI_Records = instLineItemList.aroStorClass
+		  oEstimateInit.LI_FieldNames = methPrintingFieldNames
+		  oEstimateInit.LI_Headers = methPrintingHeaders
+		  oEstimateInit.LI_ColumnWidths = methPrintingColWidths
+		  oEstimateInit.LI_Justification = methPrintingJustification
+		  
+		  
+		  // Create the Estimate
+		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oCurrentRecord)
+		  dim oEst as New EstimateDocument(oStor, oEstimateInit)
+		  
+		  
+		  Return oEst
+		  
+		  
+		  
+		  
+		  
+		  
+		End Function
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h0
 		oCurrentRecord As DataFile.tbl_eipl
@@ -1364,6 +1627,28 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events labEIPLNumber
+	#tag Event
+		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
+		  
+		  dim sUUID as string = oCurrentRecord.suuid
+		  base.Append( New MenuItem(sUUID) )
+		  base.Append( New MenuItem("Copy UUID") )
+		End Function
+	#tag EndEvent
+	#tag Event
+		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
+		  
+		  Select Case hitItem.Text
+		  Case "Copy UUID"
+		    dim s as String = oCurrentRecord.suuid
+		    dim c as new Clipboard
+		    c.Text = s
+		    c.Close
+		  End Select
+		End Function
+	#tag EndEvent
+#tag EndEvents
 #tag Events tfEIPLDiscount
 	#tag Event
 		Sub LostFocus()
@@ -1378,173 +1663,36 @@ End
 #tag Events pbPrintPreview
 	#tag Event
 		Sub Action()
-		  dim oEstimateInit as New EstimateInitObject
+		  dim oDoc as BaseDocument = SetUpPrintDocument
 		  
-		  // Gather Event Based Data
-		  dim oEvent as DataFile.tbl_events = oCurrentRecord.FindParentEvent
-		  dim sEventName as String 
-		  If oEvent <> Nil Then
-		    sEventName = oEvent.sevent_name
-		  End If
+		  dim base as new MenuItem
+		  base.Append( new MenuItem( "Preview" ) )  '0
+		  base.Append( new MenuItem( "Print" ) )  '1
 		  
-		  // Gather eipl based data
-		  dim sDiscPerc, sDiscAmt as string
+		  dim hitItem as MenuItem
+		  hitItem = base.PopUp
 		  
-		  
-		  // Gather Contact Data
-		  dim oContact as DataFile.tbl_contactables = oCurrentRecord.FindPrimaryContact
-		  If oContact <> Nil Then
-		    dim oPhone as New DataFile.tbl_contact_methods = oContact.FindPrimaryPhone
-		    dim oEmail as New DataFile.tbl_contact_methods = oContact.FindPrimaryEmail
+		  Select Case hitItem.Text
+		  Case "Preview"
 		    
-		    oEstimateInit.BoxA_CompanyName = oContact.scompany
-		    oEstimateInit.BoxA_ContactName = oContact.sname_first + " " + oContact.sname_last
-		    oEstimateInit.BoxA_AddressLine1 = oContact.saddress_line1
-		    oEstimateInit.BoxA_AddressLine2 = oContact.saddress_line2
-		    oEstimateInit.BoxA_City = oContact.saddress_city
-		    oEstimateInit.BoxA_State = oContact.saddress_state
-		    oEstimateInit.BoxA_Zip = oContact.saddress_zip
-		    If oPhone <> Nil Then oEstimateInit.BoxA_Phone = oPhone.smethod
-		    If oEmail <> Nil Then oEstimateInit.BoxA_Email = oEmail.smethod
-		  End If
-		  
-		  // Gather Venue Data
-		  dim oVenue as DataFile.tbl_contactables = oCurrentRecord.FindPrimaryVenue
-		  dim oPhone as New DataFile.tbl_contact_methods = oVenue.FindPrimaryPhone
-		  dim oEmail as New DataFile.tbl_contact_methods = oVenue.FindPrimaryEmail
-		  If oVenue <> Nil Then
-		    dim oPhone as New DataFile.tbl_contact_methods = oVenue.FindPrimaryPhone
-		    dim oEmail as New DataFile.tbl_contact_methods = oVenue.FindPrimaryEmail
+		    // Display the EIPL
+		    dim winPP as New winPrintPreview
+		    winPP.Canvas1.Backdrop = New Picture(winPP.Canvas1.Width, winPP.Canvas1.Height)
+		    dim arp() as Picture
 		    
-		    oEstimateInit.BoxB_VenueName = oVenue.sname_first + " " + oVenue.sname_last
-		    oEstimateInit.BoxB_AddressLine1 = oVenue.saddress_line1
-		    oEstimateInit.BoxB_AddressLine2 = oVenue.saddress_line2
-		    oEstimateInit.BoxB_City = oVenue.saddress_city
-		    oEstimateInit.BoxB_State = oVenue.saddress_state
-		    oEstimateInit.BoxB_Zip = oVenue.saddress_zip
-		    If oPhone <>  Nil Then oEstimateInit.BoxB_Phone = oPhone.smethod
-		    If oEmail <> Nil Then oEstimateInit.BoxB_Email = oEmail.smethod
-		  End If
-		  
-		  
-		  oEstimateInit.HeaderLine1 = oCurrentRecord.seipl_type
-		  oEstimateInit.HeaderLine2 = sEventName
-		  oEstimateInit.HeaderLine3 = oCurrentRecord.seipl_name
-		  oEstimateInit.LogoImage = EIPLHeaderLogo_Print_v20
-		  
-		  
-		  oEstimateInit.Box1_AccountManager = oEvent.saccount_manager
-		  oEstimateInit.Box2_EventStartTime = oEvent.sstart_time
-		  oEstimateInit.Box2_EventStartDate = oEvent.sstart_date
-		  oEstimateInit.Box3_EventEndTime = oEvent.send_time
-		  oEstimateInit.Box3_EventEndDate = oEvent.send_date
-		  oEstimateInit.Box4_LoadInTime = oEvent.sloadin_time
-		  oEstimateInit.Box4_LoadInDate = oEvent.sloadin_date
-		  oEstimateInit.Box5_LoadOutTime = oEvent.sloadout_time
-		  oEstimateInit.Box5_LoadOutDate = oEvent.sloadout_date
-		  oEstimateInit.Box6_DiscountPercent = oCurrentRecord
-		  
-		  
-		  
-		  
-		  
-		  
-		  
-		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oCurrentRecord)
-		  dim oEst as New EstimateDocument(oStor)
-		  
-		  // Create the Header
-		  dim oHeader as New BaseStoryObject
-		  oHeader.Height = 100
-		  
-		  // Create Logo for header
-		  dim oLogoImage as New InnerImage(oEst)
-		  oLogoImage.Content = EIPLHeaderLogo_Print_v20
-		  
-		  oHeader.aroInnerObjects.Append(oLogoImage)
-		  
-		  // Create RIght side text
-		  dim oHeaderText as New InnerText( Array( "Estimate", "Event Name", "Estimate Name" ), oEst )
-		  oHeaderText.Bold = Array( True, False, False )
-		  oHeaderText.FontSize = Array(16,12,12)
-		  oHeaderText.JustificationHor = 0
-		  oHeaderText.xPosition = "0.75%"
-		  oHeaderText.yPosition = "0.1%"
-		  
-		  oHeader.aroInnerObjects.Append(oHeaderText)
-		  
-		  // Append the story items to the document
-		  oEst.aroStory.Append(oHeader)
-		  
-		  
-		  
-		  dim oLargeBoxStory as New BaseStoryObject
-		  oLargeBoxStory.Height = 104
-		  
-		  dim oBoxes as New InnerBoxes(oEst)
-		  oBoxes.AddBox( Array( "Contact", "Company Name", "Contact Name", "Address Line 1", "Address Line 2", "City State, Zip", "Phone Number", "Email Address" ) )
-		  oBoxes.AddBox( Array( "Venue / Site", "Venue Name", "Address Line 1", "City State, Zip", "Phone Number" ) )
-		  oBoxes.BoxSpacing = 15
-		  oBoxes.ChangeFontSizes( Array( 11,10,10,10,10,10,10,10) )
-		  
-		  oLargeBoxStory.aroInnerObjects.Append(oBoxes)
-		  
-		  oEst.aroStory.Append(oLargeBoxStory)
-		  
-		  dim oSmallBoxStory as New BaseStoryObject
-		  oSmallBoxStory.Height = 36
-		  
-		  dim oSmBoxes1 as New InnerBoxes(oEst)
-		  oSmBoxes1.AddBox( Array( "Account Manager", "Name Here" ), 0 )
-		  oSmBoxes1.AddBox( Array( "Event Start", "Start Time", "Start Date" ), 0 )
-		  oSmBoxes1.AddBox( Array( "Event End", "End Time", "End Date" ), 0 )
-		  oSmBoxes1.AddBox( Array( "Load-In", "Load-In Time", "Load-In Date" ), 0 )
-		  oSmBoxes1.ChangeFontSizes( Array( 10,9,9 ) )
-		  
-		  oSmallBoxStory.aroInnerObjects.Append(oSmBoxes1)
-		  
-		  oEst.aroStory.Append(oSmallBoxStory)
-		  
-		  
-		  dim oSmallBoxStory2 as New BaseStoryObject
-		  oSmallBoxStory2.Height = 36
-		  
-		  dim oSmBoxes2 as New InnerBoxes(oEst)
-		  oSmBoxes2.AddBox( Array( "Load-Out", "Load-Out Time", "Load-Out Date" ), 0 )
-		  oSmBoxes2.AddBox( Array( "Discount", "0%" ), 0 )
-		  oSmBoxes2.AddBox( Array( "Tax", "0%" ), 0 )
-		  oSmBoxes2.ChangeFontSizes( Array( 10,9,9 ) )
-		  
-		  oSmallBoxStory2.aroInnerObjects.Append(oSmBoxes2)
-		  
-		  oEst.aroStory.Append(oSmallBoxStory2)
-		  
-		  dim oLIStory as New LineItemStory(instLineItemList.aroStorClass(), instLineItemList.dictFieldNames, instLineItemList.arsHeaders, oEst)
-		  
-		  
-		  oEst.aroStory.Append(oLIStory)
-		  
-		  dim winPP as New winPrintPreview
-		  winPP.Canvas1.Backdrop = New Picture(winPP.Canvas1.Width, winPP.Canvas1.Height)
-		  dim arp() as Picture
-		  
-		  
-		  arp = oEst.PrintPreview(winPP.Canvas1.Width, winPP.Canvas1.Height)
-		  
-		  winPP.NewArray(arp)
-		  
-		  
-		  winPP.Visible = True
-		  
-		  
-		  // oEst.Print
-		  
-		  
-		  
-		  
-		  
-		  
-		  
+		    
+		    arp = oDoc.PrintPreview(winPP.Canvas1.Width, winPP.Canvas1.Height)
+		    
+		    winPP.NewArray(arp)
+		    
+		    
+		    winPP.Visible = True
+		    
+		  Case "Print"
+		    
+		    oDoc.Print
+		    
+		  End Select
 		End Sub
 	#tag EndEvent
 #tag EndEvents

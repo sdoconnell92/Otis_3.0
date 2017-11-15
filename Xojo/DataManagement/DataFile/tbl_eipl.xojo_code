@@ -47,11 +47,16 @@ Inherits DataFile.ActiveRecordBase
 		Shared Function FindByID(id as String) As DataFile.tbl_eipl
 		  //Usage:
 		  //dim tbl_eipl as DataFile.tbl_eipl = DataFile.tbl_eipl.FindByID( id )
+		  if DB.error THen
+		  end if
+		  
+		  if db.Error Then
+		  end if
+		  
 		  dim s as string
-		  s = "Select * from tbl_eipl Where uuid = '" + str(id) + "'"
+		  s = "Select * from tbl_eipl Where uuid = '" + str(id) + "';"
 		  
 		  dim rs as RecordSet = DB.SQLSelect(s)
-		  
 		  if DB.error then
 		    System.debugLog DB.ErrorMessage
 		    return nil
@@ -90,7 +95,7 @@ Inherits DataFile.ActiveRecordBase
 		  + "From tbl_contactable_linking, tbl_contactables as a "_
 		  + "Where parent_table = 'tbl_eipl' And fk_parent = ? "_
 		  + "And fk_child = a.uuid And a.type = 'Contact' "_
-		  + "And primary_contactable = True;"
+		  + "And primary_contactable = 1 ;"
 		  dim ps1 as SQLitePreparedStatement = DB.Prepare(sql1)
 		  ps1.BindType(0,SQLitePreparedStatement.SQLITE_TEXT)
 		  ps1.Bind(0, suuid)
@@ -118,7 +123,7 @@ Inherits DataFile.ActiveRecordBase
 		  + "From tbl_contactable_linking, tbl_contactables as a "_
 		  + "Where parent_table = 'tbl_eipl' And fk_parent = ? "_
 		  + "And fk_child = a.uuid And a.type = 'Venue' "_
-		  + "And primary_contactable = True;"
+		  + "And primary_contactable = 1 ;"
 		  dim ps1 as SQLitePreparedStatement = DB.Prepare(sql1)
 		  ps1.BindType(0,SQLitePreparedStatement.SQLITE_TEXT)
 		  ps1.Bind(0, suuid)
@@ -194,6 +199,8 @@ Inherits DataFile.ActiveRecordBase
 		  dim aro() as DataFile.tbl_eipl
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_eipl.BaseSQL
 		  if sCriteria.Trim <> "" then
@@ -254,12 +261,14 @@ Inherits DataFile.ActiveRecordBase
 		  //Using this method with user entered data could expose you to SQL injection attacks.
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_eipl.BaseSQL(True)
 		  if sCriteria<>"" then
 		    ars.append "WHERE " + sCriteria
 		  end if
-		  dim s as string = ars.JoinSQL
+		  dim s as string = ars.JoinSQL + ";"
 		  dim rs as RecordSet = DB.SQLSelect(s)
 		  
 		  If DB.error then

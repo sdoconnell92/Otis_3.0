@@ -240,7 +240,7 @@ Protected Class RecordStorageClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub PopulatePrintData(dictFieldNames as Dictionary, oParentStory as LineItemStory)
+		Sub PopulatePrintData(dictFieldNames as Dictionary, ariJustification() as integer, oParentStory as LineItemStory)
 		  dim arsFieldNames() as String
 		  
 		  // Get the cell types and field names
@@ -276,6 +276,7 @@ Protected Class RecordStorageClass
 		  
 		  
 		  // Start populating the column values based on field names and types
+		  oPrintData.ariJustification = ariJustification
 		  PopulatePrintColumnValues(arsFieldNames)
 		  PopulatePrintFieldNames(arsFieldNames)
 		  
@@ -375,6 +376,11 @@ Protected Class RecordStorageClass
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="iLevel"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true

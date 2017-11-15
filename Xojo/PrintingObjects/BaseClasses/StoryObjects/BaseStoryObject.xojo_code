@@ -22,6 +22,10 @@ Protected Class BaseStoryObject
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		bOnlyLastPage As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		bRepeatEveryPage As Boolean
 	#tag EndProperty
 
@@ -41,6 +45,11 @@ Protected Class BaseStoryObject
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="bComplete"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="bOnlyLastPage"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty

@@ -183,6 +183,10 @@ Inherits InnerObjectBase
 		    iRight = DetermineObjectRight - ContentBorder(txtIndex).WidthRight
 		  End If
 		  
+		  If Width <> 0 Then
+		    iTextHeight = g.StringHeight(sText, Width)
+		  End If
+		  
 		  iTop = iTextTop - iBuffer
 		  iBottom = iTextTop + iTextHeight + iBuffer
 		  dim iWidth,iHeight as integer
@@ -293,7 +297,11 @@ Inherits InnerObjectBase
 		    iLeft = DetermineTextLeft(g,sLine)
 		    iBaseLine = iTop + g.StringHeight(sLine, g.StringWidth(sLine) + 4 )
 		    
-		    g.DrawString( sLine, iLeft, iBaseLine )
+		    If Width <> 0 Then
+		      g.DrawString( sLine, iLeft, iBaseLine, Width )
+		    Else
+		      g.DrawString( sLine, iLeft, iBaseLine )
+		    End If
 		    
 		    DrawContentBorders(g, iLeft, iTop, sLine)
 		    

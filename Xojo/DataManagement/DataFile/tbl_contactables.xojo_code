@@ -70,6 +70,9 @@ Inherits DataFile.ActiveRecordBase
 		Shared Function FindByID(id as String) As DataFile.tbl_contactables
 		  //Usage:
 		  //dim tbl_contactables as DataFile.tbl_contactables = DataFile.tbl_contactables.FindByID( id )
+		  if db.Error Then
+		  end if
+		  
 		  dim s as string
 		  s = "Select * from tbl_contactables Where uuid = '" + str(id) + "'"
 		  
@@ -170,6 +173,8 @@ Inherits DataFile.ActiveRecordBase
 		  dim aro() as DataFile.tbl_contactables
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_contactables.BaseSQL
 		  if sCriteria.Trim <> "" then
@@ -230,6 +235,8 @@ Inherits DataFile.ActiveRecordBase
 		  //Using this method with user entered data could expose you to SQL injection attacks.
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_contactables.BaseSQL(True)
 		  if sCriteria<>"" then

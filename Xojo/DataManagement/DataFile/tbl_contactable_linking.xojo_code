@@ -39,6 +39,9 @@ Inherits DataFile.ActiveRecordBase
 		  dim s as string
 		  s = "Select * from tbl_contactable_linking Where uuid = '" + str(id) + "'"
 		  
+		  if db.Error Then
+		  end if
+		  
 		  dim rs as RecordSet = DB.SQLSelect(s)
 		  
 		  if DB.error then
@@ -84,6 +87,8 @@ Inherits DataFile.ActiveRecordBase
 		  dim aro() as DataFile.tbl_contactable_linking
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_contactable_linking.BaseSQL
 		  if sCriteria.Trim <> "" then
@@ -144,6 +149,8 @@ Inherits DataFile.ActiveRecordBase
 		  //Using this method with user entered data could expose you to SQL injection attacks.
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_contactable_linking.BaseSQL(True)
 		  if sCriteria<>"" then
@@ -267,7 +274,7 @@ Inherits DataFile.ActiveRecordBase
 
 
 	#tag Property, Flags = &h0
-		primary_contactable As Boolean
+		bprimary_contactable As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -284,6 +291,11 @@ Inherits DataFile.ActiveRecordBase
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="bprimary_contactable"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true

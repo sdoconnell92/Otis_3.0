@@ -81,6 +81,9 @@ Inherits DataFile.ActiveRecordBase
 		  dim s as string
 		  s = "Select * from tbl_inventory Where uuid = '" + str(id) + "'"
 		  
+		  if db.Error Then
+		  end if
+		  
 		  dim rs as RecordSet = DB.SQLSelect(s)
 		  
 		  if DB.error then
@@ -126,6 +129,8 @@ Inherits DataFile.ActiveRecordBase
 		  dim aro() as DataFile.tbl_inventory
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_inventory.BaseSQL
 		  if sCriteria.Trim <> "" then
@@ -186,6 +191,8 @@ Inherits DataFile.ActiveRecordBase
 		  //Using this method with user entered data could expose you to SQL injection attacks.
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_inventory.BaseSQL(True)
 		  if sCriteria<>"" then

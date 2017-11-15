@@ -2,19 +2,41 @@
 Protected Class EstimateDocument
 Inherits BaseDocument
 	#tag Method, Flags = &h0
+		Sub BuildFooter()
+		  // Create the Header Object
+		  dim oFooter as New FooterStory
+		  oFooter.Height = 30
+		  oFooter.bRepeatEveryPage = True
+		  
+		  // Create Right side text
+		  dim oPageNumbers as New InnerPageNumbers( me )
+		  oPageNumbers.Bold = False
+		  oPageNumbers.FontSize = 9
+		  oPageNumbers.xPosition = "0.85%"
+		  oPageNumbers.yPosition = "0.1%"
+		  
+		  oFooter.aroInnerObjects.Append(oPageNumbers)
+		  
+		  // Append the story items to the document
+		  aroStory.Append(oFooter)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub BuildHeader()
 		  // Create the Header Object
 		  dim oHeader as New BaseStoryObject
 		  oHeader.Height = 80
+		  oHeader.bRepeatEveryPage = True
 		  
-		  // Create Logo for header
-		  dim oLogoImage as New InnerImage(oEst)
-		  oLogoImage.Content = EIPLHeaderLogo_Print_v20
-		  
-		  oHeader.aroInnerObjects.Append(oLogoImage)
+		  // // Create Logo for header
+		  // dim oLogoImage as New InnerImage(me)
+		  // oLogoImage.Content = EIPLHeaderLogo_Print_v20
+		  // 
+		  // oHeader.aroInnerObjects.Append(oLogoImage)
 		  
 		  // Create Right side text
-		  dim oHeaderText as New InnerText( Array( InitObject.HeaderLine1, InitObject.HeaderLine3, InitObject.HeaderLine3 ), me )
+		  dim oHeaderText as New InnerText( Array( InitObject.HeaderLine1, InitObject.HeaderLine2, InitObject.HeaderLine3 ), me )
 		  oHeaderText.Bold = Array( True, False, False )
 		  oHeaderText.FontSize = Array(16,12,12)
 		  oHeaderText.JustificationHor = 0
@@ -36,24 +58,28 @@ Inherits BaseDocument
 		  
 		  dim oBoxes as New InnerBoxes(me)
 		  
+		  dim csz as string
+		  If InitObject.BoxA_City <> "" And InitObject.BoxA_State <> "" And InitObject.BoxA_Zip <> "" Then csz = InitObject.BoxA_City + " " + InitObject.BoxA_State + ", " + InitObject.BoxA_Zip
 		  oBoxes.AddBox( Array( "Contact",_
 		  InitObject.BoxA_CompanyName,_
 		  InitObject.BoxA_ContactName,_
 		  InitObject.BoxA_AddressLine1,_
 		  InitObject.BoxA_AddressLine2,_
-		  InitObject.BoxA_City + InitObject.BoxA_State + ", " + InitObject.BoxA_Zip,_
+		  csz,_
 		  InitObject.BoxA_Phone,_
 		  InitObject.BoxA_Email _
-		   ) )
+		  ) )
 		  
+		  dim csz1 as string
+		  If InitObject.BoxB_City <> "" And InitObject.BoxB_State <> "" And InitObject.BoxB_Zip <> "" Then csz1 = InitObject.BoxB_City + " " + InitObject.BoxB_State + ", " + InitObject.BoxB_Zip
 		  oBoxes.AddBox( Array( "Venue / Site",_
 		  InitObject.BoxB_VenueName,_
 		  InitObject.BoxB_AddressLine1,_
 		  InitObject.BoxB_AddressLine2,_
-		  InitObject.BoxB_City + InitObject.BoxB_State + ", " + InitObject.BoxB_Zip,_
+		  csz1,_
 		  InitObject.BoxB_Phone,_
 		  InitObject.BoxB_Email _
-		   ) )
+		  ) )
 		  
 		  oBoxes.BoxSpacing = 15
 		  oBoxes.ChangeFontSizes( Array( 11,10,10,10,10,10,10,10) )
@@ -67,14 +93,40 @@ Inherits BaseDocument
 	#tag Method, Flags = &h0
 		Sub BuildLineItemStory()
 		  
-		  dim oLIStory as New LineItemStory(_
-		  InitObject.LI_Records,_
-		  InitObject.LI_FieldNames,_
-		  InitObject.LI_Headers,_
-		  me,_
-		  InitObject.LI_ColumnWidths)
+		  dim oLIStory as New LineItemStory( InitObject.LI_Records, InitObject.LI_FieldNames, InitObject.LI_Headers, me, InitObject.LI_ColumnWidths)
 		  
 		  aroStory.Append(oLIStory)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub BuildRemitBox()
+		  // Create the Header Object
+		  dim oRemit as New RemitStory
+		  oRemit.Width = 250
+		  oRemit.Height = 100
+		  oRemit.bOnlyLastPage = True
+		  
+		  dim s as string = "Thank you for your bisiness! We look forward to continuing to work with you on great events in the future! Please remit payment to: Northern Sun Productions, 522 6th Ave NW, Rochester, MN 55901. Thank You."
+		  // Create Right side text
+		  dim oRemitText as New InnerText( Array(s), me )
+		  dim bord as new BorderClass
+		  bord.Left = True
+		  bord.Right = True
+		  bord.Top = True
+		  bord.Bottom = True
+		  oRemitText.ContentBorder = Array(bord)
+		  oRemitText.Width = 200
+		  oRemitText.Bold = Array( False )
+		  oRemitText.FontSize = Array(9)
+		  oRemitText.JustificationHor = -1
+		  oRemitText.xPosition = "0.20%"
+		  oRemitText.yPosition = "0.1%"
+		  
+		  oRemit.aroInnerObjects.Append(oRemitText)
+		  
+		  // Append the story items to the document
+		  aroStory.Append(oRemit)
 		End Sub
 	#tag EndMethod
 
@@ -83,23 +135,23 @@ Inherits BaseDocument
 		  dim oSmallBoxStory as New BaseStoryObject
 		  oSmallBoxStory.Height = 36
 		  
-		  dim oSmBoxes1 as New InnerBoxes(oEst)
+		  dim oSmBoxes1 as New InnerBoxes(me)
 		  
 		  oSmBoxes1.AddBox( Array( "Account Manager",_
-		   InitObject.Box1_AccountManager ),_
-		   0 )
+		  InitObject.Box1_AccountManager ),_
+		  0 )
 		  oSmBoxes1.AddBox( Array( "Event Start",_
-		   InitObject.Box2_EventStartTime,_
-		   InitObject.Box2_EventStartDate ),_
-		   0 )
+		  InitObject.Box2_EventStartTime,_
+		  InitObject.Box2_EventStartDate ),_
+		  0 )
 		  oSmBoxes1.AddBox( Array( "Event End",_
-		   InitObject.Box3_EventEndTime,_
-		   InitObject.Box3_EventEndDate ),_
-		   0 )
+		  InitObject.Box3_EventEndTime,_
+		  InitObject.Box3_EventEndDate ),_
+		  0 )
 		  oSmBoxes1.AddBox( Array( "Load-In",_
-		   InitObject.Box4_LoadInTime,_
-		   InitObject.Box4_LoadInDate ),_
-		   0 )
+		  InitObject.Box4_LoadInTime,_
+		  InitObject.Box4_LoadInDate ),_
+		  0 )
 		  
 		  // Change font sizes
 		  oSmBoxes1.ChangeFontSizes( Array( 10,9,9 ) )
@@ -111,18 +163,21 @@ Inherits BaseDocument
 		  dim oSmallBoxStory2 as New BaseStoryObject
 		  oSmallBoxStory2.Height = 36
 		  
-		  dim oSmBoxes2 as New InnerBoxes(oEst)
+		  dim oSmBoxes2 as New InnerBoxes(me)
 		  
 		  oSmBoxes2.AddBox( Array( "Load-Out",_
 		  InitObject.Box5_LoadOutTime,_
 		  InitObject.Box5_LoadOutDate ),_
-		   0 )
+		  0 )
 		  oSmBoxes2.AddBox( Array( "Discount",_
 		  InitObject.Box6_DiscountPercent,_
-		   InitObject.Box6_DiscountAmount ),_
-		   0 )
+		  InitObject.Box6_DiscountAmount ),_
+		  0 )
 		  oSmBoxes2.AddBox( Array( "Tax",_
 		  InitObject.Box7_Tax ),_
+		  0 )
+		  oSmBoxes2.AddBox( Array( "Payment Due",_
+		  InitObject.Box8_PaymentDue),_
 		  0 )
 		  
 		  // Change Font Sizes
@@ -134,34 +189,16 @@ Inherits BaseDocument
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(oEIPLStor as RecordStorageClass, EstInit as EsitmateInitObject)
+		Sub Constructor(oEIPLStor as RecordStorageClass, EstInit as EstimateInitObject)
+		  InitObject = EstInit
 		  oEIPL = oEIPLStor
 		  
 		  BuildHeader
 		  BuildLargeBoxes
 		  BuildSmallBoxes
 		  BuildLineItemStory
-		  
-		  dim winPP as New winPrintPreview
-		  winPP.Canvas1.Backdrop = New Picture(winPP.Canvas1.Width, winPP.Canvas1.Height)
-		  dim arp() as Picture
-		  
-		  
-		  arp = oEst.PrintPreview(winPP.Canvas1.Width, winPP.Canvas1.Height)
-		  
-		  winPP.NewArray(arp)
-		  
-		  
-		  winPP.Visible = True
-		  
-		  
-		  // oEst.Print
-		  
-		  
-		  
-		  
-		  
-		  
+		  BuildRemitBox
+		  BuildFooter
 		  
 		End Sub
 	#tag EndMethod
@@ -183,10 +220,20 @@ Inherits BaseDocument
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="iCurrentPage"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="iNumberofPages"
+			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -207,6 +254,11 @@ Inherits BaseDocument
 			Visible=true
 			Group="ID"
 			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="RemitY"
+			Group="Behavior"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="StorySpacing"

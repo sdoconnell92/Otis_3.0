@@ -15,7 +15,7 @@ Protected Class printData
 		  dim iLeftOffset as integer = DetermineLeftOffset
 		  
 		  Select Case oParent.StorType
-		  Case "Header"
+		  Case "Header", "GroupFolder"
 		    bBold = True
 		    iFontSize = oParentStory.FontSize
 		  Case "Total"
@@ -82,12 +82,14 @@ Protected Class printData
 		    gClip.TextSize = iFontSize
 		    
 		    dim iTextX, iTextWidth, iTextHalf, iJustification, iClipHalf, iClipHalfX as integer
-		    iTextWidth = gClip.StringWidth(sColVal)
+		    iTextWidth = gClip.StringWidth(sColVal) + 1
 		    iTextHalf = iTextWidth / 2
 		    iClipHalf = iClipWidth / 2
 		    iClipHalfX = iClipHalf
 		    if ariJustification(iColIndex) = 0 Then
 		      iJustification = ValueRef.DefualtPrintColJust
+		    Else
+		      iJustification = ariJustification(iColIndex)
 		    end if
 		    
 		    Select Case iJustification
@@ -96,7 +98,7 @@ Protected Class printData
 		    Case 2
 		      iTextX = iClipHalfX - iTextHalf
 		    Case 3
-		      iTextX = iClipX + iClipWidth - iTextWidth
+		      iTextX = iClipWidth - iTextWidth
 		    End Select
 		    
 		    
@@ -109,14 +111,14 @@ Protected Class printData
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function StringLines() As Integer
+		Function StringLines(ReturnMaxHeight as Boolean = False) As Integer
 		  dim bBold as Boolean
 		  dim iFontSize as integer
 		  dim maxHeight as integer
 		  dim isTotal as Boolean = oParent.isTotal
 		  
 		  Select Case oParent.StorType
-		  Case "Header"
+		  Case "Header", "GroupFolder"
 		    bBold = True
 		    iFontSize = oParentStory.FontSize
 		  Case "Total"
@@ -147,7 +149,13 @@ Protected Class printData
 		  
 		  dim i1 as double
 		  i1 = maxHeight / g.StringHeight("Tg", 50)
-		  Return Floor(i1)
+		  
+		  If ReturnMaxHeight Then
+		    Return maxHeight
+		  Else
+		    Return Floor(i1)
+		  End If
+		  
 		End Function
 	#tag EndMethod
 

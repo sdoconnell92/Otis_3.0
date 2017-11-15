@@ -18,6 +18,14 @@ Protected Class ArrayCursorClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub DecreaseCurrentDepth(iAmount as integer = 1)
+		  If iCursorIndex = ariCursor.Ubound Then
+		    ariCursor(iCursorIndex) = ariCursor(iCursorIndex) - iAmount
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub DrillIn()
 		  ariCursor.Append(0)
 		  iCursorIndex = ariCursor.Ubound
@@ -46,7 +54,7 @@ Protected Class ArrayCursorClass
 	#tag Method, Flags = &h0
 		Sub IncreaseCurrentDepth(iAmount as integer = 1)
 		  If iCursorIndex = ariCursor.Ubound Then
-		    ariCursor(iCursorIndex) = ariCursor(iCursorIndex) + 1
+		    ariCursor(iCursorIndex) = ariCursor(iCursorIndex) + iAmount
 		  End If
 		End Sub
 	#tag EndMethod

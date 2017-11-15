@@ -39,6 +39,9 @@ Inherits DataFile.ActiveRecordBase
 		  dim s as string
 		  s = "Select * from tbl_lineitems Where uuid = '" + str(id) + "'"
 		  
+		  if db.Error Then
+		  end if
+		  
 		  dim rs as RecordSet = DB.SQLSelect(s)
 		  
 		  if DB.error then
@@ -84,6 +87,8 @@ Inherits DataFile.ActiveRecordBase
 		  dim aro() as DataFile.tbl_lineitems
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_lineitems.BaseSQL
 		  if sCriteria.Trim <> "" then
@@ -144,6 +149,8 @@ Inherits DataFile.ActiveRecordBase
 		  //Using this method with user entered data could expose you to SQL injection attacks.
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_lineitems.BaseSQL(True)
 		  if sCriteria<>"" then
@@ -348,6 +355,11 @@ Inherits DataFile.ActiveRecordBase
 	#tag ViewBehavior
 		#tag ViewProperty
 			Name="bli_taxable"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="buse_children_total"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty

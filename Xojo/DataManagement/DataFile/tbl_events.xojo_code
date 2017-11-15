@@ -92,8 +92,14 @@ Inherits DataFile.ActiveRecordBase
 		Shared Function FindByID(id as String) As DataFile.tbl_events
 		  //Usage:
 		  //dim tbl_events as DataFile.tbl_events = DataFile.tbl_events.FindByID( id )
+		  if DB.error THen
+		  end if
+		  
+		  if db.Error Then
+		  end if
+		  
 		  dim s as string
-		  s = "Select * from tbl_events Where uuid = '" + str(id) + "'"
+		  s = "Select * from tbl_events Where uuid = '" + str(id) + "';"
 		  
 		  dim rs as RecordSet = DB.SQLSelect(s)
 		  
@@ -239,6 +245,8 @@ Inherits DataFile.ActiveRecordBase
 		  dim aro() as DataFile.tbl_events
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_events.BaseSQL
 		  if sCriteria.Trim <> "" then
@@ -255,7 +263,7 @@ Inherits DataFile.ActiveRecordBase
 		    ars.append " LIMIT " + str(kMaxReturn) + " Offset " + str(iOffset)
 		  end if
 		  
-		  dim s as string = ars.JoinSQL
+		  dim s as string = ars.JoinSQL + ";"
 		  dim rs as RecordSet = DB.SQLSelect(s)
 		  If DB.error then
 		    break
@@ -299,6 +307,8 @@ Inherits DataFile.ActiveRecordBase
 		  //Using this method with user entered data could expose you to SQL injection attacks.
 		  dim ars() as string
 		  
+		  if db.Error Then
+		  end if
 		  
 		  ars.append DataFile.tbl_events.BaseSQL(True)
 		  if sCriteria<>"" then
