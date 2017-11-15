@@ -28,6 +28,22 @@ Protected Module modFieldFormatting
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Function FormatDateDisplay(dbDate as String) As String
+		  If dbDate = "" Then Return ""
+		  
+		  dim ars() as string = dbDate.Split("-")
+		  dim year, month, day as string
+		  year = ars(0)
+		  month = ars(1)
+		  day = ars(2)
+		  
+		  dim d as new date( val(year), val(month), val(day) )
+		  
+		  Return d.ShortDate
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function FormatDiscountFields(sRawValue as String) As String
 		  dim sDiscountAmount, sDiscountPercent, arsRaw() as String
 		  dim arsDisplay() as string
@@ -53,6 +69,22 @@ Protected Module modFieldFormatting
 		  End If
 		  
 		  Return Join( arsDisplay, ":" )
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function FormatTimeDisplay(dbTime as String) As String
+		  If dbTime = "" Then Return ""
+		  
+		  dim ars() as string = dbTime.Split(":")
+		  dim hour, minute, second as string
+		  hour = ars(0)
+		  minute = ars(1)
+		  second = ars(2)
+		  
+		  dim d as new date( 2000, 1, 1, val(hour), val(minute), val(second) )
+		  
+		  Return d.ShortTime
 		End Function
 	#tag EndMethod
 

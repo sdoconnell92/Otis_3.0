@@ -136,19 +136,40 @@ Inherits BaseDocument
 		  oSmallBoxStory.Height = 36
 		  
 		  dim oSmBoxes1 as New InnerBoxes(me)
+		  dim s as string
 		  
-		  oSmBoxes1.AddBox( Array( "Account Manager",_
+		  If InitObject.Box1_AccountManager = "" Then
+		    s = ""
+		  Else
+		    s = "Account Manager"
+		  End If
+		  oSmBoxes1.AddBox( Array( s,_
 		  InitObject.Box1_AccountManager ),_
 		  0 )
-		  oSmBoxes1.AddBox( Array( "Event Start",_
+		  If InitObject.Box2_EventStartTime = ""  And InitObject.Box2_EventStartDate = "" Then
+		    s = ""
+		  Else
+		    s = "Event Start"
+		  End If
+		  oSmBoxes1.AddBox( Array( s,_
 		  InitObject.Box2_EventStartTime,_
 		  InitObject.Box2_EventStartDate ),_
 		  0 )
-		  oSmBoxes1.AddBox( Array( "Event End",_
+		  If InitObject.Box3_EventEndTime = ""  And InitObject.Box3_EventEndDate = "" Then
+		    s = ""
+		  Else
+		    s = "Event End"
+		  End If
+		  oSmBoxes1.AddBox( Array( s,_
 		  InitObject.Box3_EventEndTime,_
 		  InitObject.Box3_EventEndDate ),_
 		  0 )
-		  oSmBoxes1.AddBox( Array( "Load-In",_
+		  If InitObject.Box4_LoadInTime = ""  And InitObject.Box4_LoadInDate = "" Then
+		    s = ""
+		  Else
+		    s = "Event End"
+		  End If
+		  oSmBoxes1.AddBox( Array( s,_
 		  InitObject.Box4_LoadInTime,_
 		  InitObject.Box4_LoadInDate ),_
 		  0 )
@@ -165,18 +186,38 @@ Inherits BaseDocument
 		  
 		  dim oSmBoxes2 as New InnerBoxes(me)
 		  
-		  oSmBoxes2.AddBox( Array( "Load-Out",_
+		  If InitObject.Box5_LoadOutTime = ""  And InitObject.Box5_LoadOutDate = "" Then
+		    s = ""
+		  Else
+		    s = "Load-Out"
+		  End If
+		  oSmBoxes2.AddBox( Array( s,_
 		  InitObject.Box5_LoadOutTime,_
 		  InitObject.Box5_LoadOutDate ),_
 		  0 )
-		  oSmBoxes2.AddBox( Array( "Discount",_
+		  If InitObject.Box6_DiscountPercent = ""  And InitObject.Box6_DiscountAmount = "" Then
+		    s = "dssadd"
+		  Else
+		    s = "Discount"
+		  End If
+		  oSmBoxes2.AddBox( Array( s,_
 		  InitObject.Box6_DiscountPercent,_
 		  InitObject.Box6_DiscountAmount ),_
 		  0 )
-		  oSmBoxes2.AddBox( Array( "Tax",_
+		  If InitObject.Box7_Tax = "" Then
+		    s = ""
+		  Else
+		    s = "Tax"
+		  End If
+		  oSmBoxes2.AddBox( Array( s,_
 		  InitObject.Box7_Tax ),_
 		  0 )
-		  oSmBoxes2.AddBox( Array( "Payment Due",_
+		  If InitObject.Box8_PaymentDue = "" Then
+		    s = ""
+		  Else
+		    s = "Payment Due"
+		  End If
+		  oSmBoxes2.AddBox( Array( s,_
 		  InitObject.Box8_PaymentDue),_
 		  0 )
 		  

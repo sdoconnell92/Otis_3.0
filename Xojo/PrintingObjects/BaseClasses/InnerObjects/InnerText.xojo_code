@@ -187,6 +187,10 @@ Inherits InnerObjectBase
 		    iTextHeight = g.StringHeight(sText, Width)
 		  End If
 		  
+		  If sText = "" Then
+		    iTextHeight = g.TextHeight
+		  End If
+		  
 		  iTop = iTextTop - iBuffer
 		  iBottom = iTextTop + iTextHeight + iBuffer
 		  dim iWidth,iHeight as integer
@@ -217,7 +221,7 @@ Inherits InnerObjectBase
 		    RectX = iLeft
 		    RectY = iTop
 		    RectWidth = iWidth + 1
-		    RectHeight = ContentBorder(txtIndex).WidthLeft
+		    RectHeight = ContentBorder(txtIndex).WidthTop
 		    g.ForeColor = ContentBorder(txtIndex).ColorTop
 		    
 		    g.FillRect(RectX, RectY, RectWidth, RectHeight)

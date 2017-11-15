@@ -1306,19 +1306,19 @@ End
 		  
 		  
 		  oEstimateInit.Box1_AccountManager = oEvent.saccount_manager
-		  oEstimateInit.Box2_EventStartTime = oEvent.sstart_time
-		  oEstimateInit.Box2_EventStartDate = oEvent.sstart_date
-		  oEstimateInit.Box3_EventEndTime = oEvent.send_time
-		  oEstimateInit.Box3_EventEndDate = oEvent.send_date
-		  oEstimateInit.Box4_LoadInTime = oEvent.sloadin_time
-		  oEstimateInit.Box4_LoadInDate = oEvent.sloadin_date
-		  oEstimateInit.Box5_LoadOutTime = oEvent.sloadout_time
-		  oEstimateInit.Box5_LoadOutDate = oEvent.sloadout_date
+		  oEstimateInit.Box2_EventStartTime = modFieldFormatting.FormatTimeDisplay( oEvent.sstart_time )
+		  oEstimateInit.Box2_EventStartDate = modFieldFormatting.FormatDateDisplay( oEvent.sstart_date )
+		  oEstimateInit.Box3_EventEndTime = modFieldFormatting.FormatTimeDisplay( oEvent.send_time )
+		  oEstimateInit.Box3_EventEndDate = modFieldFormatting.FormatDateDisplay( oEvent.send_date )
+		  oEstimateInit.Box4_LoadInTime = modFieldFormatting.FormatTimeDisplay( oEvent.sloadin_time )
+		  oEstimateInit.Box4_LoadInDate = modFieldFormatting.FormatDateDisplay( oEvent.sloadin_date )
+		  oEstimateInit.Box5_LoadOutTime = modFieldFormatting.FormatTimeDisplay( oEvent.sloadout_time )
+		  oEstimateInit.Box5_LoadOutDate = modFieldFormatting.FormatDateDisplay( oEvent.sloadout_date )
 		  dim arsDisc() as String = oCurrentRecord.GetDiscounts  ' Get the discounts
 		  If arsDisc(0) <> "" Then oEstimateInit.Box6_DiscountPercent = arsDisc(0)
 		  If arsDisc(1) <> "" Then oEstimateInit.Box6_DiscountAmount = arsDisc(1)
-		  oEstimateInit.Box7_Tax = oCurrentRecord.seipl_tax_rate
-		  oEstimateInit.Box8_PaymentDue = oCurrentRecord.sdue_date
+		  If val(Methods.StripNonDigitsDecimals( oCurrentRecord.seipl_tax_rate )) <> 0 Then oEstimateInit.Box7_Tax = oCurrentRecord.seipl_tax_rate
+		  oEstimateInit.Box8_PaymentDue = modFieldFormatting.FormatDateDisplay( oCurrentRecord.sdue_date )
 		  
 		  oEstimateInit.LI_Records = instLineItemList.aroStorClass
 		  oEstimateInit.LI_FieldNames = methPrintingFieldNames
