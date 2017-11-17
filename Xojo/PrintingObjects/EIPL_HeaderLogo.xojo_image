@@ -1,0 +1,40 @@
+#tag MultiImage
+Image EIPL_HeaderLogo
+	#tag ImageRepresentation
+		SaveInfo = APHRcwECAQAAAABIQzpcVXNlcnNcc2VhblxXb3J0aFNhdmluZ1xyZXBvc1xPdGlzXzMuMFxJbWFnZXNcRUlQTF9IZWFkZXJMb2dvX3YyLjMucG5nAwAAAAABAAQAAAAAAQAAAAAAAAA=
+		FullPath = C:\Users\sean\WorthSaving\repos\Otis_3.0\Images\EIPL_HeaderLogo_v2.3.png
+		PartialPath = ..\Images\EIPL_HeaderLogo_v2.3.png
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = -1.00
+			Orientation = Any
+			Platform = 15
+			PPI = 72
+			VSize = -1.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+	#tag ImageRepresentation
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = -1.00
+			Orientation = Any
+			Platform = 15
+			PPI = 144
+			VSize = -1.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+	#tag ImageRepresentation
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = -1.00
+			Orientation = Any
+			Platform = 15
+			PPI = 216
+			VSize = -1.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+End Image
+#tag EndMultiImage

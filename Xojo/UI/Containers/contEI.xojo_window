@@ -1302,7 +1302,7 @@ End
 		  oEstimateInit.HeaderLine1 = oCurrentRecord.seipl_type
 		  oEstimateInit.HeaderLine2 = sEventName
 		  oEstimateInit.HeaderLine3 = oCurrentRecord.seipl_name
-		  oEstimateInit.LogoImage = EIPLHeaderLogo_Print
+		  oEstimateInit.LogoImage = EIPL_HeaderLogo
 		  
 		  
 		  oEstimateInit.Box1_AccountManager = oEvent.saccount_manager

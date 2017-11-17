@@ -36,7 +36,7 @@ Protected Class BaseDocument
 
 	#tag Method, Flags = &h0
 		Sub DrawLogo(g as Graphics)
-		  dim p as Picture = EIPLHeaderLogo_Print
+		  dim p as Picture = EIPL_HeaderLogo
 		  g.DrawPicture( p, 0, 0, 159, 80, 0, 0, p.Width, p.Height )
 		End Sub
 	#tag EndMethod
@@ -47,9 +47,9 @@ Protected Class BaseDocument
 		  
 		  // reduce the area we are working with by the margins
 		  dim g as Graphics
-		  //g = Fullg.Clip(margin, margin, Fullg.Width - (Margin * 2), fullg.Height - (Margin*2) )
-		  g = Fullg.Clip(0, 0, Fullg.Width, fullg.Height )
-		  DrawLogo(Fullg)
+		  g = Fullg.Clip(margin, margin, Fullg.Width - (Margin * 2), fullg.Height - (Margin*2) )
+		  //g = Fullg.Clip(0, 0, Fullg.Width, fullg.Height )
+		  DrawLogo(g)
 		  
 		  dim x, y as integer
 		  
@@ -144,10 +144,21 @@ Protected Class BaseDocument
 		  
 		  Dim ps As New PrinterSetup
 		  If ps.PageSetupDialog Then
-		    Dim g As Graphics
-		    g = OpenPrinterDialog(ps)
-		    If g <> Nil Then
+		    Dim Fullg As Graphics
+		    Fullg = OpenPrinterDialog(ps)
+		    If Fullg <> Nil Then
 		      
+		      // expand graphics to full width of page
+		      dim g as Graphics = Fullg
+		      dim top, left, width, height as integer
+		      top = ps.Top + ps.PageTop
+		      left = ps.Left + ps.PageLeft
+		      width = ps.PageWidth
+		      height = ps.PageHeight
+		      
+		      g = Fullg.Clip(left, top, width, height)
+		      
+		      // Set stuff up
 		      iNumberofPages = PrintPreview(g.Width, g.Height, False).Ubound + 1
 		      iCurrentPage = 1
 		      ResetComplete

@@ -103,7 +103,7 @@ Inherits InnerObjectBase
 		  
 		  //gdog.DrawString("jsojeondfonsodksdnfokansdofineoinslkdnflinslinselinflksnlienlskndlinsflinslinelknslkndlineflinsef", 0, gdog.TextAscent)
 		  //gdog.DrawPicture(EIPLHeaderLogo_Print_v20,5,5, iWidth, iHeight, 0,0,EIPLHeaderLogo_Print_v20.Width, EIPLHeaderLogo_Print_v20.Height) 
-		  gdog.DrawPicture( EIPLHeaderLogo_Print, 0, 0 )
+		  gdog.DrawPicture( EIPL_HeaderLogo, 0, 0 )
 		  // g.DrawPicture( Content, _
 		  // iLeft, iTop, iWidth, iHeight, _
 		  // 0, 0, Content.Width, Content.Height )

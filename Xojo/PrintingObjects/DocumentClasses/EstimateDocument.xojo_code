@@ -139,7 +139,7 @@ Inherits BaseDocument
 		  dim s as string
 		  
 		  If InitObject.Box1_AccountManager = "" Then
-		    s = ""
+		    s = "-"
 		  Else
 		    s = "Account Manager"
 		  End If
@@ -147,7 +147,7 @@ Inherits BaseDocument
 		  InitObject.Box1_AccountManager ),_
 		  0 )
 		  If InitObject.Box2_EventStartTime = ""  And InitObject.Box2_EventStartDate = "" Then
-		    s = ""
+		    s = "-"
 		  Else
 		    s = "Event Start"
 		  End If
@@ -156,7 +156,7 @@ Inherits BaseDocument
 		  InitObject.Box2_EventStartDate ),_
 		  0 )
 		  If InitObject.Box3_EventEndTime = ""  And InitObject.Box3_EventEndDate = "" Then
-		    s = ""
+		    s = "-"
 		  Else
 		    s = "Event End"
 		  End If
@@ -165,7 +165,7 @@ Inherits BaseDocument
 		  InitObject.Box3_EventEndDate ),_
 		  0 )
 		  If InitObject.Box4_LoadInTime = ""  And InitObject.Box4_LoadInDate = "" Then
-		    s = ""
+		    s = "-"
 		  Else
 		    s = "Event End"
 		  End If
@@ -187,7 +187,7 @@ Inherits BaseDocument
 		  dim oSmBoxes2 as New InnerBoxes(me)
 		  
 		  If InitObject.Box5_LoadOutTime = ""  And InitObject.Box5_LoadOutDate = "" Then
-		    s = ""
+		    s = "-"
 		  Else
 		    s = "Load-Out"
 		  End If
@@ -196,7 +196,7 @@ Inherits BaseDocument
 		  InitObject.Box5_LoadOutDate ),_
 		  0 )
 		  If InitObject.Box6_DiscountPercent = ""  And InitObject.Box6_DiscountAmount = "" Then
-		    s = "dssadd"
+		    s = "-"
 		  Else
 		    s = "Discount"
 		  End If
@@ -205,7 +205,7 @@ Inherits BaseDocument
 		  InitObject.Box6_DiscountAmount ),_
 		  0 )
 		  If InitObject.Box7_Tax = "" Then
-		    s = ""
+		    s = "-"
 		  Else
 		    s = "Tax"
 		  End If
@@ -213,7 +213,7 @@ Inherits BaseDocument
 		  InitObject.Box7_Tax ),_
 		  0 )
 		  If InitObject.Box8_PaymentDue = "" Then
-		    s = ""
+		    s = "-"
 		  Else
 		    s = "Payment Due"
 		  End If
