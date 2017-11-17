@@ -1,9 +1,9 @@
 #tag MultiImage
-Image EIPL_HeaderLogo
+Image EIPL_HeaderLogo_Screen
 	#tag ImageRepresentation
-		SaveInfo = APHRcwECAQAAAABIQzpcVXNlcnNcc2VhblxXb3J0aFNhdmluZ1xyZXBvc1xPdGlzXzMuMFxJbWFnZXNcRUlQTF9IZWFkZXJMb2dvX3YyLjYucG5nAwAAAAABAAQAAAAAAQAAAAAAAAA=
-		FullPath = C:\Users\sean\WorthSaving\repos\Otis_3.0\Images\EIPL_HeaderLogo_v2.6.png
-		PartialPath = ..\Images\EIPL_HeaderLogo_v2.6.png
+		SaveInfo = APHRcwECAQAAAABPQzpcVXNlcnNcc2VhblxXb3J0aFNhdmluZ1xyZXBvc1xPdGlzXzMuMFxJbWFnZXNcRUlQTF9IZWFkZXJMb2dvX1NjcmVlbl92Mi4yLnBuZwMAAAAAAQAEAAAAAAEAAAAAAAAA
+		FullPath = C:\Users\sean\WorthSaving\repos\Otis_3.0\Images\EIPL_HeaderLogo_Screen_v2.2.png
+		PartialPath = ..\Images\EIPL_HeaderLogo_Screen_v2.2.png
 		#tag ImageSpecification
 			Comment = 
 			Device = 31

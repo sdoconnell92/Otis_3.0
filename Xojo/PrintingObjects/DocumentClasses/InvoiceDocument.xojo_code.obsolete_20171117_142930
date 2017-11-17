@@ -1,5 +1,5 @@
 #tag Class
-Protected Class EstimateDocument
+Protected Class InvoiceDocument
 Inherits BaseDocument
 	#tag Method, Flags = &h0
 		Sub BuildFooter()
@@ -54,7 +54,7 @@ Inherits BaseDocument
 		Sub BuildLargeBoxes()
 		  
 		  dim oLargeBoxStory as New BaseStoryObject
-		  // oLargeBoxStory.Height = 104
+		  oLargeBoxStory.Height = 104
 		  
 		  dim oBoxes as New InnerBoxes(me)
 		  
@@ -212,16 +212,14 @@ Inherits BaseDocument
 		  oSmBoxes2.AddBox( Array( s,_
 		  InitObject.Box7_Tax ),_
 		  0 )
-		  If Type = "Invoice" Then
-		    If InitObject.Box8_PaymentDue = "" Then
-		      s = "-"
-		    Else
-		      s = "Payment Due"
-		    End If
-		    oSmBoxes2.AddBox( Array( s,_
-		    InitObject.Box8_PaymentDue),_
-		    0 )
+		  If InitObject.Box8_PaymentDue = "" Then
+		    s = "-"
+		  Else
+		    s = "Payment Due"
 		  End If
+		  oSmBoxes2.AddBox( Array( s,_
+		  InitObject.Box8_PaymentDue),_
+		  0 )
 		  
 		  // Change Font Sizes
 		  oSmBoxes2.ChangeFontSizes( Array( 10,9,9 ) )
@@ -233,18 +231,14 @@ Inherits BaseDocument
 
 	#tag Method, Flags = &h0
 		Sub Constructor(oEIPLStor as RecordStorageClass, EstInit as EstimateInitObject)
-		  dim v as Variant = oEIPLStor.oTableRecord
-		  dim o as DataFile.tbl_eipl = v
-		  
 		  InitObject = EstInit
 		  oEIPL = oEIPLStor
-		  Type = o.seipl_type
 		  
 		  BuildHeader
 		  BuildLargeBoxes
 		  BuildSmallBoxes
 		  BuildLineItemStory
-		  If Type = "Invoice" Then BuildRemitBox
+		  BuildRemitBox
 		  BuildFooter
 		  
 		End Sub
@@ -259,12 +253,13 @@ Inherits BaseDocument
 		oEIPL As RecordStorageClass
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		Type As String
-	#tag EndProperty
-
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="bForScreen"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="bPrintDone"
 			Group="Behavior"

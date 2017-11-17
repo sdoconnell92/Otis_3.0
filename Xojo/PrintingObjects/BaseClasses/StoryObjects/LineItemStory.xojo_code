@@ -5,6 +5,13 @@ Inherits BaseStoryObject
 		Sub AddTotals()
 		  DeleteTotals(aroLineItems)
 		  
+		  // dim oEIPL as DataFile.tbl_eipl
+		  // dim v as Variant
+		  // If oParentEIPLDoc.oEIPL <> Nil Then
+		  // v = oParentEIPLDoc.oEIPL
+		  // oEIPL = v
+		  // End If
+		  
 		  For Each oLine as RecordStorageClass In aroLineItems()
 		    
 		    dim retTotals as TotalsClass = CalculateSingleLine(oLine)
@@ -39,7 +46,7 @@ Inherits BaseStoryObject
 		    oLine.aroChildren.Append(oTotalLine3)
 		  Next
 		  
-		  dim retTotals as TotalsClass = CalculateGroup(aroLineItems, True)
+		  dim retTotals as TotalsClass = CalculateGroup(aroLineItems, True, True)
 		  
 		  dim oTotalLine1 as New RecordStorageClass
 		  oTotalLine1.oPrintData.oParentStory = me
@@ -56,9 +63,15 @@ Inherits BaseStoryObject
 		  oTotalLine3.isTotal = True
 		  oTotalLine3.oPrintData.arsColumnValues = Array("Grand Total", str(retTotals.c_Total, "\$###,###,###,###.00"))
 		  
+		  dim oTotalLine4 as New RecordStorageClass
+		  oTotalLine4.oPrintData.oParentStory = me
+		  oTotalLine4.isTotal = True
+		  oTotalLine4.oPrintData.arsColumnValues = Array("Balance Due", str(retTotals.d_BalanceDue, "\$###,###,###,###.00"))
+		  
 		  aroLineItems.Append(oTotalLine1)
 		  If retTotals.RunningDiscountSum <> 0 Then aroLineItems.Append(oTotalLine2)
 		  aroLineItems.Append(oTotalLine3)
+		  If oParentEIPLDoc.Type = "Invoice" Then aroLineItems.Append(oTotalLine4)
 		End Sub
 	#tag EndMethod
 

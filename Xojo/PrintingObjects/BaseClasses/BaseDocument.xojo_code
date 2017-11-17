@@ -36,8 +36,15 @@ Protected Class BaseDocument
 
 	#tag Method, Flags = &h0
 		Sub DrawLogo(g as Graphics)
-		  dim p as Picture = EIPL_HeaderLogo
-		  g.DrawPicture( p, 0, 0, 159, 80, 0, 0, p.Width, p.Height )
+		  dim p as Picture 
+		  
+		  If bForScreen Then
+		    p = EIPL_HeaderLogo_Screen
+		  Else
+		    p = EIPL_HeaderLogo
+		  End If
+		  
+		  g.DrawPicture( p, 0, 0, 160, 80, 0, 0, p.Width, p.Height )
 		End Sub
 	#tag EndMethod
 
@@ -142,6 +149,8 @@ Protected Class BaseDocument
 		Sub Print()
 		  dim arp() as Picture
 		  
+		  bForScreen = False
+		  
 		  Dim ps As New PrinterSetup
 		  If ps.PageSetupDialog Then
 		    Dim Fullg As Graphics
@@ -185,6 +194,8 @@ Protected Class BaseDocument
 		Function PrintPreview(iWidth as integer = 593, iHeight as integer = 773, CalcPages as Boolean = True) As Picture()
 		  dim arp() as Picture
 		  
+		  
+		  
 		  If CalcPages Then
 		    dim pa as New Picture(iWidth, iHeight)
 		    dim g as Graphics = pa.Graphics
@@ -192,6 +203,8 @@ Protected Class BaseDocument
 		    iCurrentPage = 1
 		    ResetComplete
 		  End If
+		  
+		  bForScreen = True
 		  
 		  While not bPrintDone
 		    dim p as New Picture(iWidth, iHeight)
@@ -221,6 +234,7 @@ Protected Class BaseDocument
 		    end if
 		  Next
 		  
+		  bForScreen = False
 		  bPrintDone = False
 		End Sub
 	#tag EndMethod
@@ -228,6 +242,10 @@ Protected Class BaseDocument
 
 	#tag Property, Flags = &h0
 		aroStory() As BaseStoryObject
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		bForScreen As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -251,11 +269,16 @@ Protected Class BaseDocument
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		StorySpacing As Integer = 10
+		StorySpacing As Integer = 5
 	#tag EndProperty
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="bForScreen"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="bPrintDone"
 			Group="Behavior"

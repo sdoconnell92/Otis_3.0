@@ -1,7 +1,7 @@
 #tag Module
 Protected Module EICalculations
 	#tag Method, Flags = &h0
-		Function CalculateGroup(aroLIStor() as RecordStorageClass, bApplyEIPLDiscount as Boolean = False) As TotalsClass
+		Function CalculateGroup(aroLIStor() as RecordStorageClass, bApplyEIPLDiscount as Boolean = False, bCalcBalanceDue as Boolean = False) As TotalsClass
 		  dim oRetTots as New TotalsClass
 		  
 		  For Each oLine as RecordStorageClass In aroLIStor()
@@ -45,11 +45,44 @@ Protected Module EICalculations
 		      
 		      oRetTots.c_Total = oRetTots.b_PostDiscount + oRetTots.TaxSum
 		      
+		      
+		      
 		    End If
 		    
 		  End If
 		  
+		  If bCalcBalanceDue THen
+		    // Grab payment Information
+		    If oRetTots.sEIPLuuid <> "" Then
+		      dim aroPayments() as DataFile.tbl_payments = DataFile.tbl_payments.List("fkeipl = '" + oRetTots.sEIPLuuid + "'")
+		      
+		      dim i as Currency
+		      If aroPayments.Ubound <> -1 Then
+		        For Each p as DataFile.tbl_payments In aroPayments()
+		          i = i + val(Methods.StripNonDigitsDecimals(p.spayment_amount))
+		        Next
+		      End If
+		      dim TotalPayed as Currency = i
+		      dim BalanceDue as Currency = oRetTots.c_Total - TotalPayed
+		      
+		      oRetTots.TotalPayed = TotalPayed
+		      oRetTots.d_BalanceDue = BalanceDue
+		      
+		    End If
+		  End If
+		  
 		  Return oRetTots
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
 		End Function
 	#tag EndMethod
 

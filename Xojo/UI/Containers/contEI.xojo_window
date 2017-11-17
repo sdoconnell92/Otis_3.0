@@ -1329,7 +1329,9 @@ End
 		  
 		  // Create the Estimate
 		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oCurrentRecord)
+		  
 		  dim oEst as New EstimateDocument(oStor, oEstimateInit)
+		  
 		  
 		  
 		  Return oEst

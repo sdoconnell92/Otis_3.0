@@ -58,6 +58,10 @@ Protected Class TotalsClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		d_BalanceDue As Currency
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		LocalDiscountSum As Currency
 	#tag EndProperty
 
@@ -79,6 +83,10 @@ Protected Class TotalsClass
 
 	#tag Property, Flags = &h0
 		TaxSum As Currency
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		TotalPayed As Currency
 	#tag EndProperty
 
 
@@ -104,9 +112,15 @@ Protected Class TotalsClass
 			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="sDiscountPercent"
+			Group="Behavior"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="sEIPLuuid"
 			Group="Behavior"
 			Type="string"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"
