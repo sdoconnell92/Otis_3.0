@@ -54,7 +54,7 @@ Inherits BaseDocument
 		Sub BuildLargeBoxes()
 		  
 		  dim oLargeBoxStory as New BaseStoryObject
-		  // oLargeBoxStory.Height = 104
+		  oLargeBoxStory.Height = 104
 		  
 		  dim oBoxes as New InnerBoxes(me)
 		  

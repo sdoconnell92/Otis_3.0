@@ -1100,9 +1100,9 @@ End
 		  dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
 		  
 		  If discount_count = 0 Then
-		    s = "25%,30%,5%,6%,5%,8%,13%"
+		    s = "25%,9%,9%,25%,5%,6%,5%,8%,8%"
 		  Else
-		    s = "25%,30%,5%,6%,5%,8%,8%,13%"
+		    s = "25%,8%,7%,20%,5%,6%,5%,8%,8%,8%"
 		  End If
 		  
 		  Return s
@@ -1134,9 +1134,9 @@ End
 		  dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
 		  
 		  If discount_count = 0 Then
-		    s1 = "li_name,li_description,li_time,li_rate,li_quantity,li_price,CalcTotal"
+		    s1 = "li_name,li_category,li_subcategory,li_description,li_time,li_rate,li_quantity,li_price,CalcTotal"
 		  Else
-		    s1 = "li_name,li_description,li_time,li_rate,li_quantity,li_price,li_discount,CalcTotal"
+		    s1 = "li_name,li_category,li_subcategory,li_description,li_time,li_rate,li_quantity,li_price,li_discount,CalcTotal"
 		  End If
 		  
 		  // **********
@@ -1207,9 +1207,9 @@ End
 		  dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
 		  
 		  If discount_count = 0 Then
-		    s1 = "Name,Description,Time,Rate,Qty,Price,Total"
+		    s1 = "Name,Cat,SubCat,Description,Time,Rate,Qty,Price,Total"
 		  Else
-		    s1 = "Name,Description,Time,Rate,Qty,Price,Discount,Total"
+		    s1 = "Name,Cat,SubCat,Description,Time,Rate,Qty,Price,Discount,Total"
 		  End If
 		  
 		  // Set header names
@@ -1241,9 +1241,9 @@ End
 		  dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
 		  
 		  If discount_count = 0 Then
-		    ari = Array(1,1,2,2,2,3,3)
+		    ari = Array(1,1,1,1,2,2,2,3,3)
 		  Else
-		    ari = Array(1,1,2,2,2,3,2,3)
+		    ari = Array(1,1,1,1,2,2,2,3,2,3)
 		  End If
 		  
 		  Return ari()
