@@ -54,7 +54,7 @@ Protected Class BaseDocument
 		  
 		  // reduce the area we are working with by the margins
 		  dim g as Graphics
-		  g = Fullg.Clip(margin, margin, Fullg.Width - (Margin * 2), fullg.Height - (Margin*2) )
+		  g = Fullg.Clip(margin.Left, margin.Top, Fullg.Width - (Margin.Left + Margin.Right), fullg.Height - (Margin.Top + Margin.Bottom) )
 		  //g = Fullg.Clip(0, 0, Fullg.Width, fullg.Height )
 		  DrawLogo(g)
 		  
@@ -146,8 +146,9 @@ Protected Class BaseDocument
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Print()
+		Sub Print(AutoAdjust as Boolean = True)
 		  dim arp() as Picture
+		  Margin = New MarginsClass
 		  
 		  bForScreen = False
 		  
@@ -167,8 +168,42 @@ Protected Class BaseDocument
 		      
 		      g = Fullg.Clip(left, top, width, height)
 		      
+		      // If AutoAdjust Then
+		      // Break
+		      // dim Adjusted as Boolean
+		      // While Not Adjusted
+		      // dim pa as New Picture(width, height)
+		      // dim g2 as Graphics = pa.Graphics
+		      // dim arp1() as Picture = PrintPreview(g2.Width, g2.Height, False, False)
+		      // If LastPageLines < 6 Then
+		      // // Find the lineitem story
+		      // For Each oStory as BaseStoryObject In aroStory()
+		      // If oStory IsA LineItemStory THen
+		      // dim v as Variant = oStory
+		      // dim o as LineItemStory = v
+		      // dim p1 as New Picture(200,200)
+		      // dim g1 as Graphics = p1.Graphics
+		      // g1.TextSize = o.FontSize
+		      // 
+		      // dim n1 as integer = (g1.TextHeight + o.iLineBuffer) * LastPageLines
+		      // If n1 < 80 Then
+		      // dim half as integer = Ceil(n1 / 2)
+		      // Margin.Top = Margin.Top - half
+		      // Margin.Bottom = Margin.Bottom - half
+		      // Else
+		      // Adjusted = True
+		      // End If
+		      // End If
+		      // Next
+		      // Else
+		      // Adjusted = True
+		      // End If
+		      // ResetComplete
+		      // Wend
+		      // End If
+		      
 		      // Set stuff up
-		      iNumberofPages = PrintPreview(g.Width, g.Height, False).Ubound + 1
+		      iNumberofPages = PrintPreview(g.Width, g.Height, False, False).Ubound + 1
 		      iCurrentPage = 1
 		      ResetComplete
 		      
@@ -191,15 +226,49 @@ Protected Class BaseDocument
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function PrintPreview(iWidth as integer = 593, iHeight as integer = 773, CalcPages as Boolean = True) As Picture()
+		Function PrintPreview(iWidth as integer = 593, iHeight as integer = 773, CalcPages as Boolean = True, AutoAdjust as Boolean = True) As Picture()
 		  dim arp() as Picture
+		  Margin = New MarginsClass
 		  
+		  // If AutoAdjust Then
+		  // Break
+		  // dim Adjusted as Boolean
+		  // While Not Adjusted
+		  // dim pa as New Picture(iWidth, iHeight)
+		  // dim g as Graphics = pa.Graphics
+		  // dim arp1() as Picture = PrintPreview(g.Width, g.Height, False, False)
+		  // If LastPageLines < 6 Then
+		  // // Find the lineitem story
+		  // For Each oStory as BaseStoryObject In aroStory()
+		  // If oStory IsA LineItemStory THen
+		  // dim v as Variant = oStory
+		  // dim o as LineItemStory = v
+		  // dim p1 as New Picture(200,200)
+		  // dim g1 as Graphics = p1.Graphics
+		  // g1.TextSize = o.FontSize
+		  // 
+		  // dim n1 as integer = (g1.TextHeight + o.iLineBuffer) * LastPageLines
+		  // If n1 < 80 Then
+		  // dim half as integer = Ceil(n1 / 2)
+		  // Margin.Top = Margin.Top - half
+		  // Margin.Bottom = Margin.Bottom - half
+		  // Else
+		  // Adjusted = True
+		  // End If
+		  // End If
+		  // Next
+		  // Else
+		  // Adjusted = True
+		  // End If
+		  // ResetComplete
+		  // Wend
+		  // End If
 		  
 		  
 		  If CalcPages Then
 		    dim pa as New Picture(iWidth, iHeight)
 		    dim g as Graphics = pa.Graphics
-		    iNumberofPages = PrintPreview(g.Width, g.Height, False).Ubound + 1
+		    iNumberofPages = PrintPreview(g.Width, g.Height, False, False).Ubound + 1
 		    iCurrentPage = 1
 		    ResetComplete
 		  End If
@@ -231,11 +300,13 @@ Protected Class BaseDocument
 		      dim va as Variant = oStory
 		      dim o as LineItemStory = va
 		      o.oCurs = New ArrayCursorClass
+		      o.PageLines = 0
 		    end if
 		  Next
 		  
 		  bForScreen = False
 		  bPrintDone = False
+		  LastPageLines = 0
 		End Sub
 	#tag EndMethod
 
@@ -265,7 +336,7 @@ Protected Class BaseDocument
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		Margin As Integer = 40
+		Margin As MarginsClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -313,7 +384,7 @@ Protected Class BaseDocument
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="Margin"
+			Name="Margin()"
 			Group="Behavior"
 			InitialValue="40"
 			Type="Integer"

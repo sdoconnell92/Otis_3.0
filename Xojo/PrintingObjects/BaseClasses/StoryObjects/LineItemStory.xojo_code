@@ -293,6 +293,7 @@ Inherits BaseStoryObject
 		      oCurs.DrillOut
 		      If oCurs.CursorRemoved Then
 		        bComplete = True
+		        oParentEIPLDoc.LastPageLines = PageLines
 		      End If
 		    End If
 		  Elseif not oCurs.onFirst Then

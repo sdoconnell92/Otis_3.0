@@ -130,6 +130,7 @@ Class=RemitStory;PrintingObjects/BaseClasses/StoryObjects/RemitStory.xojo_code;&
 Class=FooterStory;PrintingObjects/BaseClasses/StoryObjects/FooterStory.xojo_code;&h39DDBFFF;&h4B798FFF;false
 MultiImage=EIPL_HeaderLogo;PrintingObjects/EIPL_HeaderLogo.xojo_image;&h25C38FFF;&h8FD5FFF;false
 MultiImage=EIPL_HeaderLogo_Screen;PrintingObjects/EIPL_HeaderLogo_Screen.xojo_image;&h75B15FFF;&h8FD5FFF;false
+Class=MarginsClass;PrintingObjects/BaseClasses/MarginsClass.xojo_code;&h400C37FF;&h1C03EFFF;false
 AppMenuBar=MainMenuBar
 MajorVersion=1
 MinorVersion=0
