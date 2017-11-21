@@ -39,6 +39,16 @@ Inherits InnerObjectBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub ChangeAllBolds(arbBold() as Boolean)
+		  For i1 as integer = 0 To BoxContent.Ubound
+		    For i as integer = 0 To arbBold.Ubound
+		      BoxContent(i1).Bold = arbBold
+		    Next
+		  Next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub ChangeFontSizes(ariFontSize() as integer)
 		  
 		  For Each oBox as InnerText In BoxContent()
@@ -124,10 +134,27 @@ Inherits InnerObjectBase
 			Type="Boolean"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="Height"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
 			InitialValue="-2147483648"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="JustificationHor"
+			Group="Behavior"
+			InitialValue="-1"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="JustificationVert"
+			Group="Behavior"
+			InitialValue="-1"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -155,6 +182,23 @@ Inherits InnerObjectBase
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Width"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="xPosition"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="yPosition"
+			Group="Behavior"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

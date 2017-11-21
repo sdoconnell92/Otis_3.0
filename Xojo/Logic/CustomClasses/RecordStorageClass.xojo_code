@@ -296,7 +296,11 @@ Protected Class RecordStorageClass
 		  dim sRet as string
 		  
 		  If isTotal Then
-		    sRet = "Total"
+		    If oParentStor <> Nil Then
+		      sRet = "Total"
+		    Else
+		      sRet = "MasterTotal"
+		    End If
 		  Elseif isFolder and not isChild and not isLinker and not isRecord Then
 		    sRet = "GroupFolder"
 		  ElseIf not isChild and not isLinker and isRecord Then

@@ -83,6 +83,7 @@ Inherits BaseDocument
 		  
 		  oBoxes.BoxSpacing = 15
 		  oBoxes.ChangeFontSizes( Array( 11,10,10,10,10,10,10,10) )
+		  oBoxes.ChangeAllBolds( Array( True, False, False, False, False, False, False, False ) )
 		  
 		  oLargeBoxStory.aroInnerObjects.Append(oBoxes)
 		  
@@ -146,6 +147,7 @@ Inherits BaseDocument
 		  oSmBoxes1.AddBox( Array( s,_
 		  InitObject.Box1_AccountManager ),_
 		  0 )
+		  
 		  If InitObject.Box2_EventStartTime = ""  And InitObject.Box2_EventStartDate = "" Then
 		    s = "-"
 		  Else
@@ -155,6 +157,7 @@ Inherits BaseDocument
 		  InitObject.Box2_EventStartTime,_
 		  InitObject.Box2_EventStartDate ),_
 		  0 )
+		  
 		  If InitObject.Box3_EventEndTime = ""  And InitObject.Box3_EventEndDate = "" Then
 		    s = "-"
 		  Else
@@ -164,6 +167,7 @@ Inherits BaseDocument
 		  InitObject.Box3_EventEndTime,_
 		  InitObject.Box3_EventEndDate ),_
 		  0 )
+		  
 		  If InitObject.Box4_LoadInTime = ""  And InitObject.Box4_LoadInDate = "" Then
 		    s = "-"
 		  Else
@@ -176,6 +180,7 @@ Inherits BaseDocument
 		  
 		  // Change font sizes
 		  oSmBoxes1.ChangeFontSizes( Array( 10,9,9 ) )
+		  oSmBoxes1.ChangeAllBolds( Array(True, False, False) )
 		  
 		  oSmallBoxStory.aroInnerObjects.Append(oSmBoxes1)
 		  aroStory.Append(oSmallBoxStory)
@@ -195,6 +200,7 @@ Inherits BaseDocument
 		  InitObject.Box5_LoadOutTime,_
 		  InitObject.Box5_LoadOutDate ),_
 		  0 )
+		  
 		  If InitObject.Box6_DiscountPercent = ""  And InitObject.Box6_DiscountAmount = "" Then
 		    s = "-"
 		  Else
@@ -204,6 +210,7 @@ Inherits BaseDocument
 		  InitObject.Box6_DiscountPercent,_
 		  InitObject.Box6_DiscountAmount ),_
 		  0 )
+		  
 		  If InitObject.Box7_Tax = "" Then
 		    s = "-"
 		  Else
@@ -212,6 +219,7 @@ Inherits BaseDocument
 		  oSmBoxes2.AddBox( Array( s,_
 		  InitObject.Box7_Tax ),_
 		  0 )
+		  
 		  If Type = "Invoice" Then
 		    If InitObject.Box8_PaymentDue = "" Then
 		      s = "-"
@@ -225,6 +233,7 @@ Inherits BaseDocument
 		  
 		  // Change Font Sizes
 		  oSmBoxes2.ChangeFontSizes( Array( 10,9,9 ) )
+		  oSmBoxes2.ChangeAllBolds( Array(True, False, False) )
 		  
 		  oSmallBoxStory2.aroInnerObjects.Append(oSmBoxes2)
 		  aroStory.Append(oSmallBoxStory2)
@@ -265,6 +274,11 @@ Inherits BaseDocument
 
 
 	#tag ViewBehavior
+		#tag ViewProperty
+			Name="bForScreen"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
 		#tag ViewProperty
 			Name="bPrintDone"
 			Group="Behavior"
@@ -329,6 +343,11 @@ Inherits BaseDocument
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Type"
+			Group="Behavior"
+			Type="String"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

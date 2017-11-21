@@ -18,7 +18,7 @@ Protected Class printData
 		  Case "Header", "GroupFolder"
 		    bBold = True
 		    iFontSize = oParentStory.FontSize
-		  Case "Total"
+		  Case "Total", "MasterTotal"
 		    
 		    dim iCenterBuffer as integer = 4
 		    
@@ -39,19 +39,24 @@ Protected Class printData
 		      dim iClipWidth, iClipHeight, X, Y as integer
 		      iClipWidth = g.StringWidth(tuple(0) + ":") + iCenterBuffer * 2 + g.StringWidth(tuple(1))
 		      iClipHeight = g.Height
-		      X = iTC - oParentStory.iLineBuffer - g.StringWidth(tuple(0) + ":")
+		      // X = iTC - oParentStory.iLineBuffer - g.StringWidth(tuple(0) + ":")
+		      X = g.Width - iClipWidth
+		      If oParent.StorType = "MasterTotal" Then X = X - 80
 		      Y = 0
-		      g.Bold = bb
 		      
 		      dim gClip as Graphics = g.Clip(X,Y,iClipWidth,iClipHeight)
 		      
 		      // Draw the Title
 		      gClip.TextSize = g.TextSize
 		      gClip.Bold = True
-		      gClip.DrawString(tuple(0) + ":", 0, gClip.TextAscent)
+		      
+		      gClip.DrawString( Join(tuple, ": "), 0, gClip.TextAscent )
+		      
+		      // gClip.DrawString(tuple(0) + ":", 0, gClip.TextAscent)
 		      
 		      // Draw the content
-		      gClip.DrawString(tuple(1), g.StringWidth(tuple(0) + ":") + iCenterBuffer * 2, gClip.TextAscent)
+		      // gClip.DrawString(tuple(1), g.StringWidth(tuple(0) + ":") + iCenterBuffer * 2, gClip.TextAscent)
+		      g.Bold = bb
 		    Next
 		    
 		    Return

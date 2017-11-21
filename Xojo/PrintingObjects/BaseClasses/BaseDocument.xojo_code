@@ -261,6 +261,10 @@ Protected Class BaseDocument
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		LastPageLines As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		Margin As Integer = 40
 	#tag EndProperty
 

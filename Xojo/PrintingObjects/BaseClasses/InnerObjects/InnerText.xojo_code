@@ -12,6 +12,7 @@ Inherits InnerObjectBase
 		Sub Constructor(ParentDocument as BaseDocument)
 		  Parent = ParentDocument
 		  ObjectBorder = New BorderClass
+		  
 		End Sub
 	#tag EndMethod
 

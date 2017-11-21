@@ -123,6 +123,7 @@ Inherits BaseStoryObject
 	#tag Method, Flags = &h0
 		Sub Draw(g as Graphics)
 		  
+		  PageLines = 0
 		  
 		  // Find the true widths
 		  PopulateTrueWidths(g)
@@ -242,8 +243,10 @@ Inherits BaseStoryObject
 		    If oCurs.OnLast Then
 		      // Draw this line
 		      
+		      PageLines = PageLines + 1
+		      
 		      If oCurs.iCursorIndex = 0 Then
-		        If oLine.StorType = "Total" And oParentEIPLDoc.RemitY = 0 Then
+		        If oLine.StorType = "MasterTotal" And oParentEIPLDoc.RemitY = 0 Then
 		          oParentEIPLDoc.RemitY = yIndex
 		        End If
 		      End If
@@ -345,6 +348,10 @@ Inherits BaseStoryObject
 
 	#tag Property, Flags = &h0
 		oParentEIPLDoc As EstimateDocument
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		PageLines As Integer
 	#tag EndProperty
 
 
