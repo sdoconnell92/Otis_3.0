@@ -2,6 +2,12 @@
 Protected Class tbl_events
 Inherits DataFile.ActiveRecordBase
 	#tag Event
+		Function evdefGetRecordName() As String
+		  Return sevent_name
+		End Function
+	#tag EndEvent
+
+	#tag Event
 		Sub PostDelete()
 		  
 		  // Grab all the link children of this record from the database

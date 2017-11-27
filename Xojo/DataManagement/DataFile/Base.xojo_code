@@ -200,6 +200,12 @@ Protected Class Base
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetRecordName() As String
+		  Return evdefGetRecordName
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function GetTableName() As String
 		  dim tableInfo as Introspection.TypeInfo = Introspection.GetType(me)
 		  dim sTableName as string = tableInfo.Name
@@ -516,6 +522,10 @@ Protected Class Base
 
 	#tag Hook, Flags = &h0
 		Event BeforeUpdate()
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event evdefGetRecordName() As String
 	#tag EndHook
 
 

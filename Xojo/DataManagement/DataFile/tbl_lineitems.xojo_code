@@ -1,6 +1,13 @@
 #tag Class
 Protected Class tbl_lineitems
 Inherits DataFile.ActiveRecordBase
+	#tag Event
+		Function evdefGetRecordName() As String
+		  Return sli_name
+		End Function
+	#tag EndEvent
+
+
 	#tag Method, Flags = &h0
 		Shared Function BaseSQL(bAsCount as Boolean = false) As String
 		  dim ars() as string

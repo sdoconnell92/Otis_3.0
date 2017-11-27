@@ -1,6 +1,13 @@
 #tag Class
 Protected Class tbl_payments
 Inherits DataFile.ActiveRecordBase
+	#tag Event
+		Function evdefGetRecordName() As String
+		  Return modFieldFormatting.FormatDateDisplay(spayment_date) + ": " + str(spayment_amount, "\$###,###,###,###.00" )
+		End Function
+	#tag EndEvent
+
+
 	#tag Method, Flags = &h0
 		Shared Function BaseSQL(bAsCount as Boolean = false) As String
 		  dim ars() as string

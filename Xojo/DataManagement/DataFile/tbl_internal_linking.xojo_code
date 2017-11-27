@@ -1,6 +1,13 @@
 #tag Class
 Protected Class tbl_internal_linking
 Inherits DataFile.ActiveRecordBase
+	#tag Event
+		Function evdefGetRecordName() As String
+		  Return suuid
+		End Function
+	#tag EndEvent
+
+
 	#tag Method, Flags = &h0
 		Shared Function BaseSQL(bAsCount as Boolean = false) As String
 		  dim ars() as string

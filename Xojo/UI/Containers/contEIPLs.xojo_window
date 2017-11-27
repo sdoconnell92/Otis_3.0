@@ -39,6 +39,7 @@ Begin ContainerControl contEIPLs
       HasHeading      =   True
       Height          =   389
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   4
       LockBottom      =   True
@@ -990,7 +991,7 @@ End
 		    
 		  Case "Break Link"
 		    
-		    dim oRowTags() as lbRowTag
+		    dim oRowTags() as RecordStorageClass
 		    oRowTags = lbEIPLs.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
@@ -1059,7 +1060,7 @@ End
 		    
 		  Case "Delete Item"
 		    
-		    dim oRowTags() as lbRowTag
+		    dim oRowTags() as RecordStorageClass
 		    oRowTags = lbEIPLs.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items

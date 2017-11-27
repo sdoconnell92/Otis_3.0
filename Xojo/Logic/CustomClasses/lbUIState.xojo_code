@@ -1,11 +1,19 @@
 #tag Class
 Protected Class lbUIState
 	#tag Property, Flags = &h0
-		oOpenFolders() As lbRowTag
+		oOpenFolders() As RecordStorageClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		oSelectedRows() As lbRowTag
+		oOpenFoldersOld() As lbRowTag
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		oSelectedRows() As RecordStorageClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		oSelectedRowsOld() As lbRowTag
 	#tag EndProperty
 
 

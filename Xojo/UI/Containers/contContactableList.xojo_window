@@ -1095,7 +1095,7 @@ End
 		    
 		  Case "Break Link"
 		    
-		    dim oRowTags() as lbRowTag
+		    dim oRowTags() as RecordStorageClass
 		    oRowTags = lbItems.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
@@ -1164,7 +1164,7 @@ End
 		    
 		  Case "Delete"
 		    
-		    dim oRowTags() as lbRowTag
+		    dim oRowTags() as RecordStorageClass
 		    oRowTags = lbItems.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
@@ -1466,7 +1466,7 @@ End
 		      ' there is a previous search value
 		      
 		      // Close all the folders by passing a nil array
-		      dim nilarray() as lbRowTag
+		      dim nilarray() as RecordStorageClass
 		      lb1.reopenFolders(nilarray)
 		      
 		      If LastUIState <> Nil Then

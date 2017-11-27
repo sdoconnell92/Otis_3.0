@@ -1,6 +1,13 @@
 #tag Class
 Protected Class tbl_firmware
 Inherits DataFile.ActiveRecordBase
+	#tag Event
+		Function evdefGetRecordName() As String
+		  Return sfirmware_version
+		End Function
+	#tag EndEvent
+
+
 	#tag Method, Flags = &h0
 		Shared Function BaseSQL(bAsCount as Boolean = false) As String
 		  dim ars() as string

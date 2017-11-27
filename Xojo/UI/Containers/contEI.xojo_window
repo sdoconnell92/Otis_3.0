@@ -43,6 +43,7 @@ Begin ContainerControl contEI
       Scope           =   0
       TabIndex        =   2
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   22
       Value           =   0
       Visible         =   True
@@ -60,6 +61,7 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   353
          HelpTag         =   ""
+         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
          LastSearchValue =   ""
@@ -92,6 +94,7 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   473
          HelpTag         =   ""
+         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
          LastSearchValue =   ""
@@ -123,6 +126,7 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   181
          HelpTag         =   ""
+         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   343
          LockBottom      =   False
@@ -236,6 +240,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   2
+         TabStop         =   True
          Text            =   "EIPL Name"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -270,6 +275,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   4
          TabPanelIndex   =   2
+         TabStop         =   True
          Text            =   "EIPL Type"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -335,6 +341,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   6
          TabPanelIndex   =   2
+         TabStop         =   True
          Text            =   "Due Date"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -411,6 +418,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   8
          TabPanelIndex   =   2
+         TabStop         =   True
          Text            =   "Tax Rate"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -477,6 +485,7 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   120
          HelpTag         =   ""
+         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   262
          LockBottom      =   False
@@ -505,6 +514,7 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   181
          HelpTag         =   ""
+         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   343
          LockBottom      =   True
@@ -544,6 +554,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   12
          TabPanelIndex   =   2
+         TabStop         =   True
          Text            =   "Discounts"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -578,6 +589,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   1
+         TabStop         =   True
          Text            =   "EIPL Number"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -612,6 +624,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   13
          TabPanelIndex   =   2
+         TabStop         =   True
          Text            =   "EIPL Discount"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -678,6 +691,7 @@ Begin ContainerControl contEI
          HasBackColor    =   False
          Height          =   179
          HelpTag         =   ""
+         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   20
          LockBottom      =   True
@@ -717,6 +731,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   16
          TabPanelIndex   =   2
+         TabStop         =   True
          Text            =   "Contactables"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -751,6 +766,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   17
          TabPanelIndex   =   2
+         TabStop         =   True
          Text            =   "Payments"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -816,6 +832,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   5
          TabPanelIndex   =   1
+         TabStop         =   True
          Text            =   "Subtotal:"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -850,6 +867,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   6
          TabPanelIndex   =   1
+         TabStop         =   True
          Text            =   "Disc Sum:"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -884,6 +902,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   7
          TabPanelIndex   =   1
+         TabStop         =   True
          Text            =   "Tax:"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -918,6 +937,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   9
          TabPanelIndex   =   1
+         TabStop         =   True
          Text            =   "Balance:"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -952,6 +972,7 @@ Begin ContainerControl contEI
          Selectable      =   False
          TabIndex        =   10
          TabPanelIndex   =   1
+         TabStop         =   True
          Text            =   "Total:"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -1152,7 +1173,7 @@ End
 		  
 		  
 		  // Get all the selected rows from the inventory listbox
-		  dim aroRowTags() as lbRowTag
+		  dim aroRowTags() as RecordStorageClass
 		  aroRowTags = instInventoryList.lbItems.GetSelectedRows
 		  
 		  // Loop through all of the rowtags

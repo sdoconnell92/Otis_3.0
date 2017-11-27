@@ -2,6 +2,12 @@
 Protected Class tbl_eipl
 Inherits DataFile.ActiveRecordBase
 	#tag Event
+		Function evdefGetRecordName() As String
+		  Return seipl_name
+		End Function
+	#tag EndEvent
+
+	#tag Event
 		Sub PreInsert()
 		  
 		  dim iNewEIPLNumber as integer

@@ -39,6 +39,7 @@ Begin Window winContactablePicker
       HasBackColor    =   False
       Height          =   378
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       LastSearchValue =   ""
       Left            =   0

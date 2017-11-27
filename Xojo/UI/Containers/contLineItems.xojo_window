@@ -314,6 +314,7 @@ End
 
 	#tag Method, Flags = &h0
 		Function methBuildSQL(bShowHidden as Boolean, sSearchString as String, sOrderBy as String) As SQLStorageClass
+		  '!@! Table Dependent !@!
 		  dim aroSQL() as String
 		  dim arsConditions() as String
 		  dim arsOrderBy() as String
@@ -369,7 +370,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methExpandAllRows(JustTopLevel as Boolean = True)
-		  dim lb1 As entListbox = lbItems  '!@! Table Dependent !@!
+		  dim lb1 As entListbox = methGetListbox
 		  
 		  // Loop through all the rows
 		  dim i1 as integer
@@ -402,8 +403,15 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function methGetListbox() As entListbox
+		  '!@! Table Dependent !@!
+		  Return lbContactables
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub methHandleCellAction(row as integer, column as integer)
-		  dim lb as entListbox = lbItems
+		  dim lb as entListbox = methGetListbox
 		  
 		  If lb.CellType(row,column) = 2 Then
 		    'its a checkbox
@@ -437,7 +445,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methHandleCellLostFocus(row as integer, col as integer)
-		  dim lb as entListbox = lbItems
+		  dim lb as entListbox = methGetListbox
 		  
 		  If lb.CellType(row,col) = 3 Then
 		    ' it's a text edit
@@ -498,7 +506,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methHandleDoubleClick()
-		  dim lb as entListbox = lbItems
+		  dim lb as entListbox = methGetListbox
 		  
 		  
 		  If evdefDoubleClick Then
@@ -508,46 +516,13 @@ End
 		  Else
 		    
 		    
-		    dim oStor as RecordStorageClass
-		    
-		    If lb.ListIndex <> -1 Then
-		      
-		      oStor = lb.RowTag(lb.ListIndex)
-		      
-		      If oStor.oTableRecord <> Nil Then
-		        
-		        // Get the Event name
-		        dim vRecord as Variant = oStor.oTableRecord
-		        dim oRecord as DataFile.tbl_lineitems = vRecord
-		        dim sItemName as string
-		        sItemName = oRecord.sli_name
-		        
-		        If oStor.sUUID <> "" Then
-		          
-		          // load up an Event container
-		          'dim conEventInst as New contEvent
-		          'dim oTabPanel as PagePanel = app.MainWindow.tbMainWindow
-		          
-		          'app.MainWindow.AddTab(sEventName)
-		          
-		          'conEventInst.EmbedWithinPanel(oTabPanel,oTabPanel.PanelCount - 1 )
-		          
-		          'conEventInst.LoadEvent(oStor.sUUID)
-		          
-		        End If
-		        
-		      End If
-		      
-		    End If
-		    
-		    
 		  End If
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub methHandleExpandRow(row as integer)
-		  dim lb1 as entListbox = lbItems  '!@! Table Dependent !@!
+		  dim lb1 as entListbox = methGetListbox
 		  
 		  // Extract the rowtag out of the parent
 		  dim oParentStor as RecordStorageClass
@@ -566,7 +541,7 @@ End
 		    lb1.RowTag(lb1.LastIndex) = oChild
 		    
 		    // Load the row
-		    methPopulateRow( lbItems.LastIndex, oChild )
+		    methPopulateRow( lb1.LastIndex, oChild )
 		    
 		  Next
 		  
@@ -585,13 +560,13 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methListboxSettings()
-		  _
-		  
+		  '!@! Table Dependent !@!
+		  dim lb as entListbox = methGetListbox
 		  
 		  // Set up some basic stuff
 		  
 		  // trigger event to allow me to set information externally
-		  evdefListboxSettings(lbItems,dictCellTypes,dictFieldNames)
+		  evdefListboxSettings(lb,dictCellTypes,dictFieldNames)
 		  
 		  If dictFieldNames = Nil And dictCellTypes = Nil Then
 		    
@@ -601,7 +576,7 @@ End
 		    
 		    // Set Column Count
 		    dim iColCount as integer = 10
-		    lbItems.ColumnCount = iColCount
+		    lb.ColumnCount = iColCount
 		    
 		    // Initialize dictionaries
 		    dictFieldNames = New Dictionary
@@ -610,7 +585,7 @@ End
 		    // Set header names
 		    s1 = "Name,Category,Description,Time,Rate,Qty,Price,Discount,Total,Tax"
 		    s2() = Split(s1,",")
-		    lbItems.Heading = s2()
+		    lb.Heading = s2()
 		    arsHeaders() = s2()
 		    
 		    
@@ -712,8 +687,8 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methLoadMe(bGrouped as Boolean = True, sGroupFields as String = "", bGetChildren as boolean = True)
-		  dim lb as entListbox = lbItems
-		  
+		  '!@! Table Dependent !@!
+		  dim lb as entListbox = methGetListbox
 		  
 		  // Prepare the sql statement to get our records
 		  dim bHidden as Boolean = False
@@ -741,7 +716,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methPopulateListbox(aroRecordStor() as RecordStorageClass)
-		  dim lb as entListbox = lbItems
+		  dim lb as entListbox = methGetListbox
 		  
 		  lb.DeleteAllRows
 		  
@@ -761,7 +736,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methPopulateRow(iRowIndex as integer, oStor as RecordStorageClass)
-		  dim lb as entListbox = lbItems
+		  dim lb as entListbox = methGetListbox
 		  dim oDummy as New DataFile.tbl_lineitems
 		  dim sTableName as String = oDummy.GetTableName
 		  
@@ -812,9 +787,11 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methRefresh()
-		  
-		  
+		  dim lb as entListbox = methGetListbox
+		  dim oUIState as lbUIState
+		  oUIState = lb.GetUIState
 		  methLoadMe()
+		  lb.ResetUIState(oUIState)
 		End Sub
 	#tag EndMethod
 
@@ -832,7 +809,7 @@ End
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event evdefListboxSettings(lbItems as entListbox, ByRef dictCellTypes as Dictionary, ByRef dictFieldNames as Dictionary)
+		Event evdefListboxSettings(lb as entListbox, ByRef dictCellTypes as Dictionary, ByRef dictFieldNames as Dictionary)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -909,6 +886,7 @@ End
 	#tag Event
 		Function entContextualMenuAction(hitItem as MenuItem) As Boolean
 		  '!@! Table Dependent !@!
+		  dim lb as entListbox = methGetListbox
 		  
 		  Select Case hitItem.Text
 		  Case "Open"
@@ -918,7 +896,7 @@ End
 		  Case "Break Link"
 		    
 		    dim oRowTags() as RecordStorageClass
-		    oRowTags = lbItems.GetSelectedRowTags
+		    oRowTags = lb.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
@@ -928,24 +906,22 @@ End
 		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
 		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_lineitems
+		      dim oRecord as DataFile.ActiveRecordBase
 		      If oRowTag.oTableRecord <> Nil Then
-		        dim v as Variant = oRowTag.oTableRecord
-		        oRecord = v
+		        oRecord = oRowTag.oTableRecord
 		      Else
 		        Continue
 		      End If
-		      dim oLinkRecord as DataFile.tbl_internal_linking
+		      dim oLinkRecord as DataFile.ActiveRecordBase
 		      If oRowTag.oLinkRecord <> Nil Then
-		        dim v as Variant = oRowTag.oLinkRecord
-		        oLinkRecord = v
+		        oLinkRecord = oRowTag.oLinkRecord
 		      Else
 		        Continue
 		      End If
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.sli_name
+		      sName = oRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -964,7 +940,7 @@ End
 		        // Display the window to the user
 		        winWindow.ShowModal
 		        
-		        // Chekc the users response
+		        // Check the users response
 		        bDelete = contDeletePromt.UserResponse
 		        If contDeletePromt.propApplyToAll Then
 		          If bDelete Then
@@ -989,7 +965,7 @@ End
 		  Case "Delete Item"
 		    
 		    dim oRowTags() as RecordStorageClass
-		    oRowTags = lbItems.GetSelectedRowTags
+		    oRowTags = lb.GetSelectedRowsold
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
@@ -999,17 +975,16 @@ End
 		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
 		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_lineitems
-		      If oRowTag.oTableRecord <> Nil Then
-		        dim v as Variant = oRowTag.oTableRecord
-		        oRecord = v
+		      dim oRecord as DataFile.tbl_contact_methods
+		      If oRowTag.vtblRecord <> Nil Then
+		        oRecord = oRowTag.vtblRecord
 		      Else
 		        Continue
 		      End If
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.sli_name
+		      sName = oRecord.smethod
 		      
 		      dim bDelete as Boolean
 		      
@@ -1050,7 +1025,6 @@ End
 		      End If
 		    Next
 		    
-		    
 		  Case "Maintenance Logs"
 		    
 		    
@@ -1058,7 +1032,7 @@ End
 		  Case "Calculate Line Total"
 		    
 		    dim oRowTag as RecordStorageClass
-		    oRowTag = lbItems.RowTag(lbItems.ListIndex)
+		    oRowTag = lb.RowTag(lb.ListIndex)
 		    
 		    If oRowTag.oTableRecord <> Nil Then
 		      If oRowTag.isRecord Then
@@ -1075,7 +1049,7 @@ End
 		  Case "Calculate Group Total"
 		    Break
 		    dim oRowTag as RecordStorageClass
-		    oRowTag = lbItems.RowTag(lbItems.ListIndex)
+		    oRowTag = lb.RowTag(lb.ListIndex)
 		    
 		    dim oRetTots as TotalsClass = CalculateSingleLine( oRowTag )
 		    
@@ -1090,12 +1064,13 @@ End
 	#tag Event
 		Function entConstructContextualMenu(base as menuitem, x as integer, y as integer) As Boolean
 		  '!@! Table Dependent !@!
+		  dim lb as entListbox = methGetListbox
 		  
-		  If lbItems.ListIndex <> -1 Then
+		  If lb.ListIndex <> -1 Then
 		    
 		    // Grab the rowtag
 		    dim oRowTag as RecordStorageClass
-		    oRowTag = lbItems.RowTag(lbItems.ListIndex)
+		    oRowTag = lb.RowTag(lb.ListIndex)
 		    
 		    If oRowTag.oTableRecord <> Nil Then
 		      
@@ -1138,11 +1113,7 @@ End
 #tag Events bRefresh
 	#tag Event
 		Sub Action()
-		  
-		  dim oUIState as lbUIState
-		  oUIState = lbItems.GetUIState
-		  methLoadMe()
-		  lbItems.ResetUIState(oUIState)
+		  methRefresh
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -1150,7 +1121,7 @@ End
 	#tag Event
 		Sub Search()
 		  dim sSearchValue as string
-		  dim lb1 as entListbox = lbItems
+		  dim lb1 as entListbox = methGetListbox
 		  
 		  sSearchValue = scSearchField.Text
 		  
@@ -1181,7 +1152,7 @@ End
 		      ' there is a previous search value
 		      
 		      // Close all the folders by passing a nil array
-		      dim nilarray() as lbRowTag
+		      dim nilarray() as RecordStorageClass
 		      lb1.reopenFolders(nilarray)
 		      
 		      If LastUIState <> Nil Then

@@ -39,7 +39,6 @@ Begin ContainerControl contContactMethodList
       HasHeading      =   True
       Height          =   171
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   3
       LockBottom      =   True
@@ -203,321 +202,103 @@ End
 
 
 	#tag Method, Flags = &h0
-		Sub methBuildRowTag(ByRef oRowTag as lbRowTag)
-		  dim otblRecord as DataFile.tbl_contact_methods  '!@! Table Dependent !@!
-		  dim sUUID as string
+		Function methAcquireRecords(oSQLStor as SQLStorageClass, sGroupBy as String, bGetChildren as Boolean = False, bGroupRecords as Boolean = False) As RecordStorageClass()
 		  
-		  // Check  to see what kind of row this will be based on varying conditions
-		  If oRowTag.vtblRecord IsA DataFile.tbl_contact_methods Then  '!@! Table Dependent !@!
-		    'there is a table record and it is our primary table
-		    
-		    // Put the table record into a variable
-		    otblRecord = oRowTag.vtblRecord
-		    
-		    // Pull the table name into a variable
-		    dim sTableName as String = otblRecord.GetTableName
-		    
-		    // FIll in some rowtag info that we know already
-		    suuid = otblRecord.suuid
-		    If sUUID <> "" Then
-		      oRowTag.uuid = suuid
-		    End If
-		    If oRowTag.sRowType = "Grandparent" Then
-		      'grandparent level row
-		      oRowTag.sFieldNames = dictFieldNames.Value("GrandParent")
-		      oRowTag.iCellTypes = dictCellTypes.Value("GrandParent")
-		    Else
-		      oRowTag.sFieldNames = dictFieldNames.Value(oRowTag.sRowType)
-		      oRowTag.iCellTypes = dictCellTypes.Value(oRowTag.sRowType)
-		    End If
-		    
-		    // Populate the Column values for this row
-		    For Each sFieldName as String In oRowTag.sFieldNames
-		      
-		      // make sure the table name isn't included in this
-		      dim sFieldNameStripped as string
-		      dim x1 as integer = sFieldName.InStr(".")
-		      If x1 = 0 Then
-		        sFieldNameStripped = sFieldName
-		      Else
-		        sFieldNameStripped = Mid(sFieldName, x1 + 1)
-		      End If
-		      
-		      // Get the field names and values as a json item from the database record
-		      dim jsFieldValues as JSONItem = otblRecord.GetMyFieldValues(True)
-		      dim sKeys() as string = jsFieldValues.Names
-		      
-		      // Check to make sure that the field we are looking for really exists
-		      If sKeys.IndexOf(sFieldNameStripped) <> -1 Then
-		        
-		        // Format the value for display
-		        dim sUnFormattedValue as String = jsFieldValues.value(sFieldNameStripped)
-		        dim sFormattedValue as String
-		        If sFieldName.InStr(".") = 0 Then
-		          sFormattedValue = str(sUnFormattedValue, modFieldFormatting.GetFormattingString(sTableName + "." + sFieldName))
-		        Else
-		          sFormattedValue = str(sUnFormattedValue, modFieldFormatting.GetFormattingString(sFieldName) )
-		        End If
-		        
-		        // append this value to the rowtag array
-		        oRowTag.vColumnValues.Append(sFormattedValue)
-		        
-		      End If
+		  
+		  // First get a list of all records
+		  dim aroRecords() as DataFile.ActiveRecordBase = DataFile.tbl_lineitems.List( oSQLStor.oPS )
+		  
+		  // Storify the records
+		  dim aroStor() as RecordStorageClass = DataFile.StorifyRecords( aroRecords )
+		  
+		  // Check if we need to get the children
+		  If bGetChildren Then DataFile.PopulateListWithChildren( aroStor() )
+		  
+		  // Check if we need to group the records
+		  If bGroupRecords Then aroStor() = DataFile.GroupRecords( aroStor(), sGroupBy )
+		  
+		  Return aroStor
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function methBuildSQL(bShowHidden as Boolean, sSearchString as String, sOrderBy as String) As SQLStorageClass
+		  '!@! Table Dependent !@!
+		  dim aroSQL() as String
+		  dim arsConditions() as String
+		  dim arsOrderBy() as String
+		  dim ariTypes() as Integer
+		  dim arvValue() as Variant
+		  
+		  // Add the base sql
+		  aroSQL.Append( DataFile.tbl_lineitems.BaseSQL )
+		  
+		  
+		  // Build condition array
+		  ' Build Search Condition
+		  If sSearchString <> "" Then
+		    arsConditions.Append( "method Like ? Or method_type Like ? Or method_location Like ?" )
+		    For i1 as integer = 0 To 2
+		      ariTypes.Append( SQLitePreparedStatement.SQLITE_TEXT )
+		      arvValue.Append( "%" + sSearchString + "%" )
 		    Next
-		    
-		    // Check to see if this record has any children
-		    dim arLinkArray() as DataFile.tbl_internal_linking
-		    dim dictChildRecords as New Dictionary
-		    arLinkArray = DataFile.tbl_internal_linking.List( "fk_parent = " + otblRecord.suuid )
-		    
-		    // Loop through each link child
-		    If arLinkArray.Ubound <> -1 Then
-		      
-		      For iLinkIndex as integer = 0 To arLinkArray.Ubound
-		        
-		        // Pull the link record out of the array
-		        dim oLinkRecord as DataFile.tbl_internal_linking = arLinkArray( iLinkIndex )
-		        
-		        // Get the child record
-		        dim oChild as DataFile.tbl_contact_methods = DataFile.tbl_contact_methods.FindByID( oLinkRecord.sfk_child )  '!@! Table Dependent !@!
-		        If oChild <> Nil Then
-		          
-		          dim dictKeys() as Variant
-		          dim sLinkType as string
-		          sLinkType = oLinkRecord.slink_type
-		          dictKeys() = dictChildRecords.Keys
-		          dim sKeys() as string
-		          For Each Key as Variant In dictKeys()
-		            sKeys.Append( str(Key) )
-		          Next
-		          
-		          If sLinkType = "" Then
-		            sLinkType = "NoType"
-		          End If
-		          
-		          dim aroSubChildren() as lbRowTag
-		          
-		          // Create new rowtag for this child
-		          dim oSubRowtag as New lbRowTag
-		          oSubRowtag.vtblRecord = otblRecord
-		          oSubRowtag.iFolderLevel = oRowTag.iFolderLevel + 1
-		          oSubRowtag.vtblRecord = oChild
-		          oSubRowtag.vLinkTable = oLinkRecord
-		          oSubRowtag.sRowType = "Linked - " + sLinkType
-		          
-		          If sKeys.IndexOf(sLinkType) >=0 Then
-		            ' there is already a dictionary entry for this link type
-		            // Pull its fellow rowtags out of Dictionary
-		            aroSubChildren() = dictChildRecords.Value(sLinkType)
-		            
-		          Else
-		            'there is no dictionary entry for this link type
-		          End If
-		          
-		          // Feed this rowtag back into our build rowtag method to build it out
-		          methBuildRowTag(oSubRowtag)
-		          
-		          // Add our current child rowtag to the array and then back into the dictionary
-		          aroSubChildren.Append(oSubRowtag)
-		          dictChildRecords.Value(sLinkType) = aroSubChildren
-		          
-		        Else
-		          // The child specified by the link record does not exist
-		          
-		          // Delete the child from the array
-		          arLinkArray.Remove( iLinkIndex )
-		          
-		        End If
-		        
-		      Next
-		      
-		      // Check again if there are any link records left
-		      If arLinkArray.Ubound = -1 Then
-		        // No link records left 
-		      Else
-		        // Link records left
-		        oRowTag.isFolder = True
-		      End If
-		      
-		      // Loop through each of the categories in dictChildRecords
-		      dim dictKeys() as Variant = dictChildRecords.Keys
-		      For Each key as Variant In dictKeys
-		        
-		        // Pull all of the child rowtags out of this category
-		        dim aroChildRecords() as lbRowTag = dictChildRecords.Value(key)
-		        
-		        // Check to see if there is a link type that would force us to create a sub folder to contain sub reacord
-		        If key = "NoType" Then
-		          
-		          // Loop through each child rowtag
-		          For Each Child as lbRowTag In aroChildRecords
-		            oRowTag.aroChildren.Append(Child)
-		          Next
-		          
-		        Else
-		          
-		          // Create a link folder rowtag
-		          dim oLinkRowtag as New lbRowTag
-		          oLinkRowtag.aroChildren() = aroChildRecords()
-		          oLinkRowtag.iCellTypes = dictCellTypes.Value("LinkingTypeFolder")
-		          oLinkRowtag.iFolderLevel = oRowTag.iFolderLevel + 1
-		          oLinkRowtag.isFolder = True
-		          oLinkRowtag.sFieldNames = dictFieldNames.Value("LinkingTypeFolder")
-		          oLinkRowtag.sRowType = "LinkingTypeFolder"
-		          oLinkRowtag.vColumnValues = Array(key)
-		          
-		          oRowTag.aroChildren.Append(oLinkRowtag)
-		          
-		        End If
-		        
-		      Next
-		      
-		    End If
-		    
-		    
 		  End If
 		  
+		  If oParentRecord <> Nil Then
+		    arsConditions.Append("fkcontactables = ?")
+		    ariTypes.Append( SQLitePreparedStatement.SQLITE_TEXT )
+		    arvValue.Append( oParentRecord.suuid )
+		  End If
 		  
+		  If arsConditions.Ubound <> -1 Then
+		    aroSQL.Append( "Where" )
+		    aroSQL.Append( Join(arsConditions, " And ") )
+		  End If
 		  
+		  // Build OrderBy String
+		  If sOrderBy <> "" Then
+		    aroSQL.Append( "Order By" )
+		    aroSQL.Append( sOrderBy )
+		  End If
 		  
+		  aroSQL.Append(";")
 		  
+		  // Join the sql into one string
+		  dim sSQL as String
+		  sSQL = aroSQL.JoinSQL
 		  
+		  // Put all of this into a sql Storage Class
+		  dim oSQLStor as New SQLStorageClass
+		  oSQLStor.sSQL = sSQL
+		  oSQLStor.ariTypes = ariTypes
+		  oSQLStor.arvValues = arvValue
 		  
+		  // Prepare a statement
+		  oSQLStor.PrepareStatement
 		  
-		  
-		  
-		  
-		  
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function methCreateRowTags(vRecords() as DataFile.tbl_contact_methods) As lbRowTag()
-		  '!@! Table Dependent In Parameters !@!
-		  
-		  // vRecords will either be 
-		  // an array of ActiveRecordBase objects
-		  //      or
-		  // a Dictionary or grouped records
-		  
-		  dim oReturnRowtags() as lbRowTag 
-		  
-		  // Check if vRecords is grouped or not
-		  
-		  Select Case vRecords(0)
-		  Case IsA Dictionary
-		    //Problem!!! should be in other form of method
-		    Return Array(new lbRowTag)
-		  Case IsA DataFile.ActiveRecordBase
-		    
-		    // Loop through each record
-		    For Each oRecord as DataFile.tbl_contact_methods In vRecords  '!@! Table Dependent !@!
-		      
-		      // Set up some basic things for the rowtag that we know already
-		      dim oCurrentRowtag as New lbRowTag
-		      'put the record we are on into the rowtag
-		      oCurrentRowtag.vtblRecord = oRecord
-		      oCurrentRowtag.iFolderLevel = 1
-		      oCurrentRowtag.sRowType = "GrandParent"
-		      
-		      // Build that damn rowtag
-		      methBuildRowTag(oCurrentRowtag)
-		      
-		      oReturnRowtags.Append( oCurrentRowtag )
-		      
-		    Next
-		    
-		    
-		    
-		  End Select
-		  
-		  Return oReturnRowtags
+		  Return oSQLStor
 		  
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Function methCreateRowTags_dict(dictRecords as Dictionary) As lbRowTag()
-		  // vRecords will either be 
-		  // an array of ActiveRecordBase objects
-		  //      or
-		  // a Dictionary or grouped records
-		  
-		  // Check if vRecords is grouped or not
-		  Select Case dictRecords
-		  Case IsA DataFile.ActiveRecordBase
-		    //Problem!!! should be in other form of method
-		    Return Array(New lbRowTag)
-		  Case IsA Dictionary
-		    
-		    dim aroGroupRowtags() as lbRowTag
-		    
-		    // Loop through all of the groups
-		    For Each vGroupName as Variant In dictRecords.Keys
-		      
-		      // Create the rowtags for this groups children
-		      dim aroChildRowTags() as lbRowTag
-		      aroChildRowTags() = methCreateRowTags(dictRecords.Value(vGroupName))
-		      
-		      // Create a New Rowtag for the Group
-		      dim oGroupRowtag as New lbRowTag
-		      oGroupRowtag.aroChildren() = aroChildRowTags()
-		      oGroupRowtag.iCellTypes = dictCellTypes.Value("GroupFolder")
-		      oGroupRowtag.iFolderLevel = 0
-		      oGroupRowtag.isFolder = True
-		      oGroupRowtag.sFieldNames = dictFieldNames.Value("GroupFolder")
-		      oGroupRowtag.sRowType = "GroupFolder"
-		      oGroupRowtag.vColumnValues = Array( vGroupname )
-		      
-		      aroGroupRowtags.Append(oGroupRowtag)
-		      
-		    Next
-		    
-		    Return aroGroupRowtags()
-		    
-		  End Select
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub methCreateTopLevelRows(aroRowtags() As lbRowTag)
-		  dim lb1 as entListbox = lbMethods  '!@! Table Dependent !@!
-		  
-		  // Clear the listbox
-		  lb1.DeleteAllRows
-		  
-		  
-		  // Loop through each rowtag
-		  For Each oRowtag as lbRowTag In aroRowtags()
-		    
-		    // Create a row for this rowtag
-		    lb1.AddRow("")
-		    
-		    // Load the Row
-		    methLoadRow(lb1.LastIndex, oRowtag)
-		    
-		  Next
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub methExpandAllRows(JustTopLevel as Boolean = True)
-		  dim lb1 As entListbox = lbMethods  '!@! Table Dependent !@!
+		  dim lb1 As entListbox = methGetListbox
 		  
 		  // Loop through all the rows
 		  dim i1 as integer
 		  While i1 < lb1.ListCount 
 		    
-		    dim oRowTag as lbRowTag
+		    dim oRowData as RecordStorageClass
 		    
 		    // extract the rowtag
-		    oRowTag = lb1.RowTag(i1)
+		    oRowData = lb1.RowTag(i1)
 		    
 		    // Chgeck if its a folder
 		    If lb1.RowIsFolder(i1) Then
 		      
 		      // Check if its a top level folder
-		      Select Case oRowTag.iFolderLevel
+		      Select Case oRowData.FolderLevel
 		      Case 0 
 		        lb1.Expanded(i1) = True
 		      Else
@@ -535,122 +316,137 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function methGetRecordList_Grouped(sGroupByField as string, sConditionpar as string) As Dictionary
-		  dim dictGroupedItems as Dictionary
-		  
-		  // Grab the search value
-		  dim sSearchValue as String
-		  sSearchValue = scSearchField.Text  
-		  
-		  // Get the inventory items from the database grouped by sGroupByField
-		  dim sSearchCondition,sExcludeHiddenItemsCondition as String
-		  dim sCondition,sOrder as String
-		  
-		  // Set up the search condition
-		  If sSearchValue = "" Then
-		    sSearchCondition = ""
-		  Else
-		    sSearchCondition = "item_name Like '%" + sSearchValue + "%'"
-		  End If
-		  
-		  // Set up Hidden Condition
-		  dim HiddenValue as Boolean
-		  HiddenValue = chbShowHidden.Value
-		  If HiddenValue Then
-		    sExcludeHiddenItemsCondition = ""
-		  Else
-		    sExcludeHiddenItemsCondition = "(hide <> 1 Or hide Is Null)"
-		  End If
-		  
-		  // Set up the condition
-		  If sSearchCondition <> "" Then
-		    sCondition = sSearchCondition
-		    If sExcludeHiddenItemsCondition <> "" Then
-		      sCondition = sCondition + " And "
-		    End If
-		  End If
-		  If  sExcludeHiddenItemsCondition <> "" Then
-		    sCondition = sCondition + sExcludeHiddenItemsCondition
-		    If sConditionpar <> "" Then
-		      sCondition = sCondition + " And " 
-		    End If
-		  End If 
-		  If sConditionpar <> "" Then
-		    sCondition = sCondition + sConditionpar
-		  End If
-		  sOrder = sGroupByField
-		  dictGroupedItems = DataFile.tbl_contact_methods.ListGrouped(sCondition,sOrder,sGroupByField)  '!@! Table Dependent !@!
-		  
-		  Return dictGroupedItems
+		Function methGetListbox() As entListbox
+		  '!@! Table Dependent !@!
+		  Return lbMethods
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function methGetRecordList_UnGrouped(sOrderByFields as string, sConditionpar as string) As DataFile.tbl_contact_methods()
-		  '!@! Table Dependent In Return Type !@!
+		Sub methHandleCellAction(row as integer, column as integer)
+		  dim lb as entListbox = methGetListbox
 		  
-		  dim aroRecords() as DataFile.tbl_contact_methods  '!@! Table Dependent !@!
-		  
-		  // Grab the search value
-		  dim sSearchValue as String
-		  sSearchValue = scSearchField.Text
-		  
-		  // Get the inventory items from the database grouped by sGroupByField
-		  dim sSearchCondition,sExcludeHiddenItemsCondition as String
-		  dim sCondition,sOrder as String
-		  
-		  // Set up the search condition
-		  If sSearchValue = "" Then
-		    sSearchCondition = ""
-		  Else
-		    sSearchCondition = "method Like '%" + sSearchValue + "%' Or method_type Like '%" + sSearchValue + "%' Or method_location Like '%" + sSearchValue + "%'  "  '!@! Table Dependent !@!
-		  End If
-		  
-		  // Set up Hidden Condition
-		  dim HiddenValue as Boolean
-		  HiddenValue = chbShowHidden.Value
-		  If HiddenValue Then
-		    sExcludeHiddenItemsCondition = ""
-		  Else
-		    sExcludeHiddenItemsCondition = "(hide <> 1 Or hide Is Null)"
-		  End If
-		  
-		  // Set up the condition
-		  If sSearchCondition <> "" Then
-		    sCondition = sSearchCondition
-		    If sExcludeHiddenItemsCondition <> "" Then
-		      sCondition = sCondition + " And "
+		  If lb.CellType(row,column) = 2 Then
+		    'its a checkbox
+		    
+		    // Get the state of the checkbox
+		    dim CheckBoxState as CheckBox.CheckedStates
+		    CheckBoxState = lb.CellState(row,column)
+		    
+		    // Pull the rowtag
+		    dim oStor as RecordStorageClass
+		    oStor = lb.RowTag(row)
+		    
+		    // Check if there is a record here
+		    If oStor.oTableRecord <> Nil Then
+		      
+		      dim bValue as Boolean
+		      Select Case CheckBoxState
+		      Case CheckBox.CheckedStates.Checked
+		        bValue = True
+		      Else
+		        bValue = False
+		      End Select
+		      
+		      oStor.oTableRecord.ChangeMySavedValue( oStor.oRowData.arsFieldNames(column), bValue )
+		      
 		    End If
+		    
 		  End If
-		  If  sExcludeHiddenItemsCondition <> "" Then
-		    sCondition = sCondition + sExcludeHiddenItemsCondition
-		    If sConditionpar <> "" Then
-		      sCondition = sCondition + " And " 
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methHandleCellLostFocus(row as integer, col as integer)
+		  dim lb as entListbox = methGetListbox
+		  
+		  If lb.CellType(row,col) = 3 Then
+		    ' it's a text edit
+		    
+		    // Get the storage class from the rowtag
+		    dim oStor as RecordStorageClass = lb.RowTag(row)
+		    
+		    // Check if there is a table record in this class
+		    If oStor.oTableRecord <> Nil Then
+		      
+		      // Grab the value of the cell
+		      dim vValue as Variant = lb.Cell(row,col)
+		      
+		      // Get the field values
+		      dim jsFieldValues as JSONItem = oStor.oTableRecord.GetMyFieldValues(True)
+		      
+		      // Check if our field name is already in table.field format
+		      dim sFieldName as string = oStor.oRowData.arsFieldNames(col)
+		      dim sTableName as String = oStor.oTableRecord.GetTableName
+		      dim sDBDotNotation as String
+		      dim sFTable, sFField as string
+		      dim dotIndex as Integer = sFieldName.InStr( "." )
+		      If dotIndex <> 0 Then
+		        'this is already in dotnotation
+		        sDBDotNotation = sFieldName
+		        dim s1() as string = sFieldName.Split(".")
+		        sFTable = s1(0)
+		        sFField = s1(1)
+		      Else
+		        sDBDotNotation = sTableName + "." + sFieldName
+		        sFField = sFieldName
+		        sFTable = sTableName
+		      End If
+		      
+		      // Check that the field actually exists
+		      If jsFieldValues.Names.IndexOf( sFField ) <> -1 Then
+		        ' the field exists
+		        Select Case VarType( jsFieldValues.Value(sFField) )
+		        Case 2 'int32
+		          vValue = val(vValue)
+		        Case 3 'int64
+		          vValue = val(vValue)
+		        Case 8 'string
+		        Case 37 'text
+		        End Select
+		        
+		        oStor.oTableRecord.ChangeMySavedValue(sFField,vValue)
+		        
+		      End If
+		      
 		    End If
-		  End If 
-		  If sConditionpar <> "" Then
-		    sCondition = sCondition + sConditionpar
+		    
 		  End If
 		  
-		  aroRecords = DataFile.tbl_contact_methods.List(sCondition,sOrderByFields)  '!@! Table Dependent !@!
 		  
-		  Return aroRecords
-		End Function
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methHandleDoubleClick()
+		  dim lb as entListbox = methGetListbox
+		  
+		  
+		  If evdefDoubleClick Then
+		    
+		    // the event was handled and we do not want to do anything else
+		    
+		  Else
+		    
+		    
+		    
+		  End If
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub methHandleExpandRow(row as integer)
-		  dim lb1 as entListbox = lbMethods  '!@! Table Dependent !@!
+		  dim lb1 as entListbox = methGetListbox
 		  
 		  // Extract the rowtag out of the parent
-		  dim oParentRowTag as lbRowTag
-		  oParentRowTag = lb1.RowTag(row)
+		  dim oParentStor as RecordStorageClass
+		  oParentStor = lb1.RowTag(row)
 		  
 		  // Grab all the children
-		  dim aroChildrenRowTag() as lbRowTag
-		  aroChildrenRowTag() = oParentRowTag.aroChildren
+		  dim aroChildrenStor() as RecordStorageClass
+		  aroChildrenStor() = oParentStor.aroChildren
 		  
-		  For Each oChild as lbRowTag In aroChildrenRowTag
+		  For Each oChild as RecordStorageClass In aroChildrenStor
 		    
 		    // Add a row
 		    lb1.AddRow("")
@@ -659,7 +455,7 @@ End
 		    lb1.RowTag(lb1.LastIndex) = oChild
 		    
 		    // Load the row
-		    methLoadRow(lbMethods.LastIndex,oChild)  '!@! Table Dependent !@!
+		    methPopulateRow( lb1.LastIndex, oChild )
 		    
 		  Next
 		  
@@ -771,67 +567,28 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub methLoadMe(sContactableID as string = "")
-		  dim IsGrouped as Boolean = bDisplayGrouped
+		Sub methLoadMe(bGrouped as Boolean = True, sGroupFields as String = "", bGetChildren as boolean = True)
+		  '!@! Table Dependent !@!
+		  dim lb as entListbox = methGetListbox
 		  
-		  If oParentRecord <> Nil And sContactableID = "" Then
-		    sContactableID = oParentRecord.suuid
-		  End If
+		  // Prepare the sql statement to get our records
+		  dim bHidden as Boolean = False
+		  dim sSearchString as String = scSearchField.Text
+		  dim sOrderBy as String = "method_type"
+		  dim oSQL as SQLStorageClass = methBuildSQL( bHidden, sSearchString, sOrderBy )
+		  sGroupFields = sOrderBy
 		  
-		  If sContactableID <> "" Then
-		    // Get the parent record object
-		    oParentRecord = DataFile.tbl_contactables.FindByID(sContactableID)
-		  End If
+		  // Get the records from the database
+		  dim aroStor() as RecordStorageClass = methAcquireRecords( oSQL, sGroupFields, bGetChildren, bGrouped )
 		  
-		  //UnGrouped
-		  If Not IsGrouped Then
-		    
-		    dim sCondition as String
-		    
-		    If sContactableID <> "" Then
-		      sCondition = "fkcontactables = '" +sContactableID + "'"
-		    Else
-		      sCondition = ""
-		    End If
-		    
-		    // Get the records
-		    dim records() as DataFile.tbl_contact_methods = methGetRecordList_UnGrouped("method_type", sCondition)    '!@! Table Dependent !@!
-		    
-		    // Abort if there are no records
-		    If records.Ubound = -1 Then
-		      Return
-		    End If
-		    
-		    // Build the rowtags
-		    dim theRowtags() as lbRowTag
-		    theRowtags = methCreateRowTags(records)
-		    
-		    methCreateTopLevelRows(theRowtags)
-		    
-		    //Grouped
-		  ElseIf IsGrouped Then
-		    
-		    dim sCondition as String
-		    
-		    If sContactableID <> "" Then
-		      sCondition = "fkcontactables = '" +sContactableID + "'"
-		    Else
-		      sCondition = ""
-		    End If
-		    
-		    // Get the Records
-		    dim dictRecords as Dictionary = methGetRecordList_Grouped("method_type", sCondition)    '!@! Table Dependent !@!
-		    
-		    // Abort if there are no records
-		    If dictRecords.Keys.Ubound = -1 Then
-		      Return
-		    End If
-		    
-		    dim theRowtagsGrouped() as lbRowTag
-		    theRowtagsGrouped = methCreateRowTags_dict(dictRecords)
-		    
-		    methCreateTopLevelRows(theRowtagsGrouped)
-		    
+		  aroStorClass = aroStor
+		  
+		  If aroStor.Ubound <> -1 Then
+		    // Populate RowData values
+		    aroStor.PopulateLbDataList( dictFieldNames, dictCellTypes )
+		    methPopulateListbox( aroStor )
+		  Else
+		    lb.DeleteAllRows
 		  End If
 		  
 		End Sub
@@ -841,57 +598,17 @@ End
 		Sub methLoadMe_ExpandSingleRecord(oRecord as DataFile.tbl_contact_methods)
 		  '!@! Table Dependent In Parameters !@!
 		  
-		  If oRecord <> Nil Then
-		    
-		    dim aroRecords() as DataFile.tbl_contact_methods     '!@! Table Dependent !@!
-		    aroRecords.Append(oRecord)
-		    
-		    // Create rowtags based of the record we want to expand
-		    dim oRowTags() as lbRowTag
-		    oRowTags = methCreateRowTags(aroRecords)
-		    
-		    methCreateTopLevelRows(oRowTags(0).aroChildren)
-		    
-		  End If
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub methLoadRow(RowIndex as integer, oRowTag as lbRowTag)
-		  dim lb1 as entListbox = lbMethods    '!@! Table Dependent !@!
+		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oRecord)
+		  DataFile.GetChildren(oStor)
 		  
+		  aroStorClass = oStor.aroChildren
 		  
-		  
-		  dim i1 as integer 
-		  For Each vValue as Variant In oRowTag.vColumnValues
-		    
-		    lb1.CellType(RowIndex,i1) = oRowTag.iCellTypes(i1)
-		    
-		    Select Case lb1.CellType(RowIndex,i1)
-		    Case 0 'default
-		      lb1.Cell(RowIndex,i1) = vValue
-		    Case 1 'text
-		      lb1.Cell(RowIndex,i1) = vValue
-		    Case 2 'CheckBox
-		      If vValue = True then
-		        lb1.CellState(RowIndex,i1) = CheckBox.CheckedStates.Checked
-		      Else
-		        lb1.CellState(RowIndex,i1) = CheckBox.CheckedStates.Unchecked
-		      End If
-		    Case 3 'edit text
-		      lb1.Cell(RowIndex,i1) = vValue
-		    Else
-		      lb1.Cell(RowIndex,i1) = vValue
-		    End Select
-		    
-		    i1 = i1 + 1
-		  Next
-		  
-		  lb1.RowTag(RowIndex) = oRowTag
-		  
-		  // Make it a folder if neccessary
-		  If oRowTag.isFolder Then
-		    lb1.RowisFolder(RowIndex) = True
+		  If aroStorClass.Ubound <> -1 Then
+		    // Populate RowData values
+		    aroStorClass.PopulateLbDataList( dictFieldNames, dictCellTypes )
+		    methPopulateListbox( aroStorClass )
+		  Else
+		    lb.DeleteAllRows
 		  End If
 		End Sub
 	#tag EndMethod
@@ -923,13 +640,83 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub methPopulateListbox(aroRecordStor() as RecordStorageClass)
+		  dim lb as entListbox = methGetListbox
+		  
+		  lb.DeleteAllRows
+		  
+		  For Each oStor as RecordStorageClass In aroRecordStor()
+		    
+		    If oStor.StorType <> "Total" Then
+		      lb.AddRow("")
+		      dim iLastIndex as integer = lb.LastIndex
+		      
+		      // Populate the row
+		      methPopulateRow( iLastIndex, oStor )
+		    End If
+		    
+		  Next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methPopulateRow(iRowIndex as integer, oStor as RecordStorageClass)
+		  dim lb as entListbox = methGetListbox
+		  dim oDummy as New DataFile.tbl_contact_methods  '!@! Table Dependent !@!
+		  dim sTableName as String = oDummy.GetTableName
+		  
+		  For iCellIndex as integer = 0 To oStor.oRowData.arsColumnValues.Ubound
+		    dim sColumnValue as string = oStor.oRowData.arsColumnValues(iCellIndex)
+		    dim sFieldName as string = oStor.oRowData.arsFieldNames(iCellIndex)
+		    dim iColumnType as integer = oStor.oRowData.ariColumnTypes(iCellIndex)
+		    dim sDotNotation as String = sTableName + "." + sFieldName
+		    
+		    // Set the cell type
+		    lb.CellType( iRowIndex, iCellIndex ) = iColumnType
+		    
+		    // Check if this is a calculated field
+		    'Select Case sFieldName
+		    'Case "CalcTotal"
+		    'dim d as Dictionary = modPriceCalculations.CalculateLineItemPrices(oStor, oEIPLRecord)
+		    'sColumnValue = d.Value("SubTotal")
+		    'sColumnValue = str( sColumnValue, "\$#,###,###,###.00" )
+		    'End Select
+		    
+		    Select Case iColumnType
+		    Case 0 'default
+		      lb.Cell(iRowIndex,iCellIndex) = sColumnValue
+		    Case 1 'text
+		      lb.Cell(iRowIndex,iCellIndex) = sColumnValue
+		    Case 2 'CheckBox
+		      If sColumnValue = "True" then
+		        lb.CellState(iRowIndex ,iCellIndex) = CheckBox.CheckedStates.Checked
+		      Else
+		        lb.CellState(iRowIndex ,iCellIndex) = CheckBox.CheckedStates.Unchecked
+		      End If
+		    Case 3 'edit text
+		      lb.Cell(iRowIndex,iCellIndex) = sColumnValue
+		    Else
+		      lb.Cell(iRowIndex,iCellIndex) = sColumnValue
+		    End Select
+		    
+		  Next
+		  
+		  // Add the rowtag
+		  lb.RowTag( iRowIndex ) = oStor
+		  
+		  // Set folder status
+		  lb.RowisFolder( iRowIndex ) = oStor.isFolder
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub methRefresh()
-		  
+		  dim lb as entListbox = methGetListbox
 		  dim oUIState as lbUIState
-		  oUIState = lbMethods.GetUIState
+		  oUIState = lb.GetUIState
 		  methLoadMe()
-		  lbMethods.ResetUIState(oUIState)
-		  
+		  lb.ResetUIState(oUIState)
 		End Sub
 	#tag EndMethod
 
@@ -948,7 +735,19 @@ End
 
 
 	#tag Property, Flags = &h0
+		aroStorClass() As RecordStorageClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		arsHeaders() As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		bDisplayGrouped As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		bPickerMode As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -961,6 +760,10 @@ End
 
 	#tag Property, Flags = &h0
 		DoNotLoad As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		iStartingTop As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1014,33 +817,33 @@ End
 		    
 		  Case "Break Link"
 		    
-		    dim oRowTags() as lbRowTag
-		    oRowTags = lbItems.GetSelectedRows
+		    dim oRowTags() as RecordStorageClass
+		    oRowTags = lb.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
 		    dim sYesOrNoToAll as String
 		    
 		    // Loop through each row
-		    For Each oRowTag as lbRowTag in oRowTags
+		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
 		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_contact_methods
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
+		      dim oRecord as DataFile.ActiveRecordBase
+		      If oRowTag.oTableRecord <> Nil Then
+		        oRecord = oRowTag.oTableRecord
 		      Else
 		        Continue
 		      End If
-		      dim oLinkRecord as DataFile.tbl_internal_linking
-		      If oRowTag.vLinkTable <> Nil Then
-		        oLinkRecord = oRowTag.vLinkTable
+		      dim oLinkRecord as DataFile.ActiveRecordBase
+		      If oRowTag.oLinkRecord <> Nil Then
+		        oLinkRecord = oRowTag.oLinkRecord
 		      Else
 		        Continue
 		      End If
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.smethod
+		      sName = oRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -1059,7 +862,7 @@ End
 		        // Display the window to the user
 		        winWindow.ShowModal
 		        
-		        // Chekc the users response
+		        // Check the users response
 		        bDelete = contDeletePromt.UserResponse
 		        If contDeletePromt.propApplyToAll Then
 		          If bDelete Then
@@ -1083,15 +886,15 @@ End
 		    
 		  Case "Delete Item"
 		    
-		    dim oRowTags() as lbRowTag
-		    oRowTags = lbItems.GetSelectedRows
+		    dim oRowTags() as RecordStorageClass
+		    oRowTags = lb.GetSelectedRowsold
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
 		    dim sYesOrNoToAll as String
 		    
 		    // Loop through each row
-		    For Each oRowTag as lbRowTag in oRowTags
+		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
 		      // Get the table record out of the rowtag
 		      dim oRecord as DataFile.tbl_contact_methods
@@ -1150,20 +953,20 @@ End
 	#tag EndEvent
 	#tag Event
 		Function entConstructContextualMenu(base as menuitem, x as integer, y as integer) As Boolean
-		  dim lbItems as entListbox = lbMethods  '!@! Table Dependent !@!
+		  dim lb as entListbox = methGetListbox
 		  
-		  If lbItems.ListIndex <> -1 Then
+		  If lb.ListIndex <> -1 Then
 		    
 		    // Grab the rowtag
-		    dim oRowTag as lbRowTag
-		    oRowTag = lbItems.RowTag(lbItems.ListIndex)
+		    dim oRowTag as RecordStorageClass
+		    oRowTag = lb.RowTag(lb.ListIndex)
 		    
-		    If oRowTag.vtblRecord <> Nil Then
+		    If oRowTag.oTableRecord <> Nil Then
 		      
 		      base.Append( New MenuItem("Open") )
 		      base.Append( New MenuItem(MenuItem.TextSeparator) )
 		      
-		      If oRowTag.vLinkTable <> Nil Then
+		      If oRowTag.oLinkRecord <> Nil Then
 		        dim mi1 as New MenuItem("Break Link")
 		        mi1.Enabled = False
 		        base.Append( mi1 )
@@ -1177,8 +980,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub DoubleClick()
-		  dim lbItems as entListbox = lbMethods  '!@! Table Dependent !@!
-		  
+		  dim lb as entListbox = methGetListbox
 		  
 		  If evdefDoubleClick Then
 		    
@@ -1187,15 +989,15 @@ End
 		  Else
 		    
 		    
-		    dim oRowTag as lbRowTag
+		    dim oRowTag as RecordStorageClass
 		    
-		    If lbItems.ListIndex <> -1 Then
+		    If lb.ListIndex <> -1 Then
 		      
-		      oRowTag = lbItems.RowTag(lbItems.ListIndex)
+		      oRowTag = lb.RowTag(lb.ListIndex)
 		      
-		      If oRowTag.vtblRecord <> Nil Then
-		        
-		        dim oRecord as DataFile.tbl_contact_methods = oRowTag.vtblRecord
+		      If oRowTag.oTableRecord <> Nil Then
+		        dim v as Variant = oRowTag.oTableRecord
+		        dim oRecord as DataFile.tbl_contact_methods = v
 		        
 		        methOpenRecordInGroupBox(oRecord)
 		        
@@ -1224,7 +1026,7 @@ End
 	#tag Event
 		Sub Search()
 		  dim sSearchValue as string
-		  dim lb1 as entListbox = lbMethods  '!@! Table Dependent !@!
+		  dim lb1 as entListbox = methGetListbox
 		  
 		  sSearchValue = me.Text
 		  
@@ -1255,8 +1057,8 @@ End
 		      ' there is a previous search value
 		      
 		      // Close all the folders by passing a nil array
-		      dim nilarray() as lbRowTag
-		      lb1.reopenFolders(nilarray)
+		      dim nilarray() as RecordStorageClass
+		      lb1.reopenFoldersold(nilarray)
 		      
 		      If LastUIState <> Nil Then
 		        lb1.ResetUIState(LastUIState)

@@ -299,7 +299,32 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetOpenedFolders() As lbRowTag()
+		Function GetOpenedFolders() As RecordStorageClass()
+		  dim OpenFolderRowTags() as RecordStorageClass
+		  
+		  
+		  For i1 as integer = 0 To oListbox.ListCount - 1
+		    
+		    If oListbox.RowIsFolder(i1) Then
+		      
+		      If oListbox.Expanded(i1) Then
+		        
+		        dim oRowTag as RecordStorageClass
+		        oRowTag = oListbox.RowTag(i1)
+		        OpenFolderRowTags.Append(oRowTag)
+		        
+		      End If
+		      
+		    End If
+		    
+		  Next
+		  
+		  Return OpenFolderRowTags()
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetOpenedFoldersOld() As lbRowTag()
 		  dim OpenFolderRowTags() as lbRowTag
 		  
 		  
@@ -324,7 +349,36 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetSelectedRows() As lbRowTag()
+		Function GetSelectedRows() As RecordStorageClass()
+		  dim oSelectedRows() as RecordStorageClass
+		  
+		  dim i1 as integer
+		  While i1 < oListbox.ListCount
+		    
+		    // Check if row is selected
+		    If oListbox.Selected(i1) Then
+		      
+		      dim oRowTag as RecordStorageClass
+		      oRowTag = oListbox.RowTag(i1)
+		      
+		      If oListbox.ListIndex = i1 Then
+		        oSelectedRows.Insert(0,oRowTag)
+		      Else
+		        oSelectedRows.Append(oRowTag)
+		      End If
+		      
+		    End If
+		    
+		    i1 = i1 + 1 
+		    
+		  Wend
+		  
+		  Return oSelectedRows
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetSelectedRowsold() As lbRowTag()
 		  dim oSelectedRows() as lbRowTag
 		  
 		  dim i1 as integer
@@ -354,6 +408,8 @@ End
 
 	#tag Method, Flags = &h0
 		Function GetSelectedRowTags() As RecordStorageClass()
+		  // Deprycated
+		  
 		  dim oSelectedRows() as RecordStorageClass
 		  
 		  dim i1 as integer
@@ -385,8 +441,15 @@ End
 		Function GetUIState() As lbUIState
 		  dim oUIState as New lbUIState
 		  
-		  oUIState.oOpenFolders = GetOpenedFolders
-		  oUIState.oSelectedRows = GetSelectedRows
+		  // Check what type of rowtags we are dealing with
+		  dim v as Variant = RowTag(0)
+		  If v IsA lbRowTag Then
+		    oUIState.oOpenFoldersOld = GetOpenedFoldersOld
+		    oUIState.oSelectedRowsOld = GetSelectedRowsold
+		  Else
+		    oUIState.oOpenFolders = GetOpenedFolders
+		    oUIState.oSelectedRows = GetSelectedRows
+		  End If
 		  
 		  Return oUIState
 		End Function
@@ -553,7 +616,51 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub reopenFolders(reopenThese() as lbRowTag)
+		Sub reopenFolders(reopenThese() as RecordStorageClass)
+		  dim i1 as integer
+		  
+		  While i1 <> oListbox.ListCount 
+		    
+		    If oListbox.RowIsFolder(i1) Then
+		      
+		      // Check if the folder array has anything
+		      If reopenThese.Ubound = -1 Then
+		        ' Nil array
+		        If oListbox.Expanded(i1) Then
+		          oListbox.Expanded(i1) = False
+		        End If
+		        
+		      Else
+		        
+		        // Grab the rowtag
+		        dim oRowTag as RecordStorageClass
+		        oRowTag = oListbox.RowTag(i1)
+		        
+		        // Loop through all rowtags we want opened
+		        For Each oWantOpen as RecordStorageClass In reopenThese
+		          
+		          If oRowTag.oRowData.arsColumnValues(0) = oWantOpen.oRowData.arsColumnValues(0) And oRowTag.FolderLevel = oWantOpen.FolderLevel Then
+		            oListbox.Expanded(i1) = True
+		            Continue
+		          ElseIf oRowTag.sUUID <> "" And oRowTag.sUUID = oWantOpen.sUUID And oRowTag.FolderLevel = oWantOpen.FolderLevel Then
+		            oListbox.Expanded(i1) = True
+		            Continue
+		          End If
+		          
+		        Next
+		        
+		      End If
+		      
+		    End If
+		    
+		    i1 = i1 + 1
+		    
+		  Wend
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub reopenFoldersold(reopenThese() as lbRowTag)
 		  dim i1 as integer
 		  
 		  While i1 <> oListbox.ListCount 
@@ -597,7 +704,48 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ResetSelectedRows(oSelectedRows() as lbRowTag)
+		Sub ResetSelectedRows(oSelectedRows() as RecordStorageClass)
+		  
+		  dim i1 as integer
+		  While i1 < oListbox.ListCount
+		    
+		    // Grab the rowtag
+		    dim oRowTag as RecordStorageClass
+		    oRowTag = oListbox.RowTag(i1)
+		    
+		    // Loop through all rowtags we want selected
+		    dim i2 as integer
+		    For Each oWantSelected as RecordStorageClass In oSelectedRows
+		      
+		      
+		      dim bSelected as Boolean
+		      If oRowTag.oRowData.arsColumnValues.Ubound <> -1 Then
+		        If oRowTag.oRowData.arsColumnValues(0) = oWantSelected.oRowData.arsColumnValues(0) And oRowTag.FolderLevel = oWantSelected.FolderLevel Then
+		          bSelected = True
+		        ElseIf oRowTag.suuid <> "" And oRowTag.suuid = oWantSelected.suuid And oRowTag.FolderLevel = oWantSelected.FolderLevel Then
+		          bSelected = True
+		        End If
+		      End If
+		      
+		      If bSelected Then
+		        If i2 = 0 Then
+		          oListbox.ListIndex = (i1)
+		        End If
+		        oListbox.Selected(i1) = bSelected
+		      End If
+		      
+		      i2 = i2 + 1
+		      
+		    Next
+		    
+		    i1 = i1 + 1
+		    
+		  Wend
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ResetSelectedRowsold(oSelectedRows() as lbRowTag)
 		  
 		  dim i1 as integer
 		  While i1 < oListbox.ListCount
@@ -643,24 +791,19 @@ End
 		  
 		  If oUIState <> Nil then
 		    
-		    If oUIState.oOpenFolders <> Nil Then
-		      If oUIState.oOpenFolders.Ubound <> -1 Then
-		        ReopenFolders(oUIState.oOpenFolders)
-		      Else
-		        
-		      End If
+		    If oUIState.oOpenFoldersOld.Ubound <> -1 Then
+		      reopenFoldersold( oUIState.oOpenFoldersOld )
+		    ElseIf oUIState.oOpenFolders.Ubound <> -1 Then
+		      reopenFolders( oUIState.oOpenFolders )
 		    End If
 		    
-		    
-		    'If oUIState.oSelectedRows <> Nil Then
-		    If oUIState.oSelectedRows.Ubound <> -1 Then
-		      ResetSelectedRows(oUIState.oSelectedRows)
-		    Else
-		      
+		    If oUIState.oSelectedRowsOld.Ubound <> -1 Then
+		      ResetSelectedRowsold( oUIState.oSelectedRowsOld )
+		    ElseIf oUIState.oSelectedRows.Ubound <> -1 Then
+		      ResetSelectedRows( oUIState.oSelectedRows )
 		    End If
 		    
 		  End If
-		  'End If
 		End Sub
 	#tag EndMethod
 

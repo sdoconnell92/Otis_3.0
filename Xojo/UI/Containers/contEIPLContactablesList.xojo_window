@@ -39,6 +39,7 @@ Begin ContainerControl contEIPLContactablesList
       HasHeading      =   True
       Height          =   209
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   4
       LockBottom      =   True
