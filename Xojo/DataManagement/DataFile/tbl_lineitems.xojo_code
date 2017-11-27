@@ -278,6 +278,22 @@ Inherits DataFile.ActiveRecordBase
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub PopulateBlank()
+		  sli_name = "-"
+		  sli_manufacturer = "-"
+		  sli_category = "-"
+		  sli_subcategory = "-"
+		  sli_department = "-"
+		  sli_description = "-"
+		  sli_model = "-"
+		  sli_quantity = "1"
+		  sli_rate = "Daily"
+		  sli_time = "1"
+		  
+		End Sub
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h0
 		bli_taxable As Boolean

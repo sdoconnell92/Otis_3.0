@@ -58,7 +58,7 @@ Begin ContainerControl contEI
          Enabled         =   True
          EraseBackground =   True
          HasBackColor    =   False
-         Height          =   355
+         Height          =   353
          HelpTag         =   ""
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
@@ -73,7 +73,7 @@ Begin ContainerControl contEI
          TabIndex        =   0
          TabPanelIndex   =   1
          TabStop         =   True
-         Top             =   42
+         Top             =   44
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
@@ -90,7 +90,7 @@ Begin ContainerControl contEI
          Enabled         =   True
          EraseBackground =   True
          HasBackColor    =   False
-         Height          =   475
+         Height          =   473
          HelpTag         =   ""
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
@@ -105,7 +105,7 @@ Begin ContainerControl contEI
          TabIndex        =   1
          TabPanelIndex   =   1
          TabStop         =   True
-         Top             =   42
+         Top             =   44
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
@@ -588,7 +588,7 @@ Begin ContainerControl contEI
          Transparent     =   True
          Underline       =   False
          Visible         =   True
-         Width           =   158
+         Width           =   111
       End
       Begin Label labEIPLDiscount
          AutoDeactivate  =   True
@@ -793,6 +793,176 @@ Begin ContainerControl contEI
          Underline       =   False
          Visible         =   True
          Width           =   80
+      End
+      Begin Label labSubtotal
+         AutoDeactivate  =   True
+         Bold            =   False
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "ppEIPLSwitcher"
+         Italic          =   False
+         Left            =   127
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   False
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   5
+         TabPanelIndex   =   1
+         Text            =   "Subtotal:"
+         TextAlign       =   0
+         TextColor       =   &c00000000
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   24
+         Transparent     =   True
+         Underline       =   False
+         Visible         =   True
+         Width           =   143
+      End
+      Begin Label labDiscountSum
+         AutoDeactivate  =   True
+         Bold            =   False
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "ppEIPLSwitcher"
+         Italic          =   False
+         Left            =   273
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   False
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   6
+         TabPanelIndex   =   1
+         Text            =   "Disc Sum:"
+         TextAlign       =   0
+         TextColor       =   &c00000000
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   24
+         Transparent     =   True
+         Underline       =   False
+         Visible         =   True
+         Width           =   149
+      End
+      Begin Label labTaxSum
+         AutoDeactivate  =   True
+         Bold            =   False
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "ppEIPLSwitcher"
+         Italic          =   False
+         Left            =   427
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   False
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   7
+         TabPanelIndex   =   1
+         Text            =   "Tax:"
+         TextAlign       =   0
+         TextColor       =   &c00000000
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   24
+         Transparent     =   True
+         Underline       =   False
+         Visible         =   True
+         Width           =   99
+      End
+      Begin Label labBalance
+         AutoDeactivate  =   True
+         Bold            =   False
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "ppEIPLSwitcher"
+         Italic          =   False
+         Left            =   673
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   False
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   9
+         TabPanelIndex   =   1
+         Text            =   "Balance:"
+         TextAlign       =   0
+         TextColor       =   &c00000000
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   24
+         Transparent     =   True
+         Underline       =   False
+         Visible         =   True
+         Width           =   136
+      End
+      Begin Label labTotal
+         AutoDeactivate  =   True
+         Bold            =   False
+         DataField       =   ""
+         DataSource      =   ""
+         Enabled         =   True
+         Height          =   20
+         HelpTag         =   ""
+         Index           =   -2147483648
+         InitialParent   =   "ppEIPLSwitcher"
+         Italic          =   False
+         Left            =   531
+         LockBottom      =   False
+         LockedInPosition=   False
+         LockLeft        =   True
+         LockRight       =   False
+         LockTop         =   True
+         Multiline       =   False
+         Scope           =   0
+         Selectable      =   False
+         TabIndex        =   10
+         TabPanelIndex   =   1
+         Text            =   "Total:"
+         TextAlign       =   0
+         TextColor       =   &c00000000
+         TextFont        =   "System"
+         TextSize        =   0.0
+         TextUnit        =   0
+         Top             =   23
+         Transparent     =   True
+         Underline       =   False
+         Visible         =   True
+         Width           =   138
       End
    End
    Begin TabPanel tbEIPLSwitcher
@@ -1033,14 +1203,6 @@ End
 		  
 		  tfEIPLDiscount.Text = modFieldFormatting.FormatDiscountFields( oCurrentRecord.sdiscount )
 		  
-		  'dim s2 as string
-		  's2 = oCurrentRecord.sdiscount
-		  'If InStr( s2, "%" ) > 0 Then
-		  'tfEIPLDiscount.text = str( s2 )
-		  'Else
-		  'tfEIPLDiscount.text = str( s2, modFieldFormatting.tbl_eipl.discount )
-		  'End If
-		  
 		  // Dates Times
 		  dim dt1 as New Date
 		  dim dtString, timeString as string
@@ -1053,6 +1215,9 @@ End
 		    dat1.SQLDateTime = dtString + " 11:11:11"
 		    dcDueDate.DateValue = dat1
 		  End If
+		  
+		  // Load Total Labels
+		  methPopulateTotals
 		End Sub
 	#tag EndMethod
 
@@ -1076,6 +1241,18 @@ End
 		    methLoadMe(oCurrentRecord)
 		    
 		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methPopulateTotals()
+		  dim retTots as TotalsClass = EICalculations.CalculateGroup(instLineItemList.aroStorClass, True, True)
+		  
+		  labSubTotal.Text = "SubTotal: " + str(retTots.a_SubTotal, "\$###,###,###,###.00")
+		  labDiscountSum.Text = "Discount Sum: " + str(retTots.RunningDiscountSum, "\$###,###,###,###.00")
+		  labTaxSum.Text = "Tax: " + str(retTots.TaxSum, "\$###,###,###,###.00")
+		  labTotal.Text = "Total: " + str(retTots.c_Total, "\$###,###,###,###.00")
+		  labBalance.Text = "Balance: " + str(retTots.d_BalanceDue, "\$###,###,###,###.00")
 		End Sub
 	#tag EndMethod
 

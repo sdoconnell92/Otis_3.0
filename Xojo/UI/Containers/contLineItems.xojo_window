@@ -37,7 +37,7 @@ Begin ContainerControl contLineItems
       GridLinesColor  =   &c00000000
       HasBackColor    =   False
       HasHeading      =   True
-      Height          =   388
+      Height          =   409
       HelpTag         =   ""
       InitialParent   =   ""
       Left            =   3
@@ -50,7 +50,7 @@ Begin ContainerControl contLineItems
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
-      Top             =   49
+      Top             =   28
       Transparent     =   True
       UseFocusRing    =   False
       Visible         =   True
@@ -69,7 +69,7 @@ Begin ContainerControl contLineItems
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   2
+      Left            =   30
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -127,7 +127,7 @@ Begin ContainerControl contLineItems
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   95
+      Left            =   123
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -159,7 +159,7 @@ Begin ContainerControl contLineItems
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   176
+      Left            =   204
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -191,7 +191,7 @@ Begin ContainerControl contLineItems
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   258
+      Left            =   286
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -211,175 +211,36 @@ Begin ContainerControl contLineItems
       Visible         =   True
       Width           =   102
    End
-   Begin Label labEIPLTotal
+   Begin PushButton pbAddLineItem
       AutoDeactivate  =   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
+      ButtonStyle     =   "0"
+      Cancel          =   False
+      Caption         =   "+"
+      Default         =   False
       Enabled         =   True
-      Height          =   20
+      Height          =   22
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   399
+      Left            =   3
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   False
       LockTop         =   True
-      Multiline       =   False
       Scope           =   0
-      Selectable      =   False
       TabIndex        =   13
       TabPanelIndex   =   0
-      Text            =   "EIPL Total:"
-      TextAlign       =   0
-      TextColor       =   &c00000000
+      TabStop         =   True
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   27
-      Transparent     =   True
+      Top             =   3
       Underline       =   False
       Visible         =   True
-      Width           =   129
-   End
-   Begin Label labEIPLSubTotal
-      AutoDeactivate  =   True
-      Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
-      Enabled         =   True
-      Height          =   20
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   8
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Multiline       =   False
-      Scope           =   0
-      Selectable      =   False
-      TabIndex        =   14
-      TabPanelIndex   =   0
-      Text            =   "SubTotal: "
-      TextAlign       =   0
-      TextColor       =   &c00000000
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   27
-      Transparent     =   True
-      Underline       =   False
-      Visible         =   True
-      Width           =   129
-   End
-   Begin Label labEIPLDiscountSum
-      AutoDeactivate  =   True
-      Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
-      Enabled         =   True
-      Height          =   20
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   141
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Multiline       =   False
-      Scope           =   0
-      Selectable      =   False
-      TabIndex        =   15
-      TabPanelIndex   =   0
-      Text            =   "Disc Sum: "
-      TextAlign       =   0
-      TextColor       =   &c00000000
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   27
-      Transparent     =   True
-      Underline       =   False
-      Visible         =   True
-      Width           =   129
-   End
-   Begin Label labEIPLTaxSum
-      AutoDeactivate  =   True
-      Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
-      Enabled         =   True
-      Height          =   20
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   269
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Multiline       =   False
-      Scope           =   0
-      Selectable      =   False
-      TabIndex        =   16
-      TabPanelIndex   =   0
-      Text            =   "Tax:"
-      TextAlign       =   0
-      TextColor       =   &c00000000
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   27
-      Transparent     =   True
-      Underline       =   False
-      Visible         =   True
-      Width           =   129
-   End
-   Begin Label labEIPLBalance
-      AutoDeactivate  =   True
-      Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
-      Enabled         =   True
-      Height          =   20
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   540
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Multiline       =   False
-      Scope           =   0
-      Selectable      =   False
-      TabIndex        =   17
-      TabPanelIndex   =   0
-      Text            =   "Balance"
-      TextAlign       =   0
-      TextColor       =   &c00000000
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   27
-      Transparent     =   True
-      Underline       =   False
-      Visible         =   True
-      Width           =   129
+      Width           =   24
    End
 End
 #tag EndWindow
@@ -401,6 +262,35 @@ End
 		End Sub
 	#tag EndEvent
 
+
+	#tag Method, Flags = &h0
+		Sub AddLineItem(ParentID as string = "")
+		  dim oNewLI as New DataFile.tbl_lineitems
+		  
+		  // Grab the EIPL UUID
+		  dim sEIPLuuid as string = oEIPLRecord.sUUID
+		  oNewLI.PopulateBlank
+		  
+		  oNewLI.Save
+		  
+		  // Check if we were provided a parent item id
+		  If ParentID <> "" Then
+		    // Create a link record to link this lineitem to its parent
+		    dim oLink as New DataFile.tbl_internal_linking
+		    oLink.sfk_child = oNewLI.suuid
+		    oLink.sfk_parent = ParentID
+		    oLink.sfk_table_name = "tbl_lineitems"
+		    oLink.slink_type = "contained"
+		    
+		    oLink.Save
+		  Else
+		    // This item will have no parent so give it the eipl id
+		    oNewLI.sfkeipl = sEIPLuuid
+		    
+		    oNewLI.Save
+		  End If 
+		End Sub
+	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function methAcquireRecords(oSQLStor as SQLStorageClass, sGroupBy as String, bGetChildren as Boolean = False, bGroupRecords as Boolean = False) As RecordStorageClass()
@@ -845,6 +735,7 @@ End
 		  Else
 		    lb.DeleteAllRows
 		  End If
+		  
 		End Sub
 	#tag EndMethod
 
@@ -1318,6 +1209,15 @@ End
 		  
 		  
 		  
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events pbAddLineItem
+	#tag Event
+		Sub Action()
+		  AddLineItem
+		  methRefresh
+		  // select the item
 		End Sub
 	#tag EndEvent
 #tag EndEvents
