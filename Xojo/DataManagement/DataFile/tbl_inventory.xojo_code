@@ -428,6 +428,16 @@ Inherits DataFile.ActiveRecordBase
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub PopulateBlank()
+		  sitem_name = "-"
+		  sitem_quantity = "0"
+		  sitem_department = "-"
+		  sitem_category = "-"
+		  sitem_subcategory = "-"
+		End Sub
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h0
 		bhide As Boolean

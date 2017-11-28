@@ -206,7 +206,7 @@ End
 		  
 		  
 		  // First get a list of all records
-		  dim aroRecords() as DataFile.ActiveRecordBase = DataFile.tbl_lineitems.List( oSQLStor.oPS )
+		  dim aroRecords() as DataFile.ActiveRecordBase = DataFile.tbl_contact_methods.List( oSQLStor.oPS )
 		  
 		  // Storify the records
 		  dim aroStor() as RecordStorageClass = DataFile.StorifyRecords( aroRecords )
@@ -231,7 +231,7 @@ End
 		  dim arvValue() as Variant
 		  
 		  // Add the base sql
-		  aroSQL.Append( DataFile.tbl_lineitems.BaseSQL )
+		  aroSQL.Append( DataFile.tbl_contact_methods.BaseSQL )
 		  
 		  
 		  // Build condition array
@@ -1158,6 +1158,11 @@ End
 		Type="Boolean"
 	#tag EndViewProperty
 	#tag ViewProperty
+		Name="bPickerMode"
+		Group="Behavior"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
 		Name="DoNotLoad"
 		Group="Behavior"
 		Type="Boolean"
@@ -1202,6 +1207,11 @@ End
 		Name="InitialParent"
 		Group="Position"
 		Type="String"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="iStartingTop"
+		Group="Behavior"
+		Type="Integer"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="LastSearchValue"

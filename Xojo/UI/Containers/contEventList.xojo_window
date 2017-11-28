@@ -253,6 +253,19 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub methAddEvent()
+		  '!@! Table Dependent !@!
+		  
+		  // Create the new record
+		  dim oNew as New DataFile.tbl_events  '!@! Table Dependent !@!
+		  oNew.sevent_name = "-"  '!@! Table Dependent !@!
+		  
+		  
+		  methOpenRecordInTab(oNew)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function methBuildSQL(bShowHidden as Boolean, sSearchString as String, sOrderBy as String) As SQLStorageClass
 		  dim aroSQL() as String
 		  dim arsConditions() as String
@@ -311,7 +324,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methExpandAllRows(JustTopLevel as Boolean = True)
-		  dim lb1 As entListbox = lbEvents  '!@! Table Dependent !@!
+		  dim lb1 As entListbox = methGetListbox
 		  
 		  // Loop through all the rows
 		  dim i1 as integer
@@ -344,8 +357,15 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function methGetListbox() As entListbox
+		  '!@! Table Dependent !@!
+		  Return lbEvents
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub methHandleCellAction(row as integer, column as integer)
-		  dim lb as entListbox = lbEvents
+		  dim lb as entListbox = methGetListbox
 		  
 		  If lb.CellType(row,column) = 2 Then
 		    'its a checkbox
@@ -379,7 +399,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methHandleCellLostFocus(row as integer, col as integer)
-		  dim lb as entListbox = lbEvents
+		  dim lb as entListbox = methGetListbox
 		  
 		  If lb.CellType(row,col) = 3 Then
 		    ' it's a text edit
@@ -440,7 +460,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methHandleDoubleClick()
-		  dim lb as entListbox = lbEvents
+		  dim lb as entListbox = methGetListbox
 		  
 		  
 		  If evdefDoubleClick Then
@@ -458,25 +478,7 @@ End
 		      
 		      If oStor.oTableRecord <> Nil Then
 		        
-		        // Get the Event name
-		        dim vRecord as Variant = oStor.oTableRecord
-		        dim oRecord as DataFile.tbl_events = vRecord
-		        dim sEventName as string
-		        sEventName = oRecord.sevent_name
-		        
-		        If oStor.sUUID <> "" Then
-		          
-		          // load up an Event container
-		          dim conEventInst as New contEvent
-		          dim oTabPanel as PagePanel = app.MainWindow.tbMainWindow
-		          
-		          app.MainWindow.AddTab(sEventName)
-		          
-		          conEventInst.EmbedWithinPanel(oTabPanel,oTabPanel.PanelCount - 1 )
-		          
-		          conEventInst.LoadEvent(oStor.sUUID)
-		          
-		        End If
+		        methOpenRecordInTab(oStor)
 		        
 		      End If
 		      
@@ -489,7 +491,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methHandleExpandRow(row as integer)
-		  dim lb1 as entListbox = lbEvents  '!@! Table Dependent !@!
+		  dim lb1 as entListbox = methGetListbox
 		  
 		  // Extract the rowtag out of the parent
 		  dim oParentStor as RecordStorageClass
@@ -508,7 +510,7 @@ End
 		    lb1.RowTag(lb1.LastIndex) = oChild
 		    
 		    // Load the row
-		    methPopulateRow( lbEvents.LastIndex, oChild )
+		    methPopulateRow( lb1.LastIndex, oChild )
 		    
 		  Next
 		  
@@ -669,8 +671,29 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub methOpenRecordInTab(oStor as RecordStorageClass)
+		  // Get the name
+		  dim sName as String = oStor.oTableRecord.GetRecordName
+		  
+		  If oStor.sUUID <> "" Then
+		    
+		    // load up an Event container
+		    dim conEventInst as New contEvent
+		    dim oTabPanel as PagePanel = app.MainWindow.tbMainWindow
+		    
+		    app.MainWindow.AddTab(sName)
+		    
+		    conEventInst.EmbedWithinPanel(oTabPanel,oTabPanel.PanelCount - 1 )
+		    
+		    conEventInst.LoadEvent(oStor.sUUID)
+		    
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub methPopulateListbox(aroRecordStor() as RecordStorageClass)
-		  dim lb as entListbox = lbEvents
+		  dim lb as entListbox = methGetListbox
 		  
 		  lb.DeleteAllRows
 		  
@@ -734,9 +757,11 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methRefresh()
-		  
-		  
+		  dim lb as entListbox = methGetListbox
+		  dim oUIState as lbUIState
+		  oUIState = lb.GetUIState
 		  methLoadMe()
+		  lb.ResetUIState(oUIState)
 		End Sub
 	#tag EndMethod
 
@@ -759,6 +784,10 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		arsHeaders() As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		bDisplayGrouped As Boolean
 	#tag EndProperty
 
@@ -772,6 +801,10 @@ End
 
 	#tag Property, Flags = &h0
 		DoNotLoad As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		iStartingTop As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -820,7 +853,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Function entContextualMenuAction(hitItem as MenuItem) As Boolean
-		  dim lb as entListbox = lbEvents
+		  dim lb as entListbox = methGetListbox
 		  
 		  Select Case hitItem.Text
 		  Case "Open"
@@ -834,7 +867,7 @@ End
 		      dim vRecord as Variant = oStor.oTableRecord
 		      dim oRecord as DataFile.tbl_events = vRecord
 		      dim sName as string
-		      sName = oRecord.sevent_name
+		      sName = oRecord.GetRecordName
 		      
 		      If oStor.sUUID <> "" Then
 		        
@@ -871,7 +904,7 @@ End
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.sevent_name
+		      sName = oRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -999,7 +1032,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Function entConstructContextualMenu(base as menuitem, x as integer, y as integer) As Boolean
-		  dim lb as entListbox = lbEvents
+		  dim lb as entListbox = methGetListbox
 		  
 		  If lb.ListIndex <> -1 Then
 		    
@@ -1074,21 +1107,7 @@ End
 #tag Events pbAddEvent
 	#tag Event
 		Sub Action()
-		  '!@! Table Dependent !@!
-		  
-		  
-		  // Create the new record
-		  dim oNew as New DataFile.tbl_events  '!@! Table Dependent !@!
-		  oNew.sevent_name = "-"  '!@! Table Dependent !@!
-		  
-		  
-		  dim NewCont as New contEvent  '!@! Table Dependent !@!
-		  
-		  app.MainWindow.AddTab("New Event")
-		  
-		  NewCont.EmbedWithinPanel(app.MainWindow.tbMainWindow, app.MainWindow.tbMainWindow.PanelCount - 1)
-		  
-		  NewCont.LoadEvent(oNew.suuid)
+		  methAddEvent
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -1148,11 +1167,7 @@ End
 #tag Events chbShowHidden
 	#tag Event
 		Sub Action()
-		  
-		  dim oUIState as lbUIState
-		  oUIState = lbEvents.GetUIState
-		  methLoadMe()
-		  lbEvents.ResetUIState(oUIState)
+		  methRefresh
 		End Sub
 	#tag EndEvent
 #tag EndEvents
