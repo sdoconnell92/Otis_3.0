@@ -39,6 +39,7 @@ Begin ContainerControl contEventContactablesList
       HasHeading      =   True
       Height          =   193
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   3
       LockBottom      =   True
@@ -160,7 +161,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methExpandAllRows(JustTopLevel as Boolean = True)
-		  dim lb1 As entListbox = lbContactables  '!@! Table Dependent !@!
+		  dim lb1 As entListbox = methGetListbox
 		  
 		  // Loop through all the rows
 		  dim i1 as integer
@@ -234,7 +235,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methHandleCellLostFocus(row as integer, col as integer)
-		  dim lb as entListbox = lbContactables
+		  dim lb as entListbox = methGetListbox
 		  
 		  If lb.CellType(row,col) = 3 Then
 		    ' it's a text edit
@@ -295,8 +296,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methHandleDoubleClick()
-		  dim lb as entListbox = lbContactables
-		  
+		  dim lb as entListbox = methGetListbox
 		  
 		  If evdefDoubleClick Then
 		    
@@ -304,8 +304,15 @@ End
 		    
 		  Else
 		    
+		    dim oRowTag as RecordStorageClass
 		    
-		    
+		    If lb.ListIndex <> -1 Then
+		      
+		      oRowTag = lb.RowTag( lb.ListIndex )
+		      
+		      methOpenRecordInTab(oRowTag)
+		      
+		    End If
 		    
 		  End If
 		End Sub
@@ -313,7 +320,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methHandleExpandRow(row as integer)
-		  dim lb1 as entListbox = lbContactables  '!@! Table Dependent !@!
+		  dim lb1 as entListbox = methGetListbox
 		  
 		  // Extract the rowtag out of the parent
 		  dim oParentStor as RecordStorageClass
@@ -332,7 +339,7 @@ End
 		    lb1.RowTag(lb1.LastIndex) = oChild
 		    
 		    // Load the row
-		    methPopulateRow( lbContactables.LastIndex, oChild )
+		    methPopulateRow( lb1.LastIndex, oChild )
 		    
 		  Next
 		  
@@ -478,7 +485,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methLoadMe(bGrouped as Boolean = True, sGroupFields as String = "", bGetChildren as boolean = True)
-		  dim lb as entListbox = lbContactables
+		  dim lb as entListbox = methGetListbox
 		  
 		  
 		  // Prepare the sql statement to get our records
@@ -502,8 +509,42 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Sub methOpenRecordInGroupBox(oStor as RecordStorageClass)
+		  
+		  
+		  dim winNew as New winFloatingWindow
+		  
+		  // Create a new container
+		  dim conMethod as New contEI  '!@! Table Dependent !@!
+		  
+		  winNew.Width = conMethod.Width
+		  winNew.Height = conMethod.Height
+		  winNew.Top = MouseY + me.TrueWindow.Top
+		  winNew.Left = MouseX + me.TrueWindow.Left
+		  
+		  conMethod.EmbedWithin(winNew)
+		  conMethod.LoadMe(oStor.sUUID)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methOpenRecordInTab(oStor as RecordStorageClass)
+		  dim sName as String = oStor.oTableRecord.GetRecordName
+		  
+		  dim NewCont as New contContactable
+		  
+		  app.MainWindow.AddTab(sName)
+		  
+		  NewCont.EmbedWithinPanel(app.MainWindow.tbMainWindow, app.MainWindow.tbMainWindow.PanelCount - 1)
+		  
+		  NewCont.LoadItem(oStor.sUUID )
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub methPopulateListbox(aroRecordStor() as RecordStorageClass)
-		  dim lb as entListbox = lbContactables
+		  dim lb as entListbox = methGetListbox
 		  
 		  lb.DeleteAllRows
 		  
@@ -523,7 +564,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methPopulateRow(iRowIndex as integer, oStor as RecordStorageClass)
-		  dim lb as entListbox = lbContactables
+		  dim lb as entListbox = methGetListbox
 		  dim oDummy as New DataFile.tbl_contactables
 		  dim sTableName as String = oDummy.GetTableName
 		  
@@ -663,13 +704,21 @@ End
 	#tag EndEvent
 	#tag Event
 		Function entContextualMenuAction(hitItem as MenuItem) As Boolean
-		  
+		  dim lb as entListbox = methGetListbox
 		  
 		  Select Case hitItem.Text
+		  Case "Open"
+		    
+		    If lb.ListIndex <> -1 Then
+		      // Grab the rowtag
+		      dim oRowTag as RecordStorageClass
+		      methOpenRecordInTab(oRowTag)
+		    End If
+		    
 		  Case "Break Link"
 		    
 		    dim oRowTags() as RecordStorageClass
-		    oRowTags = lbContactables.GetSelectedRows
+		    oRowTags = lb.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
@@ -678,23 +727,11 @@ End
 		    // Loop through each row
 		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
-		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.ActiveRecordBase
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.oTableRecord
-		      Else
-		        Continue
-		      End If
-		      dim oLinkRecord as DataFile.ActiveRecordBase
-		      If oRowTag.vLinkTable <> Nil Then
-		        oLinkRecord = oRowTag.oLinkRecord
-		      Else
-		        Continue
-		      End If
+		      If oRowTag.oTableRecord = Nil Or oRowTag.oLinkRecord = Nil Then Continue
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.GetRecordName
+		      sName = oRowTag.oTableRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -713,7 +750,7 @@ End
 		        // Display the window to the user
 		        winWindow.ShowModal
 		        
-		        // Check the users response
+		        // Chekc the users response
 		        bDelete = contDeletePromt.UserResponse
 		        If contDeletePromt.propApplyToAll Then
 		          If bDelete Then
@@ -731,11 +768,15 @@ End
 		      
 		      // Carry out the users request
 		      If bDelete Then
-		        oLinkRecord.Delete
+		        oRowTag.oLinkRecord.Delete
 		      End If
 		    Next
 		    
+		    
 		  End Select
+		  
+		  dim boo as Boolean
+		  boo = evdefContextualMenuAction(hitItem)
 		End Function
 	#tag EndEvent
 	#tag Event
@@ -818,6 +859,16 @@ End
 		EditorType="Picture"
 	#tag EndViewProperty
 	#tag ViewProperty
+		Name="bDisplayGrouped"
+		Group="Behavior"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="bPickerMode"
+		Group="Behavior"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
 		Name="Enabled"
 		Visible=true
 		Group="Appearance"
@@ -863,6 +914,17 @@ End
 		Name="InitialParent"
 		Group="Position"
 		Type="String"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="iStartingTop"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="LastSearchValue"
+		Group="Behavior"
+		Type="String"
+		EditorType="MultiLineEditor"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Left"
