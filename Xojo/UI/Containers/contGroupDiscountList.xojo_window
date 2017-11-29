@@ -122,6 +122,23 @@ End
 #tag EndWindow
 
 #tag WindowCode
+	#tag Event
+		Function MouseWheel(X As Integer, Y As Integer, DeltaX as Integer, DeltaY as Integer) As Boolean
+		  
+		  Return methHandleMouseWheel(X,Y,DeltaX,DeltaY)
+		End Function
+	#tag EndEvent
+
+	#tag Event
+		Sub Open()
+		  
+		  methListboxSettings
+		  
+		  evdefOpen
+		End Sub
+	#tag EndEvent
+
+
 	#tag Method, Flags = &h0
 		Function methAcquireRecords(oSQLStor as SQLStorageClass, sGroupBy as String, bGetChildren as Boolean = False, bGroupRecords as Boolean = False) As RecordStorageClass()
 		  
@@ -665,6 +682,19 @@ End
 	#tag EndMethod
 
 
+	#tag Hook, Flags = &h0
+		Event evdefDoubleClick() As Boolean
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event evdefListboxSettings(lbItems as entListbox, ByRef dictCellTypes as Dictionary, ByRef dictFieldNames as Dictionary)
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event evdefOpen()
+	#tag EndHook
+
+
 	#tag Property, Flags = &h0
 		bDisplayGrouped As Boolean
 	#tag EndProperty
@@ -705,13 +735,6 @@ End
 #tag EndWindowCode
 
 #tag Events lbDiscounts
-	#tag Event
-		Sub Open()
-		  
-		  me.ColumnCount = 2
-		  me.Heading = Array( "Group", "Discount" )
-		End Sub
-	#tag EndEvent
 	#tag Event
 		Sub DoubleClick()
 		  methHandleDoubleClick

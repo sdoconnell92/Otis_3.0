@@ -369,6 +369,14 @@ End
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub methLoadMe(sUUID as string)
+		  dim oRecord as DataFile.tbl_payments = DataFile.tbl_payments.FindByID(sUUID)
+		  oCurrentRecord = oRecord
+		  methLoad
+		End Sub
+	#tag EndMethod
+
 
 	#tag Property, Flags = &h0
 		oCurrentRecord As DataFile.tbl_payments
