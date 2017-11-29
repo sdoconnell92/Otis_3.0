@@ -763,6 +763,7 @@ End
 	#tag Method, Flags = &h0
 		Sub methLoadMe_ExpandSingleRecord(oRecord as DataFile.tbl_inventory)
 		  '!@! Table Dependent In Parameters !@!
+		  dim lb as entListbox = methGetListbox
 		  
 		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oRecord)
 		  DataFile.GetChildren(oStor)
@@ -780,7 +781,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub methOpenRecordInGroupBox(oRecord as DataFile.tbl_contact_methods)
+		Sub methOpenRecordInGroupBox(oStor as RecordStorageClass)
 		  
 		  
 		  dim winNew as New winFloatingWindow
@@ -794,7 +795,7 @@ End
 		  winNew.Left = MouseX + me.TrueWindow.Left
 		  
 		  conMethod.EmbedWithin(winNew)
-		  conMethod.LoadMe(oRecord)
+		  conMethod.LoadItem(oStor.sUUID)
 		  
 		End Sub
 	#tag EndMethod
@@ -918,6 +919,10 @@ End
 
 
 	#tag Property, Flags = &h0
+		aroStorClass() As RecordStorageClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		bDisplayGrouped As Boolean
 	#tag EndProperty
 
@@ -979,11 +984,12 @@ End
 	#tag Event
 		Function entContextualMenuAction(hitItem as MenuItem) As Boolean
 		  '!@! Table Dependent !@!
+		  dim lb as entListbox = methGetListbox
 		  
 		  Select Case hitItem.Text
 		  Case "Open"
 		    
-		    If lbItems.ListIndex <> -1 Then
+		    If lb.ListIndex <> -1 Then
 		      
 		      // Grab the rowtag
 		      dim oRowTag as RecordStorageClass
@@ -993,7 +999,7 @@ End
 		  Case "Break Link"
 		    
 		    dim oRowTags() as RecordStorageClass
-		    oRowTags = lbItems.GetSelectedRows
+		    oRowTags = lb.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
@@ -1003,22 +1009,11 @@ End
 		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
 		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_inventory
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
-		      Else
-		        Continue
-		      End If
-		      dim oLinkRecord as DataFile.tbl_internal_linking
-		      If oRowTag.vLinkTable <> Nil Then
-		        oLinkRecord = oRowTag.vLinkTable
-		      Else
-		        Continue
-		      End If
+		      If oRowTag.oTableRecord = Nil Or oRowTag.oLinkRecord = Nil Then Continue
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.sitem_name
+		      sName = oRowTag.oTableRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -1055,14 +1050,14 @@ End
 		      
 		      // Carry out the users request
 		      If bDelete Then
-		        oLinkRecord.Delete
+		        oRowTag.oLinkRecord.Delete
 		      End If
 		    Next
 		    
 		  Case "Delete Item"
 		    
 		    dim oRowTags() as RecordStorageClass
-		    oRowTags = lbItems.GetSelectedRows
+		    oRowTags = lb.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
@@ -1072,16 +1067,11 @@ End
 		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
 		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_inventory
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
-		      Else
-		        Continue
-		      End If
+		      If oRowTag.oTableRecord = Nil Then Continue
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.sitem_name
+		      sName = oRowTag.oTableRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -1118,7 +1108,7 @@ End
 		      
 		      // Carry out the users request
 		      If bDelete Then
-		        oRecord.Delete
+		        oRowTag.oTableRecord.Delete
 		      End If
 		    Next
 		    
@@ -1126,18 +1116,15 @@ End
 		  Case "Maintenance Logs"
 		    
 		    // Grab the rowtag
-		    dim oRowTag as lbRowTag
-		    oRowTag = lbItems.RowTag(lbItems.ListIndex)
-		    
-		    dim oItem as DataFile.tbl_inventory
-		    oItem = oRowTag.vtblRecord
+		    dim oRowTag as RecordStorageClass
+		    oRowTag = lb.RowTag(lb.ListIndex)
 		    
 		    dim cont1 as New contMaintenenceLog
 		    
 		    app.MainWindow.AddTab("Maintenance Log")
 		    
 		    cont1.EmbedWithinPanel(app.MainWindow.tbMainWindow,app.MainWindow.tbMainWindow.PanelCount - 1)
-		    cont1.LoadUniversalInfo(oItem.suuid)
+		    cont1.LoadUniversalInfo(oRowTag.suuid)
 		    
 		  End Select
 		  

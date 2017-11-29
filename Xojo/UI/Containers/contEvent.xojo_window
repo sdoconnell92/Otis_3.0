@@ -732,6 +732,7 @@ Begin ContainerControl contEvent
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
+      iStartingTop    =   0
       LastSearchValue =   ""
       Left            =   102
       LockBottom      =   True
@@ -1094,6 +1095,8 @@ Begin ContainerControl contEvent
       AutoDeactivate  =   True
       BackColor       =   &cFFFFFF00
       Backdrop        =   0
+      bDisplayGrouped =   False
+      bPickerMode     =   False
       Enabled         =   True
       EraseBackground =   True
       EventID         =   ""
@@ -1102,6 +1105,8 @@ Begin ContainerControl contEvent
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
+      iStartingTop    =   0
+      LastSearchValue =   ""
       Left            =   412
       LockBottom      =   False
       LockedInPosition=   False

@@ -74,6 +74,20 @@ Protected Class RecordStorageClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetLinkRecordVariant() As Variant
+		  dim v as Variant = oLinkRecord
+		  Return v
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetTableRecordVariant() As Variant
+		  dim v as Variant = oTableRecord
+		  Return v
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function JoinedGroupStructure() As String
 		  Return Join(arsGroupStructure, ".")
 		End Function

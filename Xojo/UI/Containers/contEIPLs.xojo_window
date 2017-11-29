@@ -231,7 +231,7 @@ End
 		  dim oNewItem as New DataFile.tbl_eipl
 		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oNewItem)
 		  
-		  methOpenRecordInTab(oStor.sUUID)
+		  methOpenRecordInTab(oStor)
 		End Sub
 	#tag EndMethod
 
@@ -444,7 +444,7 @@ End
 		      
 		      If oRowTag.oTableRecord <> Nil Then
 		        
-		        methOpenRecordInTab(oRowTag.sUUID
+		        methOpenRecordInTab(oRowTag)
 		        
 		      End If
 		      
@@ -649,6 +649,7 @@ End
 	#tag Method, Flags = &h0
 		Sub methLoadMe_ExpandSingleRecord(oRecord as DataFile.tbl_inventory)
 		  '!@! Table Dependent In Parameters !@!
+		  dim lb as entListbox = methGetListbox
 		  
 		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oRecord)
 		  DataFile.GetChildren(oStor)
@@ -680,7 +681,7 @@ End
 		  winNew.Left = MouseX + me.TrueWindow.Left
 		  
 		  conMethod.EmbedWithin(winNew)
-		  conMethod.LoadMe(oStor.sUUID)
+		  conMethod.methLoadMe(oStor.sUUID)
 		  
 		End Sub
 	#tag EndMethod
@@ -695,7 +696,7 @@ End
 		  
 		  NewCont.EmbedWithinPanel(app.MainWindow.tbMainWindow, app.MainWindow.tbMainWindow.PanelCount - 1)
 		  
-		  NewCont.LoadItem(oStor.sUUID )
+		  NewCont.methLoadMe(oStor.sUUID )
 		End Sub
 	#tag EndMethod
 
@@ -801,6 +802,10 @@ End
 		Event evdefOpen()
 	#tag EndHook
 
+
+	#tag Property, Flags = &h0
+		aroStorClass() As RecordStorageClass
+	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		bDisplayGrouped As Boolean
@@ -1045,7 +1050,7 @@ End
 	#tag Event
 		Sub Search()
 		  dim sSearchValue as string
-		  dim lb1 as entListbox = lbEIPLs
+		  dim lb1 as entListbox = methGetListbox
 		  
 		  sSearchValue = scSearchField.Text
 		  
@@ -1076,7 +1081,7 @@ End
 		      ' there is a previous search value
 		      
 		      // Close all the folders by passing a nil array
-		      dim nilarray() as lbRowTag
+		      dim nilarray() as RecordStorageClass
 		      lb1.reopenFolders(nilarray)
 		      
 		      If LastUIState <> Nil Then

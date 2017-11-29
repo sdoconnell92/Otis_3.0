@@ -140,6 +140,26 @@ End
 
 
 	#tag Method, Flags = &h0
+		Function methAcquireRecords(oSQLStor as SQLStorageClass, sGroupBy as String, bGetChildren as Boolean = False, bGroupRecords as Boolean = False) As RecordStorageClass()
+		  
+		  
+		  // First get a list of all records
+		  dim aroRecords() as DataFile.ActiveRecordBase = DataFile.tbl_payments.List( oSQLStor.oPS )
+		  
+		  // Storify the records
+		  dim aroStor() as RecordStorageClass = DataFile.StorifyRecords( aroRecords )
+		  
+		  // Check if we need to get the children
+		  If bGetChildren Then DataFile.PopulateListWithChildren( aroStor() )
+		  
+		  // Check if we need to group the records
+		  If bGroupRecords Then aroStor() = DataFile.GroupRecords( aroStor(), sGroupBy )
+		  
+		  Return aroStor
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub methAddItem()
 		  dim oNewPayment as New DataFile.tbl_payments
 		  oNewPayment.sfkeipl = oEIPLRecord.suuid
@@ -231,7 +251,7 @@ End
 	#tag Method, Flags = &h0
 		Function methGetListbox() As entListbox
 		  '!@! Table Dependent !@!
-		  Return lbDiscounts
+		  Return lbPayments
 		End Function
 	#tag EndMethod
 
@@ -527,7 +547,7 @@ End
 		  
 		  // Prepare the sql statement to get our records
 		  dim bHidden as Boolean = False
-		  dim sSearchString as String = scSearchField.Text
+		  dim sSearchString as String
 		  dim sOrderBy as String = "payment_date"
 		  dim oSQL as SQLStorageClass = methBuildSQL( bHidden, sSearchString, sOrderBy )
 		  sGroupFields = sOrderBy
@@ -676,6 +696,10 @@ End
 
 
 	#tag Property, Flags = &h0
+		aroStorClass() As RecordStorageClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		bDisplayGrouped As Boolean
 	#tag EndProperty
 
@@ -724,7 +748,7 @@ End
 #tag Events pbAddPayment
 	#tag Event
 		Sub Action()
-		  methAddPayment
+		  methAddItem
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -758,29 +782,25 @@ End
 	#tag EndEvent
 	#tag Event
 		Function entContextualMenuAction(hitItem as MenuItem) As Boolean
-		  
+		  dim lb as entListbox = methGetListbox
 		  
 		  Select Case hitItem.Text
 		  Case "Delete"
 		    
 		    
-		    dim oRowTags() as lbRowTag
-		    oRowTags = lbPayments.GetSelectedRows
+		    dim oRowTags() as RecordStorageClass
+		    oRowTags = lb.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
 		    dim sYesOrNoToAll as String
 		    
 		    // Loop through each row
-		    For Each oRowTag as lbRowTag in oRowTags
+		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
-		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_payments
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
-		      Else
-		        Continue
-		      End If
+		      If oRowTag.oTableRecord = Nil Then Continue
+		      
+		      dim oRecord as DataFile.tbl_payments = oRowTag.GetTableRecordVariant
 		      
 		      dim bDelete as Boolean
 		      
@@ -818,7 +838,7 @@ End
 		      
 		      // Carry out the users request
 		      If bDelete Then
-		        oRecord.Delete
+		        oRowTag.oTableRecord.Delete
 		      End If
 		    Next
 		    
@@ -865,6 +885,16 @@ End
 		EditorType="Picture"
 	#tag EndViewProperty
 	#tag ViewProperty
+		Name="bDisplayGrouped"
+		Group="Behavior"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="bPickerMode"
+		Group="Behavior"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
 		Name="Enabled"
 		Visible=true
 		Group="Appearance"
@@ -906,6 +936,17 @@ End
 		Type="String"
 	#tag EndViewProperty
 	#tag ViewProperty
+		Name="iStartingTop"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="LastSearchValue"
+		Group="Behavior"
+		Type="String"
+		EditorType="MultiLineEditor"
+	#tag EndViewProperty
+	#tag ViewProperty
 		Name="Left"
 		Visible=true
 		Group="Position"
@@ -941,6 +982,11 @@ End
 		Group="ID"
 		Type="String"
 		EditorType="String"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="PickerMode"
+		Group="Behavior"
+		Type="Boolean"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Super"

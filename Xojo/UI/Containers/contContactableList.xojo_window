@@ -101,6 +101,7 @@ Begin ContainerControl contContactableList
       HasHeading      =   True
       Height          =   303
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   3
       LockBottom      =   True
@@ -543,6 +544,12 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function methGetListbox() As entListbox
+		  Return lbContactables
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Function methGetRecordList_Grouped(sGroupByField as string, sConditionpar as string) As Dictionary
 		  dim dictGroupedItems as Dictionary
 		  
@@ -932,25 +939,15 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub methOpenRecordInNewTab(oRowTag as lbRowTag)
+		Sub methOpenRecordInNewTab(oStor as RecordStorageClass)
 		  
 		  // Get the name
-		  dim oRecord as DataFile.tbl_contactables
-		  oRecord = oRowTag.vtblRecord
 		  dim sName as string
-		  sName = oRecord.sname_first
+		  sName = oStor.oTableRecord.GetRecordName
 		  
-		  If oRowTag.uuid<> "" Then
+		  If oStor.sUUID <> "" Then
 		    
-		    // load up a inventory item container
-		    dim conInst as New contContactable
-		    dim oTabPanel as PagePanel = app.MainWindow.tbMainWindow
-		    
-		    app.MainWindow.AddTab(sName)
-		    
-		    conInst.EmbedWithinPanel(oTabPanel,oTabPanel.PanelCount - 1 )
-		    
-		    conInst.LoadMe(oRowTag.uuid)
+		    methOpenRecordInNewTab(oStor)
 		    
 		  End If
 		End Sub
@@ -1073,18 +1070,18 @@ End
 	#tag EndEvent
 	#tag Event
 		Function entContextualMenuAction(hitItem as MenuItem) As Boolean
-		  dim lbItems as entListbox = lbContactables  '!@! Table Dependent !@!
+		  dim lb as entListbox = methGetListbox  '!@! Table Dependent !@!
 		  
 		  Select Case hitItem.Text
 		  Case "Open"
 		    
-		    dim oRowTag as lbRowTag
+		    dim oRowTag as RecordStorageClass
 		    
-		    If lbItems.ListIndex <> -1 Then
+		    If lb.ListIndex <> -1 Then
 		      
-		      oRowTag = lbItems.RowTag(lbItems.ListIndex)
+		      oRowTag = lb.RowTag(lb.ListIndex)
 		      
-		      If oRowTag.vtblRecord <> Nil Then
+		      If oRowTag.oTableRecord <> Nil Then
 		        
 		        methOpenRecordInNewTab(oRowTag)
 		        
@@ -1095,32 +1092,20 @@ End
 		  Case "Break Link"
 		    
 		    dim oRowTags() as RecordStorageClass
-		    oRowTags = lbItems.GetSelectedRows
+		    oRowTags = lb.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
 		    dim sYesOrNoToAll as String
 		    
 		    // Loop through each row
-		    For Each oRowTag as lbRowTag in oRowTags
+		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
-		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_contactables
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
-		      Else
-		        Continue
-		      End If
-		      dim oLinkRecord as DataFile.tbl_internal_linking
-		      If oRowTag.vLinkTable <> Nil Then
-		        oLinkRecord = oRowTag.vLinkTable
-		      Else
-		        Continue
-		      End If
+		      If oRowTag.oTableRecord = Nil Or oRowTag.oLinkRecord = Nil Then Continue
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.sname_first
+		      sName = oRowTag.oTableRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -1157,33 +1142,27 @@ End
 		      
 		      // Carry out the users request
 		      If bDelete Then
-		        oLinkRecord.Delete
+		        oRowTag.oLinkRecord.Delete
 		      End If
 		    Next
 		    
 		  Case "Delete"
 		    
 		    dim oRowTags() as RecordStorageClass
-		    oRowTags = lbItems.GetSelectedRows
+		    oRowTags = lb.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
 		    dim sYesOrNoToAll as String
 		    
 		    // Loop through each row
-		    For Each oRowTag as lbRowTag in oRowTags
+		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
-		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_contactables
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
-		      Else
-		        Continue
-		      End If
+		      If oRowTag.oTableRecord = Nil Then Continue
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.sname_first
+		      sName = oRowTag.oTableRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -1220,32 +1199,9 @@ End
 		      
 		      // Carry out the users request
 		      If bDelete Then
-		        oRecord.Delete
+		        oRowTag.oTableRecord.Delete
 		      End If
 		    Next
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
 		    
 		  End Select
 		End Function
@@ -1279,7 +1235,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub DoubleClick()
-		  dim lbItems as entListbox = lbContactables  '!@! Table Dependent !@!
+		  dim lb as entListbox = methGetListbox  '!@! Table Dependent !@!
 		  
 		  
 		  If evdefDoubleClick Then
@@ -1289,13 +1245,13 @@ End
 		  Else
 		    
 		    
-		    dim oRowTag as lbRowTag
+		    dim oRowTag as RecordStorageClass
 		    
-		    If lbItems.ListIndex <> -1 Then
+		    If lb.ListIndex <> -1 Then
 		      
-		      oRowTag = lbItems.RowTag(lbItems.ListIndex)
+		      oRowTag = lb.RowTag(lb.ListIndex)
 		      
-		      If oRowTag.vtblRecord <> Nil Then
+		      If oRowTag.oTableRecord <> Nil Then
 		        
 		        methOpenRecordInNewTab(oRowTag)
 		        

@@ -225,7 +225,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methLoadMe(sUUID as String)
-		  dim oRecord as DataFile.tbl_group_discounts = DataFile.tbl_group_discounts.FindByID(sUUID
+		  dim oRecord as DataFile.tbl_group_discounts = DataFile.tbl_group_discounts.FindByID(sUUID)
 		  oCurrentRecord = oRecord
 		  methLoadMe
 		End Sub

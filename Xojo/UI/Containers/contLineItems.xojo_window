@@ -405,7 +405,7 @@ End
 	#tag Method, Flags = &h0
 		Function methGetListbox() As entListbox
 		  '!@! Table Dependent !@!
-		  Return lbContactables
+		  Return lbItems
 		End Function
 	#tag EndMethod
 
@@ -905,23 +905,11 @@ End
 		    // Loop through each row
 		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
-		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.ActiveRecordBase
-		      If oRowTag.oTableRecord <> Nil Then
-		        oRecord = oRowTag.oTableRecord
-		      Else
-		        Continue
-		      End If
-		      dim oLinkRecord as DataFile.ActiveRecordBase
-		      If oRowTag.oLinkRecord <> Nil Then
-		        oLinkRecord = oRowTag.oLinkRecord
-		      Else
-		        Continue
-		      End If
+		      If oRowTag.oTableRecord = Nil Or oRowTag.oLinkRecord = Nil Then Continue
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.GetRecordName
+		      sName = oRowTag.oTableRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -958,14 +946,14 @@ End
 		      
 		      // Carry out the users request
 		      If bDelete Then
-		        oLinkRecord.Delete
+		        oRowTag.oLinkRecord.Delete
 		      End If
 		    Next
 		    
 		  Case "Delete Item"
 		    
 		    dim oRowTags() as RecordStorageClass
-		    oRowTags = lb.GetSelectedRowsold
+		    oRowTags = lb.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
@@ -975,16 +963,11 @@ End
 		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
 		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_contact_methods
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
-		      Else
-		        Continue
-		      End If
+		      If oRowTag.oTableRecord = Nil Then Continue
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.smethod
+		      sName = oRowTag.oTableRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -1021,7 +1004,7 @@ End
 		      
 		      // Carry out the users request
 		      If bDelete Then
-		        oRecord.Delete
+		        oRowTag.oTableRecord.Delete
 		      End If
 		    Next
 		    

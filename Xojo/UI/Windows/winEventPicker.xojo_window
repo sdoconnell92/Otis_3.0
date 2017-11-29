@@ -72,6 +72,7 @@ Begin Window winEventPicker
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
+      iStartingTop    =   0
       LastSearchValue =   ""
       Left            =   -1
       LockBottom      =   False
@@ -153,13 +154,13 @@ End
 		  
 		  If lbItems.ListIndex <> -1 Then
 		    
-		    dim SelectedRowtags() as lbRowTag
+		    dim SelectedRowtags() as RecordStorageClass
 		    SelectedRowtags = lbItems.GetSelectedRows
 		    
-		    For Each oRowTag as lbRowTag In SelectedRowtags()
+		    For Each oRowTag as RecordStorageClass In SelectedRowtags()
 		      
-		      If oRowTag.uuid <> "" Then
-		        sSelectedItemUUIDs.Append(oRowTag.uuid)
+		      If oRowTag.sUUID <> "" Then
+		        sSelectedItemUUIDs.Append(oRowTag.sUUID)
 		      End If
 		      
 		    Next

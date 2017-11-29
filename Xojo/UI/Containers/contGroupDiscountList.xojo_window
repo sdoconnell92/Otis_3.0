@@ -367,7 +367,7 @@ End
 		      
 		      If oRowTag <> Nil Then
 		        
-		        methOpenRecordInFlWin
+		        methOpenRecordInFlWin(oRowTag)
 		        
 		      End If
 		    End If
@@ -547,7 +547,7 @@ End
 		  
 		  // Prepare the sql statement to get our records
 		  dim bHidden as Boolean = False
-		  dim sSearchString as String = scSearchField.Text
+		  dim sSearchString as String
 		  dim sOrderBy as String = "group_name"
 		  dim oSQL as SQLStorageClass = methBuildSQL( bHidden, sSearchString, sOrderBy )
 		  sGroupFields = sOrderBy
@@ -579,7 +579,7 @@ End
 		    instFlWindow.Height = instDiscountDetails.Height
 		    
 		    instDiscountDetails.EmbedWithin(instFlWindow)
-		    instDiscountDetails.methLoadMe(oStor.sUUID
+		    instDiscountDetails.methLoadMe(oStor.sUUID)
 		    
 		    instFlWindow.Top = MouseY
 		    instFlWindow.Left = MouseX
@@ -696,6 +696,10 @@ End
 
 
 	#tag Property, Flags = &h0
+		aroStorClass() As RecordStorageClass
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		bDisplayGrouped As Boolean
 	#tag EndProperty
 
@@ -742,7 +746,7 @@ End
 	#tag EndEvent
 	#tag Event
 		Function entContextualMenuAction(hitItem as MenuItem) As Boolean
-		  
+		  dim lb as entListbox = methGetListbox
 		  
 		  Select Case hitItem.Text
 		  Case "Delete"
@@ -871,6 +875,16 @@ End
 		EditorType="Picture"
 	#tag EndViewProperty
 	#tag ViewProperty
+		Name="bDisplayGrouped"
+		Group="Behavior"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="bPickerMode"
+		Group="Behavior"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
 		Name="Enabled"
 		Visible=true
 		Group="Appearance"
@@ -912,6 +926,17 @@ End
 		Type="String"
 	#tag EndViewProperty
 	#tag ViewProperty
+		Name="iStartingTop"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="LastSearchValue"
+		Group="Behavior"
+		Type="String"
+		EditorType="MultiLineEditor"
+	#tag EndViewProperty
+	#tag ViewProperty
 		Name="Left"
 		Visible=true
 		Group="Position"
@@ -947,6 +972,11 @@ End
 		Group="ID"
 		Type="String"
 		EditorType="String"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="PickerMode"
+		Group="Behavior"
+		Type="Boolean"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Super"

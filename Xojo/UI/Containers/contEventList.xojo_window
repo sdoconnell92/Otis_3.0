@@ -39,6 +39,7 @@ Begin ContainerControl contEventList
       HasHeading      =   True
       Height          =   268
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   3
       LockBottom      =   True
@@ -259,9 +260,10 @@ End
 		  // Create the new record
 		  dim oNew as New DataFile.tbl_events  '!@! Table Dependent !@!
 		  oNew.sevent_name = "-"  '!@! Table Dependent !@!
+		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oNew)
 		  
 		  
-		  methOpenRecordInTab(oNew)
+		  methOpenRecordInTab(oStor)
 		End Sub
 	#tag EndMethod
 
@@ -1259,6 +1261,11 @@ End
 		Name="InitialParent"
 		Group="Position"
 		Type="String"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="iStartingTop"
+		Group="Behavior"
+		Type="Integer"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="LastSearchValue"

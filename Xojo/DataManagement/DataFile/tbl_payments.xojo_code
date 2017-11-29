@@ -40,14 +40,17 @@ Inherits DataFile.ActiveRecordBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function FindByID(id as Integer) As DataFile.tbl_payments
+		Shared Function FindByID(id as String) As DataFile.tbl_payments
 		  //Usage:
-		  //dim tbl_payments as DataFile.tbl_payments = DataFile.tbl_payments.FindByID( id )
-		  dim s as string
-		  s = "Select * from tbl_payments Where uuid = '" + str(id) + "'"
+		  //dim tbl_events as DataFile.tbl_events = DataFile.tbl_events.FindByID( id )
+		  if DB.error THen
+		  end if
 		  
 		  if db.Error Then
 		  end if
+		  
+		  dim s as string
+		  s = "Select * from tbl_payments Where uuid = '" + str(id) + "';"
 		  
 		  dim rs as RecordSet = DB.SQLSelect(s)
 		  

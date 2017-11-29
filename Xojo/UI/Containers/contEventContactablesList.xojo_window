@@ -515,7 +515,7 @@ End
 		  dim winNew as New winFloatingWindow
 		  
 		  // Create a new container
-		  dim conMethod as New contEI  '!@! Table Dependent !@!
+		  dim conMethod as New contContactable  '!@! Table Dependent !@!
 		  
 		  winNew.Width = conMethod.Width
 		  winNew.Height = conMethod.Height
@@ -538,7 +538,7 @@ End
 		  
 		  NewCont.EmbedWithinPanel(app.MainWindow.tbMainWindow, app.MainWindow.tbMainWindow.PanelCount - 1)
 		  
-		  NewCont.LoadItem(oStor.sUUID )
+		  NewCont.LoadMe(oStor.sUUID )
 		End Sub
 	#tag EndMethod
 
@@ -623,6 +623,10 @@ End
 		End Sub
 	#tag EndMethod
 
+
+	#tag Hook, Flags = &h0
+		Event evdefContextualMenuAction(hititem as MenuItem) As Boolean
+	#tag EndHook
 
 	#tag Hook, Flags = &h0
 		Event evdefDoubleClick() As Boolean

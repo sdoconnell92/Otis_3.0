@@ -153,13 +153,13 @@ End
 		  
 		  If lbItems.ListIndex <> -1 Then
 		    
-		    dim SelectedRowtags() as lbRowTag
+		    dim SelectedRowtags() as RecordStorageClass
 		    SelectedRowtags = lbItems.GetSelectedRows
 		    
-		    For Each oRowTag as lbRowTag In SelectedRowtags()
+		    For Each oRowTag as RecordStorageClass In SelectedRowtags()
 		      
-		      If oRowTag.uuid <> "" Then
-		        sSelectedItemUUIDs.Append(oRowTag.uuid)
+		      If oRowTag.suuid <> "" Then
+		        sSelectedItemUUIDs.Append(oRowTag.suuid)
 		      End If
 		      
 		    Next

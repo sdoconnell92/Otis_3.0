@@ -597,6 +597,7 @@ End
 	#tag Method, Flags = &h0
 		Sub methLoadMe_ExpandSingleRecord(oRecord as DataFile.tbl_contact_methods)
 		  '!@! Table Dependent In Parameters !@!
+		  dim lb as entListbox = methGetListbox
 		  
 		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oRecord)
 		  DataFile.GetChildren(oStor)
@@ -634,7 +635,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub methOpenRecordInNewTab(oRowTag as lbRowTag)
+		Sub methOpenRecordInNewTab(oRowTag as RecordStorageClass)
 		  'methOpenRecordInGroupBox(oRowTag)
 		End Sub
 	#tag EndMethod
@@ -796,18 +797,18 @@ End
 	#tag EndEvent
 	#tag Event
 		Function entContextualMenuAction(hitItem as MenuItem) As Boolean
-		  dim lbItems as entListbox = lbMethods  '!@! Table Dependent !@!
+		  dim lb as entListbox = methGetListbox  '!@! Table Dependent !@!
 		  
 		  Select Case hitItem.Text
 		  Case "Open"
 		    
-		    dim oRowTag as lbRowTag
+		    dim oRowTag as RecordStorageClass
 		    
-		    If lbItems.ListIndex <> -1 Then
+		    If lb.ListIndex <> -1 Then
 		      
-		      oRowTag = lbItems.RowTag(lbItems.ListIndex)
+		      oRowTag = lb.RowTag(lb.ListIndex)
 		      
-		      If oRowTag.vtblRecord <> Nil Then
+		      If oRowTag.oTableRecord <> Nil Then
 		        
 		        methOpenRecordInNewTab(oRowTag)
 		        
@@ -828,22 +829,11 @@ End
 		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
 		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.ActiveRecordBase
-		      If oRowTag.oTableRecord <> Nil Then
-		        oRecord = oRowTag.oTableRecord
-		      Else
-		        Continue
-		      End If
-		      dim oLinkRecord as DataFile.ActiveRecordBase
-		      If oRowTag.oLinkRecord <> Nil Then
-		        oLinkRecord = oRowTag.oLinkRecord
-		      Else
-		        Continue
-		      End If
+		      If oRowTag.oTableRecord = Nil Or oRowTag.oLinkRecord = Nil Then Continue
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.GetRecordName
+		      sName = oRowTag.oTableRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -880,14 +870,14 @@ End
 		      
 		      // Carry out the users request
 		      If bDelete Then
-		        oLinkRecord.Delete
+		        oRowTag.oLinkRecord.Delete
 		      End If
 		    Next
 		    
 		  Case "Delete Item"
 		    
 		    dim oRowTags() as RecordStorageClass
-		    oRowTags = lb.GetSelectedRowsold
+		    oRowTags = lb.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
@@ -897,16 +887,11 @@ End
 		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
 		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_contact_methods
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
-		      Else
-		        Continue
-		      End If
+		      If oRowTag.oTableRecord = Nil Then Continue
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.smethod
+		      sName = oRowTag.oTableRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -943,7 +928,7 @@ End
 		      
 		      // Carry out the users request
 		      If bDelete Then
-		        oRecord.Delete
+		        oRowTag.oTableRecord.Delete
 		      End If
 		    Next
 		    
@@ -1058,7 +1043,7 @@ End
 		      
 		      // Close all the folders by passing a nil array
 		      dim nilarray() as RecordStorageClass
-		      lb1.reopenFoldersold(nilarray)
+		      lb1.reopenFolders(nilarray)
 		      
 		      If LastUIState <> Nil Then
 		        lb1.ResetUIState(LastUIState)

@@ -373,7 +373,7 @@ End
 		Sub methLoadMe(sUUID as string)
 		  dim oRecord as DataFile.tbl_payments = DataFile.tbl_payments.FindByID(sUUID)
 		  oCurrentRecord = oRecord
-		  methLoad
+		  methLoadMe
 		End Sub
 	#tag EndMethod
 

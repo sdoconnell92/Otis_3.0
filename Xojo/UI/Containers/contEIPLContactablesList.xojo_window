@@ -505,7 +505,7 @@ End
 		  winNew.Left = MouseX + me.TrueWindow.Left
 		  
 		  conMethod.EmbedWithin(winNew)
-		  conMethod.LoadMe(oStor.sUUID)
+		  conMethod.methLoadMe(oStor.sUUID)
 		  
 		End Sub
 	#tag EndMethod
@@ -520,7 +520,7 @@ End
 		  
 		  NewCont.EmbedWithinPanel(app.MainWindow.tbMainWindow, app.MainWindow.tbMainWindow.PanelCount - 1)
 		  
-		  NewCont.LoadItem(oStor.sUUID )
+		  NewCont.LoadMe(oStor.sUUID)
 		End Sub
 	#tag EndMethod
 
@@ -604,6 +604,27 @@ End
 		  lb.ResetUIState(oUIState)
 		End Sub
 	#tag EndMethod
+
+
+	#tag Hook, Flags = &h0
+		Event evdefConstructContextualMenu(base as MenuItem, x as integer, y as integer) As Boolean
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event evdefContextualMenuAction(hitItem as MenuItem) As Boolean
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event evdefDoubleClick() As Boolean
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event evdefListboxSettings(lbEIPLs as entListbox, ByRef dictCellTypes as Dictionary, ByRef dictFieldNames as Dictionary)
+	#tag EndHook
+
+	#tag Hook, Flags = &h0
+		Event evdefOpen()
+	#tag EndHook
 
 
 	#tag Property, Flags = &h0
@@ -805,6 +826,16 @@ End
 		EditorType="Picture"
 	#tag EndViewProperty
 	#tag ViewProperty
+		Name="bDisplayGrouped"
+		Group="Behavior"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="bPickerMode"
+		Group="Behavior"
+		Type="Boolean"
+	#tag EndViewProperty
+	#tag ViewProperty
 		Name="EIPLID"
 		Group="Behavior"
 		Type="String"
@@ -850,6 +881,17 @@ End
 		Name="InitialParent"
 		Group="Position"
 		Type="String"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="iStartingTop"
+		Group="Behavior"
+		Type="Integer"
+	#tag EndViewProperty
+	#tag ViewProperty
+		Name="LastSearchValue"
+		Group="Behavior"
+		Type="String"
+		EditorType="MultiLineEditor"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Left"

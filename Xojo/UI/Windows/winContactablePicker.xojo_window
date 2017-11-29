@@ -128,17 +128,17 @@ End
 #tag WindowCode
 	#tag Method, Flags = &h0
 		Sub PutRecordsIntoArray()
-		  dim oSelectedRows() as lbRowTag
+		  dim oSelected() as RecordStorageClass
 		  
 		  ReDim oSelectedRecords(-1)
 		  
 		  // Get the rowtags of any rows selected
-		  oSelectedRows = instContactableList.lbContactables.GetSelectedRows
+		  oSelected = instContactableList.lbContactables.GetSelectedRows
 		  
-		  For Each oRowTag as lbRowTag In oSelectedRows()
+		  For Each oRowTag as RecordStorageClass In oSelected()
 		    
-		    If oRowTag.vtblRecord <> Nil Then
-		      oSelectedRecords.Append(oRowTag.vtblRecord)
+		    If oRowTag.oTableRecord <> Nil Then
+		      oSelectedRecords.Append(oRowTag.GetTableRecordVariant)
 		    End If
 		    
 		  Next

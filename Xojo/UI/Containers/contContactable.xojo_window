@@ -936,6 +936,7 @@ Begin ContainerControl contContactable
       BackColor       =   &cFFFF00FF
       Backdrop        =   0
       bDisplayGrouped =   False
+      bPickerMode     =   False
       DoNotLoad       =   False
       Enabled         =   True
       EraseBackground =   True
@@ -944,6 +945,7 @@ Begin ContainerControl contContactable
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
+      iStartingTop    =   0
       LastSearchValue =   ""
       Left            =   345
       LockBottom      =   False
@@ -1172,7 +1174,8 @@ End
 		  chbHide.Value = oCurrentRecord.bhide
 		  
 		  // Contact Methods Listbox
-		  contMethodsList.methLoadMe( oCurrentRecord.suuid )
+		  contMethodsList.oParentRecord = oCurrentRecord
+		  contMethodsList.methLoadMe
 		  
 		  // Child Contacts listbox
 		  contLinkedContactables.methLoadMe_ExpandSingleRecord( oCurrentRecord )
