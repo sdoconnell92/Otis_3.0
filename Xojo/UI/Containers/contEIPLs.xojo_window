@@ -245,17 +245,23 @@ End
 		  dim arvValue() as Variant
 		  
 		  // Add the base sql
-		  aroSQL.Append( DataFile.tbl_inventory.BaseSQL )
+		  aroSQL.Append( DataFile.tbl_eipl.BaseSQL )
 		  
 		  
 		  // Build condition array
 		  ' Build Search Condition
 		  If sSearchString <> "" Then
 		    arsConditions.Append( "eipl_name Like ? Or eipl_type Like ?" )
-		    For i1 as integer = 0 To 3
+		    For i1 as integer = 0 To 1
 		      ariTypes.Append( SQLitePreparedStatement.SQLITE_TEXT )
 		      arvValue.Append( "%" + sSearchString + "%" )
 		    Next
+		  End If
+		  
+		  If oEventRecord <> Nil Then 
+		    arsConditions.Append( "fkevents = ?")
+		    ariTypes.Append( SQLitePreparedStatement.SQLITE_TEXT )
+		    arvValue.Append( oEventRecord.suuid )
 		  End If
 		  
 		  If arsConditions.Ubound <> -1 Then
@@ -1006,20 +1012,21 @@ End
 	#tag Event
 		Function entConstructContextualMenu(base as menuitem, x as integer, y as integer) As Boolean
 		  '!@! Table Dependent !@!
+		  dim lb as entListbox = methGetListbox
 		  
-		  If lbEIPLs.ListIndex <> -1 Then
+		  If lb.ListIndex <> -1 Then
 		    
 		    // Grab the rowtag
-		    dim oRowTag as lbRowTag
-		    oRowTag = lbEIPLs.RowTag(lbEIPLs.ListIndex)
+		    dim oRowTag as RecordStorageClass
+		    oRowTag = lb.RowTag(lb.ListIndex)
 		    
-		    If oRowTag.vtblRecord <> Nil Then
+		    If oRowTag.oTableRecord <> Nil Then
 		      
 		      base.Append( New MenuItem("Open") )
 		      'base.Append( New MenuItem("Maintenance Logs") )
 		      base.Append( New MenuItem(MenuItem.TextSeparator) )
 		      
-		      If oRowTag.vLinkTable <> Nil Then
+		      If oRowTag.oLinkRecord <> Nil Then
 		        base.Append( New MenuItem("Break Link") )
 		      End If
 		      
