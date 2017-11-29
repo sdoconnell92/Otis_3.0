@@ -183,6 +183,12 @@ End
 		  // Add the base sql
 		  aroSQL.Append( DataFile.tbl_group_discounts.BaseSQL )
 		  
+		  If oCurrentEIPL <> Nil Then
+		    arsConditions.Append( "fkeipl = ?" )
+		    ariTypes.Append( SQLitePreparedStatement.SQLITE_TEXT )
+		    arvValue.Append( oCurrentEIPL.suuid )
+		  End If
+		  
 		  If arsConditions.Ubound <> -1 Then
 		    aroSQL.Append( "Where" )
 		    aroSQL.Append( Join(arsConditions, " And ") )
@@ -541,7 +547,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub methLoadMe(bGrouped as Boolean = True, sGroupFields as String = "", bGetChildren as boolean = True)
+		Sub methLoadMe(bGrouped as Boolean = False, sGroupFields as String = "", bGetChildren as boolean = False)
 		  '!@! Table Dependent !@!
 		  dim lb as entListbox = methGetListbox
 		  

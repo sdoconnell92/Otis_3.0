@@ -884,7 +884,7 @@ End
 		    
 		    If lb.ListIndex <> -1 Then
 		      // Grab the rowtag
-		      dim oRowTag as RecordStorageClass
+		      dim oRowTag as RecordStorageClass = lb.RowTag(lb.ListIndex)
 		      methOpenRecordInTab(oRowTag)
 		    End If
 		    

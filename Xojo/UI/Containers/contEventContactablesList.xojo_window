@@ -41,11 +41,11 @@ Begin ContainerControl contEventContactablesList
       HelpTag         =   ""
       InitialParent   =   ""
       Left            =   3
-      LockBottom      =   False
+      LockBottom      =   True
       LockedInPosition=   False
-      LockLeft        =   False
-      LockRight       =   False
-      LockTop         =   False
+      LockLeft        =   True
+      LockRight       =   True
+      LockTop         =   True
       Scope           =   0
       TabIndex        =   0
       TabPanelIndex   =   0
@@ -167,7 +167,6 @@ End
 		  // Lets set up our headers
 		  me.ColumnCount = 3
 		  me.Heading = Array("Name"," ","Type")
-		  
 		End Sub
 	#tag EndEvent
 	#tag Event

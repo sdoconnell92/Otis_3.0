@@ -101,6 +101,7 @@ Begin ContainerControl contPaymentList
       HasHeading      =   True
       Height          =   206
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   3
       LockBottom      =   True
@@ -181,7 +182,13 @@ End
 		  dim arvValue() as Variant
 		  
 		  // Add the base sql
-		  aroSQL.Append( DataFile.tbl_group_discounts.BaseSQL )
+		  aroSQL.Append( DataFile.tbl_payments.BaseSQL )
+		  
+		  If oEIPLRecord <> Nil Then
+		    arsConditions.Append( "fkeipl = ?" )
+		    ariTypes.Append( SQLitePreparedStatement.SQLITE_TEXT )
+		    arvValue.Append( oEIPLRecord.suuid )
+		  End If
 		  
 		  If arsConditions.Ubound <> -1 Then
 		    aroSQL.Append( "Where" )

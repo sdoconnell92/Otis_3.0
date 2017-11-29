@@ -39,7 +39,6 @@ Begin ContainerControl contEventList
       HasHeading      =   True
       Height          =   268
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   3
       LockBottom      =   True
@@ -762,7 +761,13 @@ End
 		  dim lb as entListbox = methGetListbox
 		  dim oUIState as lbUIState
 		  oUIState = lb.GetUIState
-		  methLoadMe()
+		  
+		  If oParentStor = Nil Then
+		    methLoadMe()
+		  Else
+		    methLoadMe(oParentStor)
+		  End If
+		  
 		  lb.ResetUIState(oUIState)
 		End Sub
 	#tag EndMethod

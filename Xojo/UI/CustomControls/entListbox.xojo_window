@@ -262,6 +262,18 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function ColumnWidths() As String
+		  Return oListbox.ColumnWidths
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub ColumnWidths(assigns sWidths as String)
+		  oListbox.ColumnWidths = sWidths
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub DeleteAllRows()
 		  
 		  oListbox.DeleteAllRows
@@ -440,6 +452,8 @@ End
 	#tag Method, Flags = &h0
 		Function GetUIState() As lbUIState
 		  dim oUIState as New lbUIState
+		  
+		  If ListCount = 0 Then Return oUIState
 		  
 		  // Check what type of rowtags we are dealing with
 		  dim v as Variant = RowTag(0)
