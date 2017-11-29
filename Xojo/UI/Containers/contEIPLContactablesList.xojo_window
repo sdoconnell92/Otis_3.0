@@ -605,62 +605,6 @@ End
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub oldmethLoadMe()
-		  dim db1 as SQLiteDatabase = app.db
-		  
-		  lbContactables.DeleteAllRows
-		  
-		  // First lets grab all of the records from the database that are related to this event
-		  dim rs1 as RecordSet
-		  dim sql1 as string
-		  
-		  sql1 = "Select c.uuid, c.name_first, c.name_last,c.type, il.uuid as liuuid "_
-		  + "From tbl_contactables as c "_
-		  + "Inner Join tbl_contactable_linking as il on ( c.uuid = il.fk_child ) "_
-		  + "Inner Join tbl_eipl as e on ( il.fk_parent = e.uuid ) "_
-		  + "Where e.uuid = '" + EIPLID + "';"
-		  
-		  rs1 = db1.SQLSelect(sql1)
-		  If db1.Error Then
-		    Break
-		    ErrManage("contEIPLContactablesList.methLoadMe", "Cant get contacts related to EIPL: " + db1.ErrorMessage )
-		    Return
-		  End If
-		  
-		  If rs1.RecordCount > 0 Then
-		    
-		    For iRecordIndex as integer = 1 To rs1.RecordCount
-		      
-		      dim oRowTag as New lbRowTag
-		      oRowTag.uuid = rs1.Field("uuid").Value
-		      oRowTag.vColumnValues = Array( rs1.Field("name_first").Value, rs1.Field("name_last").Value, rs1.Field("type").Value )
-		      If rs1.Field("liuuid").StringValue <> "" Then oRowTag.vLinkTable = DataFile.tbl_contactable_linking.FindByID( rs1.Field("liuuid").StringValue )
-		      If rs1.Field("uuid").StringValue <> "" Then oRowTag.vtblRecord = DataFile.tbl_contactables.FindByID( rs1.Field("uuid").StringValue )
-		      
-		      lbContactables.AddRow( rs1.Field("name_first").StringValue, rs1.Field("name_last").StringValue, rs1.Field("type").StringValue )
-		      
-		      lbContactables.RowTag(lbContactables.LastIndex) = oRowTag
-		      
-		      rs1.MoveNext
-		      
-		    Next
-		    
-		  End If
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h0
-		Sub oldmethRefresh()
-		  
-		  dim oUIState as lbUIState
-		  oUIState = lbContactables.GetUIState
-		  methLoadMe()
-		  lbContactables.ResetUIState(oUIState)
-		  
-		End Sub
-	#tag EndMethod
-
 
 	#tag Property, Flags = &h0
 		aroStorClass() As RecordStorageClass

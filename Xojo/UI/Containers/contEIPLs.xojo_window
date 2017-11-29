@@ -866,12 +866,12 @@ End
 	#tag EndEvent
 	#tag Event
 		Function entContextualMenuAction(hitItem as MenuItem) As Boolean
-		  '!@! Table Dependent !@!
+		  dim lb as entListbox = methGetListbox
 		  
 		  Select Case hitItem.Text
 		  Case "Open"
 		    
-		    If lbEIPLs.ListIndex <> -1 Then
+		    If lb.ListIndex <> -1 Then
 		      // Grab the rowtag
 		      dim oRowTag as RecordStorageClass
 		      methOpenRecordInTab(oRowTag)
@@ -880,7 +880,7 @@ End
 		  Case "Break Link"
 		    
 		    dim oRowTags() as RecordStorageClass
-		    oRowTags = lbItems.GetSelectedRows
+		    oRowTags = lb.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
@@ -889,23 +889,11 @@ End
 		    // Loop through each row
 		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
-		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_inventory
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
-		      Else
-		        Continue
-		      End If
-		      dim oLinkRecord as DataFile.tbl_internal_linking
-		      If oRowTag.vLinkTable <> Nil Then
-		        oLinkRecord = oRowTag.vLinkTable
-		      Else
-		        Continue
-		      End If
+		      If oRowTag.oTableRecord = Nil Or oRowTag.oLinkRecord = Nil Then Continue
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.sitem_name
+		      sName = oRowTag.oTableRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -942,14 +930,14 @@ End
 		      
 		      // Carry out the users request
 		      If bDelete Then
-		        oLinkRecord.Delete
+		        oRowTag.oLinkRecord.Delete
 		      End If
 		    Next
 		    
 		  Case "Delete Item"
 		    
 		    dim oRowTags() as RecordStorageClass
-		    oRowTags = lbItems.GetSelectedRows
+		    oRowTags = lb.GetSelectedRows
 		    
 		    // Goal is to delete all selected rows allowing the user an option to apply their choice of whether or not to delete an item to all items
 		    
@@ -959,16 +947,11 @@ End
 		    For Each oRowTag as RecordStorageClass in oRowTags
 		      
 		      // Get the table record out of the rowtag
-		      dim oRecord as DataFile.tbl_inventory
-		      If oRowTag.vtblRecord <> Nil Then
-		        oRecord = oRowTag.vtblRecord
-		      Else
-		        Continue
-		      End If
+		      If oRowTag.oTableRecord = Nil Then Continue
 		      
 		      // Get the name of the item
 		      dim sName as string
-		      sName = oRecord.sitem_name
+		      sName = oRowTag.oTableRecord.GetRecordName
 		      
 		      dim bDelete as Boolean
 		      
@@ -1005,7 +988,7 @@ End
 		      
 		      // Carry out the users request
 		      If bDelete Then
-		        oRecord.Delete
+		        oRowTag.oTableRecord.Delete
 		      End If
 		    Next
 		    
