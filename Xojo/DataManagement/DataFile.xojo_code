@@ -159,6 +159,8 @@ Protected Module DataFile
 		          oLinkStor.sFolderName = oLinkRecord.slink_type
 		          oLinkStor.oParentStor = oParentStor
 		          
+		          oParentStor.aroChildren.Append(oLinkStor)
+		          
 		          oParentStor = oLinkStor
 		        End If
 		      Else

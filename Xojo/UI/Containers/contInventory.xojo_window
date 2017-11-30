@@ -329,6 +329,7 @@ End
 		Sub methAddItem()
 		  dim oNewItem as New DataFile.tbl_inventory
 		  oNewItem.PopulateBlank
+		  oNewItem.Save
 		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oNewItem)
 		  
 		  methOpenRecordInTab(oStor)
@@ -571,7 +572,7 @@ End
 	#tag Method, Flags = &h0
 		Sub methHandleExpandRow(row as integer)
 		  dim lb1 as entListbox = methGetListbox
-		  
+		  Break
 		  // Extract the rowtag out of the parent
 		  dim oParentStor as RecordStorageClass
 		  oParentStor = lb1.RowTag(row)
@@ -765,6 +766,8 @@ End
 		  '!@! Table Dependent In Parameters !@!
 		  dim lb as entListbox = methGetListbox
 		  
+		  oParentRecord = oRecord
+		  Break
 		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oRecord)
 		  DataFile.GetChildren(oStor)
 		  
@@ -838,7 +841,7 @@ End
 	#tag Method, Flags = &h0
 		Sub methPopulateRow(iRowIndex as integer, oStor as RecordStorageClass)
 		  dim lb as entListbox = methGetListbox
-		  dim oDummy as New DataFile.tbl_contact_methods  '!@! Table Dependent !@!
+		  dim oDummy as New DataFile.tbl_inventory  '!@! Table Dependent !@!
 		  dim sTableName as String = oDummy.GetTableName
 		  
 		  For iCellIndex as integer = 0 To oStor.oRowData.arsColumnValues.Ubound
@@ -891,7 +894,11 @@ End
 		  dim lb as entListbox = methGetListbox
 		  dim oUIState as lbUIState
 		  oUIState = lb.GetUIState
-		  methLoadMe()
+		  If oParentRecord = Nil Then
+		    methLoadMe()
+		  Else
+		    methLoadMe_ExpandSingleRecord(oParentRecord)
+		  End If
 		  lb.ResetUIState(oUIState)
 		End Sub
 	#tag EndMethod
@@ -992,7 +999,7 @@ End
 		    If lb.ListIndex <> -1 Then
 		      
 		      // Grab the rowtag
-		      dim oRowTag as RecordStorageClass
+		      dim oRowTag as RecordStorageClass = lb.RowTag(lb.ListIndex)
 		      methOpenRecordInTab(oRowTag)
 		    End If
 		    
@@ -1135,20 +1142,21 @@ End
 	#tag Event
 		Function entConstructContextualMenu(base as menuitem, x as integer, y as integer) As Boolean
 		  '!@! Table Dependent !@!
+		  dim lb as entListbox = methGetListbox
 		  
-		  If lbItems.ListIndex <> -1 Then
+		  If lb.ListIndex <> -1 Then
 		    
 		    // Grab the rowtag
-		    dim oRowTag as lbRowTag
-		    oRowTag = lbItems.RowTag(lbItems.ListIndex)
+		    dim oRowTag as RecordStorageClass
+		    oRowTag = lb.RowTag(lb.ListIndex)
 		    
-		    If oRowTag.vtblRecord <> Nil Then
+		    If oRowTag.oTableRecord <> Nil Then
 		      
 		      base.Append( New MenuItem("Open") )
 		      base.Append( New MenuItem("Maintenance Logs") )
 		      base.Append( New MenuItem(MenuItem.TextSeparator) )
 		      
-		      If oRowTag.vLinkTable <> Nil Then
+		      If oRowTag.oLinkRecord <> Nil Then
 		        base.Append( New MenuItem("Break Link") )
 		      End If
 		      

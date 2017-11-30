@@ -243,7 +243,7 @@ End
 		  // Check for any firmware update records
 		  dim oFirmwareRecords() as DataFile.tbl_firmware
 		  dim sCondition,sOrder as string
-		  sCondition = "fk_inventory = " + sfkinventory.ToText
+		  sCondition = "fk_inventory = '" + sfkinventory.ToText + "'"
 		  sOrder = "date(update_date)"
 		  oFirmwareRecords() = DataFile.tbl_firmware.List(sCondition,sOrder)
 		  
