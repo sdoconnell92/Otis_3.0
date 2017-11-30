@@ -573,8 +573,8 @@ End
 		    dictCellTypes.Value(sRowType) = iCellTypes3
 		    
 		    
-		    // Linked - 
-		    sRowType = "Linked - NoType"
+		    // Child - 
+		    sRowType = "Child - NoType"
 		    'field names
 		    s1 = "tbl_contactables.name_first,tbl_contactables.name_last,tbl_contactables.job_title,tbl_contactables.company"
 		    s2() = Split(s1,",")

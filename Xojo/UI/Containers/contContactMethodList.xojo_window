@@ -540,8 +540,8 @@ End
 		    dictCellTypes.Value(sRowType) = iCellTypes3
 		    
 		    
-		    // Linked - 
-		    sRowType = "Linked - NoType"
+		    // Child - 
+		    sRowType = "Child - NoType"
 		    'field names
 		    s1 = "tbl_contact_methods.method,tbl_contact_methods.method_type,tbl_contact_methods.method_location"
 		    s2() = Split(s1,",")

@@ -124,7 +124,6 @@ Begin ContainerControl contEI
          Height          =   181
          HelpTag         =   ""
          InitialParent   =   "ppEIPLSwitcher"
-         iStartingTop    =   0
          Left            =   343
          LockBottom      =   False
          LockedInPosition=   False
@@ -501,6 +500,8 @@ Begin ContainerControl contEI
          AutoDeactivate  =   True
          BackColor       =   &cFFFF00FF
          Backdrop        =   0
+         bDisplayGrouped =   False
+         bPickerMode     =   False
          Enabled         =   True
          EraseBackground =   True
          HasBackColor    =   False
@@ -508,12 +509,14 @@ Begin ContainerControl contEI
          HelpTag         =   ""
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
+         LastSearchValue =   ""
          Left            =   343
          LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   False
          LockTop         =   False
+         PickerMode      =   False
          Scope           =   0
          TabIndex        =   10
          TabPanelIndex   =   2
@@ -675,6 +678,8 @@ Begin ContainerControl contEI
          AutoDeactivate  =   True
          BackColor       =   &cFFFF00FF
          Backdrop        =   0
+         bDisplayGrouped =   False
+         bPickerMode     =   False
          Enabled         =   True
          EraseBackground =   True
          HasBackColor    =   False
@@ -682,12 +687,14 @@ Begin ContainerControl contEI
          HelpTag         =   ""
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
+         LastSearchValue =   ""
          Left            =   20
          LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
          LockRight       =   False
          LockTop         =   False
+         PickerMode      =   False
          Scope           =   0
          TabIndex        =   15
          TabPanelIndex   =   2
@@ -1632,7 +1639,7 @@ End
 		  
 		  
 		  // LinkedItem - Version
-		  sRowType = "Linked - version"
+		  sRowType = "Child - version"
 		  'field names
 		  s1 = "item_name,item_description,item_quantity,item_rental_price"
 		  s2() = Split(s1,",")
@@ -1644,7 +1651,7 @@ End
 		  
 		  
 		  // LinkedItem - Contained
-		  sRowType = "Linked - contained"
+		  sRowType = "Child - contained"
 		  'field names
 		  s1 = "item_name,item_description,item_quantity,item_rental_price"
 		  s2() = Split(s1,",")
@@ -1655,7 +1662,7 @@ End
 		  dictCellTypes.Value(sRowType) = iCellTypes5
 		  
 		  // LinkedItem - Contained
-		  sRowType = "Linked - kit"
+		  sRowType = "Child - kit"
 		  'field names
 		  s1 = "item_name,item_description,item_quantity,item_rental_price"
 		  s2() = Split(s1,",")
@@ -1666,7 +1673,7 @@ End
 		  dictCellTypes.Value(sRowType) = iCellTypes6
 		  
 		  // LinkedItem - Contained
-		  sRowType = "Linked - package"
+		  sRowType = "Child - package"
 		  'field names
 		  s1 = "item_name,item_description,item_quantity,item_rental_price"
 		  s2() = Split(s1,",")

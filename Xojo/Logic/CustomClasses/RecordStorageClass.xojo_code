@@ -104,7 +104,7 @@ Protected Class RecordStorageClass
 		Private Sub PopulateColumnValues(arsFieldNames() as String, ariCellTypes() as Integer)
 		  If StorType = "GroupFolder" or StorType = "LinkedFolder" Then
 		    oRowData.arsColumnValues.Append(sFolderName)
-		  ElseIf StorType = "GrandParent" or StorType.InStr("Child -") > 0 Then
+		  ElseIf StorType = "GrandParent" or StorType.InStr("Child") > 0 Then
 		    
 		    dim jsFieldValues as JSONItem = oTableRecord.GetMyFieldValues(True)
 		    dim sTableName as String = oTableRecord.GetTableName
@@ -169,24 +169,25 @@ Protected Class RecordStorageClass
 		  
 		  
 		  // Get the cell types and field names
-		  If isFolder And Not isChild And Not isLinker And Not isRecord Then
+		  Select Case StorType
+		  Case "GroupFolder"
 		    // This Stor is a Group Folder
 		    arsFieldNames() = GetFieldNames( "GroupFolder", dictFieldNames )
 		    ariCellTypes() = GetCellTypes( "GroupFolder", dictCellTypes )
-		  ElseIf Not isChild And Not isLinker And isRecord Then
+		  Case "GrandParent"
 		    // This is a Grandparent
 		    arsFieldNames() = GetFieldNames( "GrandParent", dictFieldNames )
 		    ariCellTypes() = GetCellTypes( "GrandParent", dictCellTypes )
-		  ElseIf isFolder And isChild And isLinker And Not isRecord Then
+		  Case "LinkedFolder"
 		    // This is a linked Folder
 		    arsFieldNames() = GetFieldNames( "LinkedFolder", dictFieldNames )
 		    ariCellTypes() = GetCellTypes( "LinkedFolder", dictCellTypes )
-		  ElseIf isChild And Not isLinker And isRecord Then
+		  Case "Child"
 		    // This is a Child Record
 		    dim s1 as string = "Child - " + oParentStor.sFolderName
 		    arsFieldNames() = GetFieldNames( s1, dictFieldNames )
 		    ariCellTypes() = GetCellTypes( s1, dictCellTypes )
-		  End If
+		  End Select
 		  
 		  
 		  // Start populating the column values based on field names and types

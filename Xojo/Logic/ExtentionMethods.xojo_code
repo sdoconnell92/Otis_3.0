@@ -16,7 +16,7 @@ Protected Module ExtentionMethods
 
 	#tag Method, Flags = &h0
 		Sub PopulateLbDataList(extends aro() as RecordStorageClass, dictFieldNames as Dictionary, dictCellTypes as Dictionary)
-		  Break
+		  
 		  For i1 as integer = 0 To aro.Ubound
 		    aro(i1).PopulateLbData( dictFieldNames, dictCellTypes )
 		    

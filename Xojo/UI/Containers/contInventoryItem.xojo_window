@@ -3162,22 +3162,20 @@ End
 
 	#tag Method, Flags = &h0
 		Sub PushValues()
-		  dim lbItems as entListbox
-		  
-		  lbItems = contInventoryExpanded.lbItems
+		  dim lb as entListbox = contInventoryExpanded.lbItems
 		  
 		  // Get all the rowtags of selected rows
-		  dim oSelectedRowtags() as lbRowTag
-		  oSelectedRowtags() = lbItems.GetSelectedRowsold
+		  dim oSelectedRowtags() as RecordStorageClass
+		  oSelectedRowtags() = lb.GetSelectedRows
 		  
 		  dim oParentItem as DataFile.tbl_inventory
 		  oParentItem = oCurrentInventoryItem
 		  
-		  For Each oRowTag as lbRowTag In oSelectedRowtags()
+		  For Each oRowTag as RecordStorageClass In oSelectedRowtags()
 		    
 		    // Extract the table record
 		    dim oItem as DataFile.tbl_inventory
-		    oItem = oRowTag.vtblRecord
+		    oItem = oRowTag.GetTableRecordVariant
 		    
 		    If chItemModel_Push.Value Then oItem.sitem_model = oParentItem.sitem_model
 		    If chItemManufacturer_Push.Value Then oItem.sitem_manufacturer = oParentItem.sitem_manufacturer
@@ -3199,10 +3197,12 @@ End
 		    
 		  Next
 		  
-		  dim oUISTate as lbUIState
-		  oUISTate = lbItems.GetUIState
-		  contInventoryExpanded.methLoadMe_ExpandSingleRecord(oParentItem)
-		  lbItems.ResetUIState(oUISTate) 
+		  lb.Refresh
+		  
+		  // dim oUISTate as lbUIState
+		  // oUISTate = lbItems.GetUIState
+		  // contInventoryExpanded.methLoadMe_ExpandSingleRecord(oParentItem)
+		  // lbItems.ResetUIState(oUISTate) 
 		End Sub
 	#tag EndMethod
 
@@ -3413,7 +3413,7 @@ End
 		  
 		  
 		  // LinkedItem - Version
-		  sRowType = "Linked - version"
+		  sRowType = "Child - version"
 		  'field names
 		  s1 = "item_name,item_department,item_category,item_subcategory,item_quantity,hide,physical_item"
 		  s2() = Split(s1,",")
@@ -3425,7 +3425,7 @@ End
 		  
 		  
 		  // LinkedItem - Contained
-		  sRowType = "Linked - contained"
+		  sRowType = "Child - contained"
 		  'field names
 		  s1 = "item_name,item_department,item_category,item_subcategory,tbl_inventory_link.-.quantity,hide,physical_item"
 		  s2() = Split(s1,",")
@@ -3436,7 +3436,7 @@ End
 		  dictCellTypes.Value(sRowType) = iCellTypes5
 		  
 		  // LinkedItem - kit
-		  sRowType = "Linked - kit"
+		  sRowType = "Child - kit"
 		  'field names
 		  s1 = "item_name,item_department,item_category,item_subcategory,tbl_inventory_link.-.quantity,hide,physical_item"
 		  s2() = Split(s1,",")
@@ -3447,7 +3447,7 @@ End
 		  dictCellTypes.Value(sRowType) = iCellTypes6
 		  
 		  // LinkedItem - Contained
-		  sRowType = "Linked - package"
+		  sRowType = "Child - package"
 		  'field names
 		  s1 = "item_name,item_department,item_category,item_subcategory,tbl_inventory_link.-.quantity,hide,physical_item"
 		  s2() = Split(s1,",")

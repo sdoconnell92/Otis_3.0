@@ -101,7 +101,6 @@ Begin ContainerControl contPaymentList
       HasHeading      =   True
       Height          =   206
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   3
       LockBottom      =   True
@@ -490,7 +489,7 @@ End
 		    
 		    
 		    // LinkedItem - Version
-		    sRowType = "Linked - version"
+		    sRowType = "Child - version"
 		    'field names
 		    s1 = "payment_type,payment_date,payment_amount"
 		    s2() = Split(s1,",")
@@ -502,7 +501,7 @@ End
 		    
 		    
 		    // LinkedItem - Contained
-		    sRowType = "Linked - contained"
+		    sRowType = "Child - contained"
 		    'field names
 		    s1 = "payment_type,payment_date,payment_amount"
 		    s2() = Split(s1,",")
@@ -513,7 +512,7 @@ End
 		    dictCellTypes.Value(sRowType) = iCellTypes5
 		    
 		    // LinkedItem - Contained
-		    sRowType = "Linked - kit"
+		    sRowType = "Child - kit"
 		    'field names
 		    s1 = "payment_type,payment_date,payment_amount"
 		    s2() = Split(s1,",")
@@ -524,7 +523,7 @@ End
 		    dictCellTypes.Value(sRowType) = iCellTypes6
 		    
 		    // LinkedItem - Contained
-		    sRowType = "Linked - package"
+		    sRowType = "Child - package"
 		    'field names
 		    s1 = "payment_type,payment_date,payment_amount"
 		    s2() = Split(s1,",")
@@ -548,7 +547,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub methLoadMe(bGrouped as Boolean = True, sGroupFields as String = "", bGetChildren as boolean = True)
+		Sub methLoadMe(bGrouped as Boolean = False, sGroupFields as String = "", bGetChildren as boolean = False)
 		  '!@! Table Dependent !@!
 		  dim lb as entListbox = methGetListbox
 		  

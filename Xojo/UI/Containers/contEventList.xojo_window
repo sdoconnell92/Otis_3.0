@@ -39,6 +39,7 @@ Begin ContainerControl contEventList
       HasHeading      =   True
       Height          =   268
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   3
       LockBottom      =   True
@@ -596,7 +597,7 @@ End
 		    dictCellTypes.Value(sRowType) = iCellTypes3
 		    
 		    
-		    // Linked - 
+		    // Child - 
 		    sRowType = "Child - NoType"
 		    'field names
 		    s1 = "tbl_events.event_name,tbl_events.start_date,tbl_events.end_date,tbl_events.account_manager"

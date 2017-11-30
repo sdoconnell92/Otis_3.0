@@ -39,6 +39,7 @@ Begin ContainerControl contGroupDiscountList
       HasHeading      =   True
       Height          =   273
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   4
       LockBottom      =   True
@@ -489,7 +490,7 @@ End
 		    
 		    
 		    // LinkedItem - Version
-		    sRowType = "Linked - version"
+		    sRowType = "Child - version"
 		    'field names
 		    s1 = "group_name,group_discount"
 		    s2() = Split(s1,",")
@@ -501,7 +502,7 @@ End
 		    
 		    
 		    // LinkedItem - Contained
-		    sRowType = "Linked - contained"
+		    sRowType = "Child - contained"
 		    'field names
 		    s1 = "group_name,group_discount"
 		    s2() = Split(s1,",")
@@ -512,7 +513,7 @@ End
 		    dictCellTypes.Value(sRowType) = iCellTypes5
 		    
 		    // LinkedItem - Contained
-		    sRowType = "Linked - kit"
+		    sRowType = "Child - kit"
 		    'field names
 		    s1 = "group_name,group_discount"
 		    s2() = Split(s1,",")
@@ -523,7 +524,7 @@ End
 		    dictCellTypes.Value(sRowType) = iCellTypes6
 		    
 		    // LinkedItem - Contained
-		    sRowType = "Linked - package"
+		    sRowType = "Child - package"
 		    'field names
 		    s1 = "group_name,group_discount"
 		    s2() = Split(s1,",")

@@ -359,6 +359,10 @@ End
 		    Next
 		  End If
 		  
+		  If not chbShowHidden.Value Then
+		    arsConditions.Append( "hide = 0" )
+		  End If
+		  
 		  If arsConditions.Ubound <> -1 Then
 		    aroSQL.Append( "Where" )
 		    aroSQL.Append( Join(arsConditions, " And ") )
@@ -572,7 +576,7 @@ End
 	#tag Method, Flags = &h0
 		Sub methHandleExpandRow(row as integer)
 		  dim lb1 as entListbox = methGetListbox
-		  Break
+		  
 		  // Extract the rowtag out of the parent
 		  dim oParentStor as RecordStorageClass
 		  oParentStor = lb1.RowTag(row)
@@ -676,7 +680,7 @@ End
 		    
 		    
 		    // LinkedItem - Version
-		    sRowType = "Linked - version"
+		    sRowType = "Child - version"
 		    'field names
 		    s1 = "item_name,item_manufacturer,item_model,item_department,item_category,item_subcategory,item_description,item_quantity,|SKIP|,item_owner"
 		    s2() = Split(s1,",")
@@ -688,7 +692,7 @@ End
 		    
 		    
 		    // LinkedItem - Contained
-		    sRowType = "Linked - contained"
+		    sRowType = "Child - contained"
 		    'field names
 		    s1 = "item_name,item_manufacturer,item_model,item_department,item_category,item_subcategory,item_description,tbl_inventory_link.-.quantity,|SKIP|,item_owner"
 		    s2() = Split(s1,",")
@@ -699,7 +703,7 @@ End
 		    dictCellTypes.Value(sRowType) = iCellTypes5
 		    
 		    // LinkedItem - Contained
-		    sRowType = "Linked - kit"
+		    sRowType = "Child - kit"
 		    'field names
 		    s1 = "item_name,item_manufacturer,item_model,item_department,item_category,item_subcategory,item_description,tbl_inventory_link.-.quantity,|SKIP|,item_owner"
 		    s2() = Split(s1,",")
@@ -710,7 +714,7 @@ End
 		    dictCellTypes.Value(sRowType) = iCellTypes6
 		    
 		    // LinkedItem - Contained
-		    sRowType = "Linked - package"
+		    sRowType = "Child - package"
 		    'field names
 		    s1 = "item_name,item_manufacturer,item_model,item_department,item_category,item_subcategory,item_description,tbl_inventory_link.-.quantity,|SKIP|,item_owner"
 		    s2() = Split(s1,",")

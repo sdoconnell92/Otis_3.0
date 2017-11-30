@@ -239,7 +239,7 @@ End
 		  
 		  
 		  // LinkedItem - Version
-		  sRowType = "Linked - version"
+		  sRowType = "Child - version"
 		  'field names
 		  s1 = "item_name,item_category,item_subcategory,item_quantity"
 		  s2() = Split(s1,",")
@@ -251,7 +251,7 @@ End
 		  
 		  
 		  // LinkedItem - Contained
-		  sRowType = "Linked - contained"
+		  sRowType = "Child - contained"
 		  'field names
 		  s1 = "item_name,item_category,item_subcategory,tbl_inventory_link.-.quantity"
 		  s2() = Split(s1,",")
@@ -262,7 +262,7 @@ End
 		  dictCellTypes.Value(sRowType) = iCellTypes5
 		  
 		  // LinkedItem - kit
-		  sRowType = "Linked - kit"
+		  sRowType = "Child - kit"
 		  'field names
 		  s1 = "item_name,item_category,item_subcategory,tbl_inventory_link.-.quantity"
 		  s2() = Split(s1,",")
@@ -273,7 +273,7 @@ End
 		  dictCellTypes.Value(sRowType) = iCellTypes6
 		  
 		  // LinkedItem - package
-		  sRowType = "Linked - package"
+		  sRowType = "Child - package"
 		  'field names
 		  s1 = "item_name,item_category,item_subcategory,tbl_inventory_link.-.quantity"
 		  s2() = Split(s1,",")

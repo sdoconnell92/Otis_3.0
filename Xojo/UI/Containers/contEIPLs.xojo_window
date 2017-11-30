@@ -567,7 +567,7 @@ End
 		    
 		    
 		    // LinkedItem - Version
-		    sRowType = "Linked - version"
+		    sRowType = "Child - version"
 		    'field names
 		    s1 = "eipl_number"
 		    s2() = Split(s1,",")
@@ -579,7 +579,7 @@ End
 		    
 		    
 		    // LinkedItem - Contained
-		    sRowType = "Linked - contained"
+		    sRowType = "Child - contained"
 		    'field names
 		    s1 = "eipl_number"
 		    s2() = Split(s1,",")
@@ -590,7 +590,7 @@ End
 		    dictCellTypes.Value(sRowType) = iCellTypes5
 		    
 		    // LinkedItem - Contained
-		    sRowType = "Linked - kit"
+		    sRowType = "Child - kit"
 		    'field names
 		    s1 = "eipl_number"
 		    s2() = Split(s1,",")
@@ -601,7 +601,7 @@ End
 		    dictCellTypes.Value(sRowType) = iCellTypes6
 		    
 		    // LinkedItem - Contained
-		    sRowType = "Linked - package"
+		    sRowType = "Child - package"
 		    'field names
 		    s1 = "eipl_number"
 		    s2() = Split(s1,",")
