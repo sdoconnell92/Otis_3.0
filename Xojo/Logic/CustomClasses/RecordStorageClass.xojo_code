@@ -237,7 +237,7 @@ Protected Class RecordStorageClass
 		        oPrintData.arsColumnValues.Append( sValue )
 		        
 		      Else
-		        // Check if this is a calculated field
+		        // Check if this is a calculated field or a checkbox field
 		        Select Case sFieldName
 		        Case "CalcTotal"
 		          dim retTots as TotalsClass = CalculateSingleLine(me)
@@ -245,6 +245,8 @@ Protected Class RecordStorageClass
 		          sColumnValue = str( retTots.a_SubTotal, "\$#,###,###,###.00" )
 		          
 		          oPrintData.arsColumnValues.Append( sColumnValue )
+		        Case "CheckBox"
+		          oPrintData.arsColumnValues.Append( "??!!??CheckBox??!!??" )
 		        End Select
 		        
 		      End If

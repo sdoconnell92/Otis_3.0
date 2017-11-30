@@ -9,7 +9,7 @@ Begin Window winMain_1TabPanel
    FullScreen      =   False
    FullScreenButton=   False
    HasBackColor    =   False
-   Height          =   460
+   Height          =   548
    ImplicitInstance=   False
    LiveResize      =   True
    MacProcID       =   0
@@ -18,14 +18,14 @@ Begin Window winMain_1TabPanel
    MaxWidth        =   32000
    MenuBar         =   1143859199
    MenuBarVisible  =   True
-   MinHeight       =   64
+   MinHeight       =   548
    MinimizeButton  =   True
-   MinWidth        =   64
+   MinWidth        =   978
    Placement       =   0
    Resizeable      =   True
    Title           =   "Untitled"
    Visible         =   False
-   Width           =   770
+   Width           =   978
    Begin entPushButton bRunSync
       AutoDeactivate  =   True
       Bold            =   False
@@ -39,7 +39,7 @@ Begin Window winMain_1TabPanel
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   690
+      Left            =   898
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   False
@@ -60,7 +60,7 @@ Begin Window winMain_1TabPanel
    Begin PagePanel tbMainWindow
       AutoDeactivate  =   True
       Enabled         =   True
-      Height          =   435
+      Height          =   523
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
@@ -75,11 +75,10 @@ Begin Window winMain_1TabPanel
       Scope           =   0
       TabIndex        =   2
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   26
       Value           =   2
       Visible         =   True
-      Width           =   770
+      Width           =   978
       Begin contEventList contEventList1
          AcceptFocus     =   False
          AcceptTabs      =   True
@@ -91,10 +90,10 @@ Begin Window winMain_1TabPanel
          Enabled         =   True
          EraseBackground =   True
          HasBackColor    =   False
-         Height          =   431
+         Height          =   519
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "tbMainWindow"
+         iStartingTop    =   0
          LastSearchValue =   ""
          Left            =   2
          LockBottom      =   True
@@ -111,7 +110,7 @@ Begin Window winMain_1TabPanel
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
-         Width           =   766
+         Width           =   974
       End
       Begin contInventory contInventory1
          AcceptFocus     =   True
@@ -124,9 +123,8 @@ Begin Window winMain_1TabPanel
          Enabled         =   True
          EraseBackground =   True
          HasBackColor    =   False
-         Height          =   430
+         Height          =   518
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "tbMainWindow"
          iStartingTop    =   0
          LastSearchValue =   ""
@@ -144,7 +142,7 @@ Begin Window winMain_1TabPanel
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
-         Width           =   765
+         Width           =   973
       End
       Begin contContactableList contContactableList1
          AcceptFocus     =   False
@@ -157,9 +155,8 @@ Begin Window winMain_1TabPanel
          Enabled         =   True
          EraseBackground =   True
          HasBackColor    =   False
-         Height          =   428
+         Height          =   516
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "tbMainWindow"
          LastSearchValue =   ""
          Left            =   3
@@ -178,7 +175,7 @@ Begin Window winMain_1TabPanel
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
-         Width           =   764
+         Width           =   972
       End
    End
    Begin entPushButton pbCloseTab
@@ -194,7 +191,7 @@ Begin Window winMain_1TabPanel
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   611
+      Left            =   819
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   False

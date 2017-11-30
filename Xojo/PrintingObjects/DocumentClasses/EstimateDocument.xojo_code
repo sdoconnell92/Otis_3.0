@@ -95,6 +95,7 @@ Inherits BaseDocument
 		Sub BuildLineItemStory()
 		  
 		  dim oLIStory as New LineItemStory( InitObject.LI_Records, InitObject.LI_FieldNames, InitObject.LI_Headers, me, InitObject.LI_ColumnWidths)
+		  If InitObject.LI_FontSize <> 0 Then oLIStory.FontSize = InitObject.LI_FontSize
 		  
 		  aroStory.Append(oLIStory)
 		End Sub
@@ -136,17 +137,21 @@ Inherits BaseDocument
 		  dim oSmallBoxStory as New BaseStoryObject
 		  oSmallBoxStory.Height = 36
 		  
+		  dim o as DataFile.tbl_eipl = oEIPL.GetTableRecordVariant
+		  
 		  dim oSmBoxes1 as New InnerBoxes(me)
 		  dim s as string
 		  
-		  If InitObject.Box1_AccountManager = "" Then
-		    s = "-"
-		  Else
-		    s = "Account Manager"
+		  If o.seipl_type <> "Pack List" Then
+		    If InitObject.Box1_AccountManager = "" Then
+		      s = "-"
+		    Else
+		      s = "Account Manager"
+		    End If
+		    oSmBoxes1.AddBox( Array( s,_
+		    InitObject.Box1_AccountManager ),_
+		    0 )
 		  End If
-		  oSmBoxes1.AddBox( Array( s,_
-		  InitObject.Box1_AccountManager ),_
-		  0 )
 		  
 		  If InitObject.Box2_EventStartTime = ""  And InitObject.Box2_EventStartDate = "" Then
 		    s = "-"
@@ -178,47 +183,52 @@ Inherits BaseDocument
 		  InitObject.Box4_LoadInDate ),_
 		  0 )
 		  
-		  // Change font sizes
-		  oSmBoxes1.ChangeFontSizes( Array( 10,9,9 ) )
-		  oSmBoxes1.ChangeAllBolds( Array(True, False, False) )
-		  
-		  oSmallBoxStory.aroInnerObjects.Append(oSmBoxes1)
-		  aroStory.Append(oSmallBoxStory)
-		  
 		  
 		  dim oSmallBoxStory2 as New BaseStoryObject
 		  oSmallBoxStory2.Height = 36
 		  
 		  dim oSmBoxes2 as New InnerBoxes(me)
 		  
+		  
 		  If InitObject.Box5_LoadOutTime = ""  And InitObject.Box5_LoadOutDate = "" Then
 		    s = "-"
 		  Else
 		    s = "Load-Out"
 		  End If
-		  oSmBoxes2.AddBox( Array( s,_
-		  InitObject.Box5_LoadOutTime,_
-		  InitObject.Box5_LoadOutDate ),_
-		  0 )
-		  
-		  If InitObject.Box6_DiscountPercent = ""  And InitObject.Box6_DiscountAmount = "" Then
-		    s = "-"
+		  If o.seipl_type <> "Pack List" Then
+		    oSmBoxes2.AddBox( Array( s,_
+		    InitObject.Box5_LoadOutTime,_
+		    InitObject.Box5_LoadOutDate ),_
+		    0 )
 		  Else
-		    s = "Discount"
+		    oSmBoxes1.AddBox( Array( s,_
+		    InitObject.Box5_LoadOutTime,_
+		    InitObject.Box5_LoadOutDate ),_
+		    0 )
 		  End If
-		  oSmBoxes2.AddBox( Array( s,_
-		  InitObject.Box6_DiscountPercent,_
-		  InitObject.Box6_DiscountAmount ),_
-		  0 )
 		  
-		  If InitObject.Box7_Tax = "" Then
-		    s = "-"
-		  Else
-		    s = "Tax"
+		  If o.seipl_type <> "Pack List" Then
+		    If InitObject.Box6_DiscountPercent = ""  And InitObject.Box6_DiscountAmount = "" Then
+		      s = "-"
+		    Else
+		      s = "Discount"
+		    End If
+		    oSmBoxes2.AddBox( Array( s,_
+		    InitObject.Box6_DiscountPercent,_
+		    InitObject.Box6_DiscountAmount ),_
+		    0 )
 		  End If
-		  oSmBoxes2.AddBox( Array( s,_
-		  InitObject.Box7_Tax ),_
-		  0 )
+		  
+		  If o.seipl_type <> "Pack List" Then
+		    If InitObject.Box7_Tax = "" Then
+		      s = "-"
+		    Else
+		      s = "Tax"
+		    End If
+		    oSmBoxes2.AddBox( Array( s,_
+		    InitObject.Box7_Tax ),_
+		    0 )
+		  End If
 		  
 		  If Type = "Invoice" Then
 		    If InitObject.Box8_PaymentDue = "" Then
@@ -231,12 +241,21 @@ Inherits BaseDocument
 		    0 )
 		  End If
 		  
-		  // Change Font Sizes
-		  oSmBoxes2.ChangeFontSizes( Array( 10,9,9 ) )
-		  oSmBoxes2.ChangeAllBolds( Array(True, False, False) )
+		  // Change font sizes
+		  oSmBoxes1.ChangeFontSizes( Array( 10,9,9 ) )
+		  oSmBoxes1.ChangeAllBolds( Array(True, False, False) )
 		  
-		  oSmallBoxStory2.aroInnerObjects.Append(oSmBoxes2)
-		  aroStory.Append(oSmallBoxStory2)
+		  oSmallBoxStory.aroInnerObjects.Append(oSmBoxes1)
+		  aroStory.Append(oSmallBoxStory)
+		  
+		  If oSmBoxes2.BoxContent.Ubound <> -1 Then
+		    // Change Font Sizes
+		    oSmBoxes2.ChangeFontSizes( Array( 10,9,9 ) )
+		    oSmBoxes2.ChangeAllBolds( Array(True, False, False) )
+		    
+		    oSmallBoxStory2.aroInnerObjects.Append(oSmBoxes2)
+		    aroStory.Append(oSmallBoxStory2)
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -250,7 +269,7 @@ Inherits BaseDocument
 		  Type = o.seipl_type
 		  
 		  BuildHeader
-		  BuildLargeBoxes
+		  If o.seipl_type <> "Pack List" Then BuildLargeBoxes
 		  BuildSmallBoxes
 		  BuildLineItemStory
 		  If Type = "Invoice" Then BuildRemitBox
@@ -302,16 +321,15 @@ Inherits BaseDocument
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
+			Name="LastPageLines"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Left"
 			Visible=true
 			Group="Position"
 			InitialValue="0"
-			Type="Integer"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Margin"
-			Group="Behavior"
-			InitialValue="40"
 			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
@@ -348,6 +366,7 @@ Inherits BaseDocument
 			Name="Type"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 	#tag EndViewBehavior
 End Class

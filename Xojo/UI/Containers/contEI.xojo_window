@@ -24,7 +24,7 @@ Begin ContainerControl contEI
    Transparent     =   True
    UseFocusRing    =   False
    Visible         =   True
-   Width           =   901
+   Width           =   972
    Begin PagePanel ppEIPLSwitcher
       AutoDeactivate  =   True
       Enabled         =   True
@@ -46,7 +46,7 @@ Begin ContainerControl contEI
       Top             =   22
       Value           =   0
       Visible         =   True
-      Width           =   901
+      Width           =   972
       Begin contLineItems instLineItemList
          AcceptFocus     =   True
          AcceptTabs      =   True
@@ -67,7 +67,7 @@ Begin ContainerControl contEI
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
-         LockRight       =   True
+         LockRight       =   False
          LockTop         =   True
          Scope           =   0
          TabIndex        =   0
@@ -77,7 +77,7 @@ Begin ContainerControl contEI
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
-         Width           =   639
+         Width           =   706
       End
       Begin contInventory instInventoryList
          AcceptFocus     =   True
@@ -482,7 +482,7 @@ Begin ContainerControl contEI
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
-         LockRight       =   True
+         LockRight       =   False
          LockTop         =   True
          Scope           =   0
          TabIndex        =   2
@@ -492,7 +492,7 @@ Begin ContainerControl contEI
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
-         Width           =   639
+         Width           =   706
       End
       Begin contGroupDiscountList instGroupDiscountList
          AcceptFocus     =   False
@@ -786,7 +786,7 @@ Begin ContainerControl contEI
          Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Italic          =   False
-         Left            =   821
+         Left            =   892
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   False
@@ -1004,7 +1004,7 @@ Begin ContainerControl contEI
       Underline       =   False
       Value           =   0
       Visible         =   True
-      Width           =   901
+      Width           =   972
    End
 End
 #tag EndWindow
@@ -1272,26 +1272,31 @@ End
 		  
 		  dim s as string
 		  
-		  // Check database to see if there are any lineitems with discounts
-		  dim sql as string =_
-		  "Select disc_a, disc_b, Count(disc_a) as iCnt From "_
-		  + "(SELECT "_
-		  + "substr(li_discount, 1, instr(li_discount, ':') - 1) AS disc_a, "_
-		  + "substr(li_discount,    instr(li_discount, ':') + 1) AS disc_b "_
-		  + "FROM tbl_lineitems "_
-		  + "Where fkeipl = ?) "_
-		  + "Where (disc_a <> '' and disc_a <> '0%' and Cast(disc_a as decimal) <> 0 ) "_
-		  + "Or (disc_b <> '' and disc_b <> '0%' and Cast(disc_b as decimal) <> 0);"
-		  dim ps as SQLitePreparedStatement = app.db.Prepare(sql)
-		  ps.BindType(0, SQLitePreparedStatement.SQLITE_TEXT)
-		  ps.Bind(0, oCurrentRecord.suuid)
-		  dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
-		  
-		  If discount_count = 0 Then
-		    s = "25%,9%,9%,25%,5%,6%,5%,8%,8%"
-		  Else
-		    s = "25%,8%,7%,20%,5%,6%,5%,8%,8%,8%"
-		  End If
+		  Select Case oCurrentRecord.seipl_type
+		  Case "Estimate", "Invoice"
+		    // Check database to see if there are any lineitems with discounts
+		    dim sql as string =_
+		    "Select disc_a, disc_b, Count(disc_a) as iCnt From "_
+		    + "(SELECT "_
+		    + "substr(li_discount, 1, instr(li_discount, ':') - 1) AS disc_a, "_
+		    + "substr(li_discount,    instr(li_discount, ':') + 1) AS disc_b "_
+		    + "FROM tbl_lineitems "_
+		    + "Where fkeipl = ?) "_
+		    + "Where (disc_a <> '' and disc_a <> '0%' and Cast(disc_a as decimal) <> 0 ) "_
+		    + "Or (disc_b <> '' and disc_b <> '0%' and Cast(disc_b as decimal) <> 0);"
+		    dim ps as SQLitePreparedStatement = app.db.Prepare(sql)
+		    ps.BindType(0, SQLitePreparedStatement.SQLITE_TEXT)
+		    ps.Bind(0, oCurrentRecord.suuid)
+		    dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
+		    
+		    If discount_count = 0 Then
+		      s = "25%,9%,9%,25%,5%,6%,5%,8%,8%"
+		    Else
+		      s = "25%,8%,7%,20%,5%,6%,5%,8%,8%,8%"
+		    End If
+		  Case "Pack List"
+		    s = "10%,30%,40%,10%,10%"
+		  End Select
 		  
 		  Return s
 		End Function
@@ -1306,26 +1311,32 @@ End
 		  // Initialize dictionaries
 		  dim dictFieldNames as New Dictionary
 		  
-		  // Check database to see if there are any lineitems with discounts
-		  dim sql as string =_
-		  "Select disc_a, disc_b, Count(disc_a) as iCnt From "_
-		  + "(SELECT "_
-		  + "substr(li_discount, 1, instr(li_discount, ':') - 1) AS disc_a, "_
-		  + "substr(li_discount,    instr(li_discount, ':') + 1) AS disc_b "_
-		  + "FROM tbl_lineitems "_
-		  + "Where fkeipl = ?) "_
-		  + "Where (disc_a <> '' and disc_a <> '0%' and Cast(disc_a as decimal) <> 0 ) "_
-		  + "Or (disc_b <> '' and disc_b <> '0%' and Cast(disc_b as decimal) <> 0);"
-		  dim ps as SQLitePreparedStatement = app.db.Prepare(sql)
-		  ps.BindType(0, SQLitePreparedStatement.SQLITE_TEXT)
-		  ps.Bind(0, oCurrentRecord.suuid)
-		  dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
-		  
-		  If discount_count = 0 Then
-		    s1 = "li_name,li_category,li_subcategory,li_description,li_time,li_rate,li_quantity,li_price,CalcTotal"
-		  Else
-		    s1 = "li_name,li_category,li_subcategory,li_description,li_time,li_rate,li_quantity,li_price,li_discount,CalcTotal"
-		  End If
+		  Select Case oCurrentRecord.seipl_type
+		  Case "Estimate", "Invoice"
+		    // Check database to see if there are any lineitems with discounts
+		    dim sql as string =_
+		    "Select disc_a, disc_b, Count(disc_a) as iCnt From "_
+		    + "(SELECT "_
+		    + "substr(li_discount, 1, instr(li_discount, ':') - 1) AS disc_a, "_
+		    + "substr(li_discount,    instr(li_discount, ':') + 1) AS disc_b "_
+		    + "FROM tbl_lineitems "_
+		    + "Where fkeipl = ?) "_
+		    + "Where (disc_a <> '' and disc_a <> '0%' and Cast(disc_a as decimal) <> 0 ) "_
+		    + "Or (disc_b <> '' and disc_b <> '0%' and Cast(disc_b as decimal) <> 0);"
+		    dim ps as SQLitePreparedStatement = app.db.Prepare(sql)
+		    ps.BindType(0, SQLitePreparedStatement.SQLITE_TEXT)
+		    ps.Bind(0, oCurrentRecord.suuid)
+		    dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
+		    
+		    If discount_count = 0 Then
+		      s1 = "li_name,li_category,li_subcategory,li_description,li_time,li_rate,li_quantity,li_price,CalcTotal"
+		    Else
+		      s1 = "li_name,li_category,li_subcategory,li_description,li_time,li_rate,li_quantity,li_price,li_discount,CalcTotal"
+		    End If
+		    
+		  Case "Pack List"
+		    s1 = "li_quantity,li_name,li_description,CheckBox,CheckBox"
+		  End Select
 		  
 		  // **********
 		  // Set up the cell types and field names for each type of row
@@ -1379,26 +1390,31 @@ End
 		  dim s1, s2() as string
 		  dim arsHeaders() as String
 		  
-		  // Check database to see if there are any lineitems with discounts
-		  dim sql as string =_
-		  "Select disc_a, disc_b, Count(disc_a) as iCnt From "_
-		  + "(SELECT "_
-		  + "substr(li_discount, 1, instr(li_discount, ':') - 1) AS disc_a, "_
-		  + "substr(li_discount,    instr(li_discount, ':') + 1) AS disc_b "_
-		  + "FROM tbl_lineitems "_
-		  + "Where fkeipl = ?) "_
-		  + "Where (disc_a <> '' and disc_a <> '0%' and Cast(disc_a as decimal) <> 0 ) "_
-		  + "Or (disc_b <> '' and disc_b <> '0%' and Cast(disc_b as decimal) <> 0);"
-		  dim ps as SQLitePreparedStatement = app.db.Prepare(sql)
-		  ps.BindType(0, SQLitePreparedStatement.SQLITE_TEXT)
-		  ps.Bind(0, oCurrentRecord.suuid)
-		  dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
-		  
-		  If discount_count = 0 Then
-		    s1 = "Name,Cat,SubCat,Description,Time,Rate,Qty,Price,Total"
-		  Else
-		    s1 = "Name,Cat,SubCat,Description,Time,Rate,Qty,Price,Discount,Total"
-		  End If
+		  Select Case oCurrentRecord.seipl_type
+		  Case "Estimate", "Invoice"
+		    // Check database to see if there are any lineitems with discounts
+		    dim sql as string =_
+		    "Select disc_a, disc_b, Count(disc_a) as iCnt From "_
+		    + "(SELECT "_
+		    + "substr(li_discount, 1, instr(li_discount, ':') - 1) AS disc_a, "_
+		    + "substr(li_discount,    instr(li_discount, ':') + 1) AS disc_b "_
+		    + "FROM tbl_lineitems "_
+		    + "Where fkeipl = ?) "_
+		    + "Where (disc_a <> '' and disc_a <> '0%' and Cast(disc_a as decimal) <> 0 ) "_
+		    + "Or (disc_b <> '' and disc_b <> '0%' and Cast(disc_b as decimal) <> 0);"
+		    dim ps as SQLitePreparedStatement = app.db.Prepare(sql)
+		    ps.BindType(0, SQLitePreparedStatement.SQLITE_TEXT)
+		    ps.Bind(0, oCurrentRecord.suuid)
+		    dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
+		    
+		    If discount_count = 0 Then
+		      s1 = "Name,Cat,SubCat,Description,Time,Rate,Qty,Price,Total"
+		    Else
+		      s1 = "Name,Cat,SubCat,Description,Time,Rate,Qty,Price,Discount,Total"
+		    End If
+		  Case "Pack List"
+		    s1 = "Qty,Name,Description,Case,Truck"
+		  End Select
 		  
 		  // Set header names
 		  s2() = Split(s1,",")
@@ -1413,26 +1429,32 @@ End
 		  
 		  dim ari() as integer
 		  
-		  // Check database to see if there are any lineitems with discounts
-		  dim sql as string =_
-		  "Select disc_a, disc_b, Count(disc_a) as iCnt From "_
-		  + "(SELECT "_
-		  + "substr(li_discount, 1, instr(li_discount, ':') - 1) AS disc_a, "_
-		  + "substr(li_discount,    instr(li_discount, ':') + 1) AS disc_b "_
-		  + "FROM tbl_lineitems "_
-		  + "Where fkeipl = ?) "_
-		  + "Where (disc_a <> '' and disc_a <> '0%' and Cast(disc_a as decimal) <> 0 ) "_
-		  + "Or (disc_b <> '' and disc_b <> '0%' and Cast(disc_b as decimal) <> 0);"
-		  dim ps as SQLitePreparedStatement = app.db.Prepare(sql)
-		  ps.BindType(0, SQLitePreparedStatement.SQLITE_TEXT)
-		  ps.Bind(0, oCurrentRecord.suuid)
-		  dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
-		  
-		  If discount_count = 0 Then
-		    ari = Array(1,1,1,1,2,2,2,3,3)
-		  Else
-		    ari = Array(1,1,1,1,2,2,2,3,2,3)
-		  End If
+		  Select Case oCurrentRecord.seipl_type
+		  Case "Estimate", "Invoice"
+		    // Check database to see if there are any lineitems with discounts
+		    dim sql as string =_
+		    "Select disc_a, disc_b, Count(disc_a) as iCnt From "_
+		    + "(SELECT "_
+		    + "substr(li_discount, 1, instr(li_discount, ':') - 1) AS disc_a, "_
+		    + "substr(li_discount,    instr(li_discount, ':') + 1) AS disc_b "_
+		    + "FROM tbl_lineitems "_
+		    + "Where fkeipl = ?) "_
+		    + "Where (disc_a <> '' and disc_a <> '0%' and Cast(disc_a as decimal) <> 0 ) "_
+		    + "Or (disc_b <> '' and disc_b <> '0%' and Cast(disc_b as decimal) <> 0);"
+		    dim ps as SQLitePreparedStatement = app.db.Prepare(sql)
+		    ps.BindType(0, SQLitePreparedStatement.SQLITE_TEXT)
+		    ps.Bind(0, oCurrentRecord.suuid)
+		    dim discount_count as integer = DataFile.tbl_eipl.ListCount(ps)
+		    
+		    If discount_count = 0 Then
+		      ari = Array(1,1,1,1,2,2,2,3,3)
+		    Else
+		      ari = Array(1,1,1,1,2,2,2,3,2,3)
+		    End If
+		    
+		  Case "Pack List"
+		    ari = Array(2,1,1,2,2)
+		  End Select
 		  
 		  Return ari()
 		End Function
@@ -1513,6 +1535,7 @@ End
 		  oEstimateInit.LI_Headers = methPrintingHeaders
 		  oEstimateInit.LI_ColumnWidths = methPrintingColWidths
 		  oEstimateInit.LI_Justification = methPrintingJustification
+		  If oCurrentRecord.seipl_type = "Pack List" Then oEstimateInit.LI_FontSize = 13
 		  
 		  
 		  // Create the Estimate

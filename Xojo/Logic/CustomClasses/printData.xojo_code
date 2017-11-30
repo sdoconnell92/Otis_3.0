@@ -86,29 +86,54 @@ Protected Class printData
 		    gClip.Bold = bBold
 		    gClip.TextSize = iFontSize
 		    
-		    dim iTextX, iTextWidth, iTextHalf, iJustification, iClipHalf, iClipHalfX as integer
-		    iTextWidth = gClip.StringWidth(sColVal) + 1
-		    iTextHalf = iTextWidth / 2
-		    iClipHalf = iClipWidth / 2
-		    iClipHalfX = iClipHalf
-		    if ariJustification(iColIndex) = 0 Then
-		      iJustification = ValueRef.DefualtPrintColJust
+		    If sColVal = "??!!??CheckBox??!!??" Then
+		      dim iBoxX, iBoxWidth, iBoxHalf, iBoxHeight, iJustification, iClipHalf, iClipHalfX as integer
+		      iBoxWidth = 15
+		      iBoxHeight = 15
+		      iBoxHalf = iBoxWidth / 2
+		      iClipHalf = iClipWidth / 2
+		      iClipHalfX = iClipHalf
+		      If ariJustification(iColIndex) = 0 Then
+		        iJustification = ValueRef.DefualtPrintColJust
+		      Else
+		        iJustification = ariJustification(iColIndex)
+		      End If
+		      
+		      Select Case iJustification
+		      Case 1
+		        iBoxX = 0
+		      Case 2
+		        iBoxX = iClipHalfX - iBoxHalf
+		      Case 3
+		        iBoxX = iClipWidth - iBoxWidth
+		      End Select
+		      
+		      gClip.DrawRect(iBoxX,0,iBoxWidth,iBoxHeight)
 		    Else
-		      iJustification = ariJustification(iColIndex)
-		    end if
-		    
-		    Select Case iJustification
-		    Case 1
-		      iTextX = 0
-		    Case 2
-		      iTextX = iClipHalfX - iTextHalf
-		    Case 3
-		      iTextX = iClipWidth - iTextWidth
-		    End Select
-		    
-		    
-		    dim www as integer = gClip.StringHeight(sColVal, gClip.Width)
-		    gClip.DrawString( sColVal, iTextX, gClip.TextAscent, gClip.Width )
+		      dim iTextX, iTextWidth, iTextHalf, iJustification, iClipHalf, iClipHalfX as integer
+		      iTextWidth = gClip.StringWidth(sColVal) + 1
+		      iTextHalf = iTextWidth / 2
+		      iClipHalf = iClipWidth / 2
+		      iClipHalfX = iClipHalf
+		      if ariJustification(iColIndex) = 0 Then
+		        iJustification = ValueRef.DefualtPrintColJust
+		      Else
+		        iJustification = ariJustification(iColIndex)
+		      end if
+		      
+		      Select Case iJustification
+		      Case 1
+		        iTextX = 0
+		      Case 2
+		        iTextX = iClipHalfX - iTextHalf
+		      Case 3
+		        iTextX = iClipWidth - iTextWidth
+		      End Select
+		      
+		      
+		      dim www as integer = gClip.StringHeight(sColVal, gClip.Width)
+		      gClip.DrawString( sColVal, iTextX, gClip.TextAscent, gClip.Width )
+		    End If
 		    
 		    runningX = iClipX + iClipWidth
 		  Next
@@ -140,6 +165,7 @@ Protected Class printData
 		  g.TextSize = iFontSize
 		  g.Bold = bBold
 		  For iColIndex as integer = 0 To arsColumnValues.Ubound
+		    If arsColumnValues(iColIndex) = "??!!??CheckBox??!!??" Then Continue
 		    dim iHeight as integer
 		    dim iWidth as integer 
 		    If iColIndex = 0 Then

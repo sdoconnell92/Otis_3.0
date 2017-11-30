@@ -83,7 +83,8 @@ Inherits BaseStoryObject
 		  arsHeaders = parsHeaders
 		  oParentEIPLDoc = EDoc
 		  
-		  AddTotals
+		  dim o as DataFile.tbl_eipl = oParentEIPLDoc.oEIPL.GetTableRecordVariant
+		  If o.seipl_type <> "Pack List" Then AddTotals
 		End Sub
 	#tag EndMethod
 
@@ -429,6 +430,11 @@ Inherits BaseStoryObject
 			Visible=true
 			Group="ID"
 			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PageLines"
+			Group="Behavior"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

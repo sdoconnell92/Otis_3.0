@@ -142,6 +142,10 @@ Inherits BaseDocInitObject
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		LI_FontSize As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		LI_Headers() As String
 	#tag EndProperty
 
@@ -234,6 +238,11 @@ Inherits BaseDocInitObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Box8_PaymentDue"
+			Group="Behavior"
+			Type="String"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="BoxA_AddressLine1"
