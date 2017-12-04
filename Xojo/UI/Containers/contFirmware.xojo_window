@@ -37,9 +37,8 @@ Begin ContainerControl contFirmware
       GridLinesColor  =   &c00000000
       HasBackColor    =   False
       HasHeading      =   True
-      Height          =   214
+      Height          =   217
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   4
       LockBottom      =   True
@@ -51,73 +50,11 @@ Begin ContainerControl contFirmware
       TabIndex        =   1
       TabPanelIndex   =   0
       TabStop         =   True
-      Top             =   33
+      Top             =   30
       Transparent     =   True
       UseFocusRing    =   False
       Visible         =   True
       Width           =   210
-   End
-   Begin entPushButton pbAddLog
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "+"
-      Default         =   True
-      Enabled         =   True
-      Height          =   32
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   3
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   4
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   3
-      Underline       =   False
-      Visible         =   True
-      Width           =   38
-   End
-   Begin entPushButton pbRefresh
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Ref"
-      Default         =   False
-      Enabled         =   True
-      Height          =   32
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   40
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   5
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   3
-      Underline       =   False
-      Visible         =   True
-      Width           =   34
    End
    Begin Label labUpdateDate
       AutoDeactivate  =   True
@@ -141,7 +78,6 @@ Begin ContainerControl contFirmware
       Selectable      =   False
       TabIndex        =   7
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Update Date"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -218,7 +154,6 @@ Begin ContainerControl contFirmware
       Selectable      =   False
       TabIndex        =   14
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Item Name"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -253,7 +188,6 @@ Begin ContainerControl contFirmware
       Selectable      =   False
       TabIndex        =   15
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Serial #: "
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -288,7 +222,6 @@ Begin ContainerControl contFirmware
       Selectable      =   False
       TabIndex        =   16
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "--"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -323,7 +256,6 @@ Begin ContainerControl contFirmware
       Selectable      =   False
       TabIndex        =   17
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Version"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -401,7 +333,6 @@ Begin ContainerControl contFirmware
       Selectable      =   False
       TabIndex        =   19
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Comments"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -460,6 +391,94 @@ Begin ContainerControl contFirmware
       UseFocusRing    =   True
       Visible         =   True
       Width           =   215
+   End
+   Begin entRefreshButton pbRefresh
+      AcceptFocus     =   True
+      AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
+      Bold            =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
+      Enabled         =   True
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
+      HelpTag         =   ""
+      Icon            =   277895167
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   4
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      MenuValue       =   0
+      Scope           =   0
+      TabIndex        =   22
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextColor       =   &c00000000
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   3
+      Underline       =   False
+      Value           =   False
+      Visible         =   True
+      Width           =   30
+   End
+   Begin entAddButton pbAdd
+      AcceptFocus     =   True
+      AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
+      Bold            =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
+      Enabled         =   True
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
+      HelpTag         =   ""
+      Icon            =   633014271
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   35
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      MenuValue       =   0
+      Scope           =   0
+      TabIndex        =   23
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextColor       =   &c00000000
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   2
+      Underline       =   False
+      Value           =   False
+      Visible         =   True
+      Width           =   30
    End
 End
 #tag EndWindow
@@ -609,6 +628,12 @@ End
 		  labItemName.Text = oInventoryRecord.sitem_name
 		  labSerial.Text = oInventoryRecord.sitem_serial_code
 		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methRefresh()
+		  RefreshLogList
 		End Sub
 	#tag EndMethod
 
@@ -774,21 +799,6 @@ End
 		End Function
 	#tag EndEvent
 #tag EndEvents
-#tag Events pbAddLog
-	#tag Event
-		Sub Action()
-		  AddLog
-		  
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events pbRefresh
-	#tag Event
-		Sub Action()
-		  RefreshLogList
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events dcUpdateDate
 	#tag Event
 		Sub LostFocus()
@@ -823,6 +833,20 @@ End
 		  
 		  oCurrentLog.supdate_comments = me.Text
 		  SaveLog
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events pbRefresh
+	#tag Event
+		Sub Action()
+		  methRefresh
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events pbAdd
+	#tag Event
+		Sub Action()
+		  AddLog
 		End Sub
 	#tag EndEvent
 #tag EndEvents

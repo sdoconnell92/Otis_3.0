@@ -56,7 +56,7 @@ Begin Window window_login
       Underline       =   False
       Value           =   False
       Visible         =   True
-      Width           =   100
+      Width           =   144
    End
    Begin CheckBox checkbox_save_password
       AutoDeactivate  =   True
@@ -88,7 +88,7 @@ Begin Window window_login
       Underline       =   False
       Value           =   False
       Visible         =   True
-      Width           =   100
+      Width           =   144
    End
    Begin CheckBox checkbox_save_username
       AutoDeactivate  =   True
@@ -120,7 +120,7 @@ Begin Window window_login
       Underline       =   False
       Value           =   False
       Visible         =   True
-      Width           =   113
+      Width           =   144
    End
    Begin ImageWell imagewell_otis_logo
       AutoDeactivate  =   True
@@ -166,6 +166,7 @@ Begin Window window_login
       Selectable      =   False
       TabIndex        =   8
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Authentication Failed"
       TextAlign       =   0
       TextColor       =   &c0A0A00E3
@@ -200,6 +201,7 @@ Begin Window window_login
       Selectable      =   False
       TabIndex        =   9
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Password"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -234,6 +236,7 @@ Begin Window window_login
       Selectable      =   False
       TabIndex        =   10
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Username"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -333,7 +336,7 @@ Begin Window window_login
       LockRight       =   False
       LockTop         =   True
       Mask            =   ""
-      Password        =   False
+      Password        =   True
       ReadOnly        =   False
       Scope           =   0
       TabIndex        =   1

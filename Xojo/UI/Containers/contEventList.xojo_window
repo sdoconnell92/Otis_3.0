@@ -39,7 +39,6 @@ Begin ContainerControl contEventList
       HasHeading      =   True
       Height          =   268
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   3
       LockBottom      =   True
@@ -85,99 +84,6 @@ Begin ContainerControl contEventList
       Visible         =   True
       Width           =   135
    End
-   Begin entPushButton pbRefresh
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Refresh"
-      Default         =   True
-      Enabled         =   True
-      Height          =   24
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   3
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   2
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   3
-      Underline       =   False
-      Visible         =   True
-      Width           =   75
-   End
-   Begin entPushButton pbAddEvent
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "AddEvent"
-      Default         =   False
-      Enabled         =   True
-      Height          =   24
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   140
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   3
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   3
-      Underline       =   False
-      Visible         =   True
-      Width           =   75
-   End
-   Begin entPushButton pbSortBy
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Sort By"
-      Default         =   False
-      Enabled         =   True
-      Height          =   24
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   78
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   4
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   3
-      Underline       =   False
-      Visible         =   True
-      Width           =   62
-   End
    Begin CheckBox chbShowHidden
       AutoDeactivate  =   True
       Bold            =   False
@@ -209,6 +115,138 @@ Begin ContainerControl contEventList
       Value           =   False
       Visible         =   True
       Width           =   100
+   End
+   Begin entRefreshButton pbRefresh
+      AcceptFocus     =   True
+      AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
+      Bold            =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
+      Enabled         =   True
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
+      HelpTag         =   ""
+      Icon            =   277895167
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   3
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      MenuValue       =   0
+      Scope           =   0
+      TabIndex        =   7
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextColor       =   &c00000000
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   3
+      Underline       =   False
+      Value           =   False
+      Visible         =   True
+      Width           =   30
+   End
+   Begin entAddButton pbAdd
+      AcceptFocus     =   True
+      AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
+      Bold            =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
+      Enabled         =   True
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
+      HelpTag         =   ""
+      Icon            =   633014271
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   34
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      MenuValue       =   0
+      Scope           =   0
+      TabIndex        =   8
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextColor       =   &c00000000
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   2
+      Underline       =   False
+      Value           =   False
+      Visible         =   True
+      Width           =   30
+   End
+   Begin entSortButton pbSort
+      AcceptFocus     =   True
+      AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
+      Bold            =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
+      Enabled         =   True
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
+      HelpTag         =   ""
+      Icon            =   1215768575
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   65
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      MenuValue       =   0
+      Scope           =   0
+      TabIndex        =   9
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextColor       =   &c00000000
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   2
+      Underline       =   False
+      Value           =   False
+      Visible         =   True
+      Width           =   30
    End
 End
 #tag EndWindow
@@ -655,7 +693,7 @@ End
 		  // THis version of loadme is for expanding on a single record and displaying children below it only
 		  
 		  // Make the add event button invisible
-		  pbAddEvent.Visible = False
+		  pbAdd.Visible = False
 		  
 		  // Store the Record so we know who the parent is later
 		  oParentStor = oStor
@@ -1105,6 +1143,13 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
+#tag Events chbShowHidden
+	#tag Event
+		Sub Action()
+		  methRefresh
+		End Sub
+	#tag EndEvent
+#tag EndEvents
 #tag Events pbRefresh
 	#tag Event
 		Sub Action()
@@ -1112,70 +1157,27 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events pbAddEvent
+#tag Events pbAdd
 	#tag Event
 		Sub Action()
 		  methAddEvent
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events pbSortBy
+#tag Events pbSort
 	#tag Event
-		Sub Action()
-		  
-		  
-		  // ===============================
-		  // Define menu extries
-		  // ===============================
-		  dim base as new MenuItem
-		  base.Append( new MenuItem( "Client" ) )  '0
-		  base.Append( new MenuItem( "None" ) )  '1
-		  dim MI1 as New MenuItem( "Venue" )
-		  MI1.Enabled = True
-		  base.Append( MI1 )  '2
-		  dim MI2 as New MenuItem( "Year" )
-		  MI2.Enabled = True
-		  base.Append( new MenuItem( MI2 ) )  '3
-		  dim MI3 as New MenuItem( "Year/Month" )
-		  MI3.Enabled = True
-		  base.Append( new MenuItem( MI3 ) )  '4
-		  // ===============================
-		  // Set the enabled status
-		  // ===============================
-		  
-		  
-		  // ===============================
-		  // Carry out actions
-		  // ===============================
-		  dim hitItem as MenuItem
-		  hitItem = base.PopUp
-		  
-		  if hitItem <> Nil Then
-		    
-		    Select Case hitItem.Text
-		    Case "None"
-		      
-		    Case "Client"
-		      
-		    Case "Venue"
-		      
-		    Case "Year"
-		      
-		    Case "Year/Month"
-		      
-		    End Select
-		    
-		  end if
-		  
-		  
-		  
+		Sub Open()
+		  me.AddRow( "Client" )
+		  me.AddRow( "None" )
+		  me.AddRow( "Venue" )
+		  me.AddRow( "Year" )
+		  me.AddRow( "Year/Month" )
 		End Sub
 	#tag EndEvent
-#tag EndEvents
-#tag Events chbShowHidden
 	#tag Event
 		Sub Action()
-		  methRefresh
+		  dim s as string = me.list( me.MenuValue )
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents

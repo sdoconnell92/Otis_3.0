@@ -37,7 +37,7 @@ Begin ContainerControl contInventory
       GridLinesColor  =   &c00000000
       HasBackColor    =   False
       HasHeading      =   True
-      Height          =   372
+      Height          =   386
       HelpTag         =   ""
       InitialParent   =   ""
       Left            =   4
@@ -50,73 +50,11 @@ Begin ContainerControl contInventory
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
-      Top             =   65
+      Top             =   51
       Transparent     =   True
       UseFocusRing    =   False
       Visible         =   True
       Width           =   693
-   End
-   Begin entPushButton bAddItem
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Add Item"
-      Default         =   False
-      Enabled         =   True
-      Height          =   24
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   83
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   1
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   3
-      Underline       =   False
-      Visible         =   True
-      Width           =   81
-   End
-   Begin entPushButton bRefresh
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   True
-      Caption         =   "Refresh"
-      Default         =   True
-      Enabled         =   True
-      Height          =   24
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   3
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   2
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   3
-      Underline       =   False
-      Visible         =   True
-      Width           =   81
    End
    Begin SearchControl scSearchField
       AutoDeactivate  =   True
@@ -172,107 +110,99 @@ Begin ContainerControl contInventory
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   44
+      Top             =   29
       Underline       =   False
       Value           =   False
       Visible         =   True
       Width           =   100
    End
-   Begin CheckBox chbShowItems
+   Begin entRefreshButton pbRefresh
+      AcceptFocus     =   True
       AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
       Bold            =   False
-      Caption         =   "Show Items"
-      DataField       =   ""
-      DataSource      =   ""
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
       Enabled         =   True
-      Height          =   20
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
       HelpTag         =   ""
+      Icon            =   277895167
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   3
+      Left            =   4
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   False
       LockTop         =   True
+      MenuValue       =   0
       Scope           =   0
-      State           =   1
-      TabIndex        =   10
+      TabIndex        =   14
       TabPanelIndex   =   0
       TabStop         =   True
+      TextColor       =   &c00000000
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   26
+      Top             =   5
       Underline       =   False
-      Value           =   True
+      Value           =   False
       Visible         =   True
-      Width           =   81
+      Width           =   30
    End
-   Begin CheckBox chbShowLabor
+   Begin entAddButton pbAdd
+      AcceptFocus     =   True
       AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
       Bold            =   False
-      Caption         =   "Show Labor"
-      DataField       =   ""
-      DataSource      =   ""
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
       Enabled         =   True
-      Height          =   20
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
       HelpTag         =   ""
+      Icon            =   633014271
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   84
+      Left            =   35
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   False
       LockTop         =   True
+      MenuValue       =   0
       Scope           =   0
-      State           =   1
-      TabIndex        =   11
+      TabIndex        =   15
       TabPanelIndex   =   0
       TabStop         =   True
+      TextColor       =   &c00000000
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   26
+      Top             =   4
       Underline       =   False
-      Value           =   True
+      Value           =   False
       Visible         =   True
-      Width           =   81
-   End
-   Begin CheckBox chbShowPackages
-      AutoDeactivate  =   True
-      Bold            =   False
-      Caption         =   "Show Packages"
-      DataField       =   ""
-      DataSource      =   ""
-      Enabled         =   True
-      Height          =   20
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   166
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      State           =   1
-      TabIndex        =   12
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   26
-      Underline       =   False
-      Value           =   True
-      Visible         =   True
-      Width           =   102
+      Width           =   30
    End
 End
 #tag EndWindow
@@ -298,8 +228,8 @@ End
 		  
 		  
 		  If bPickerMode Then
-		    me.bAddItem.Enabled = False
-		    me.bAddItem.Visible = False
+		    me.pbAdd.Enabled = False
+		    me.pbAdd.Visible = False
 		  End If
 		End Sub
 	#tag EndEvent
@@ -1180,20 +1110,6 @@ End
 		End Function
 	#tag EndEvent
 #tag EndEvents
-#tag Events bAddItem
-	#tag Event
-		Sub Action()
-		  methAddItem
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events bRefresh
-	#tag Event
-		Sub Action()
-		  methRefresh
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events scSearchField
 	#tag Event
 		Sub Search()
@@ -1264,6 +1180,20 @@ End
 	#tag Event
 		Sub Action()
 		  methRefresh
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events pbRefresh
+	#tag Event
+		Sub Action()
+		  methRefresh
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events pbAdd
+	#tag Event
+		Sub Action()
+		  methAddItem
 		End Sub
 	#tag EndEvent
 #tag EndEvents

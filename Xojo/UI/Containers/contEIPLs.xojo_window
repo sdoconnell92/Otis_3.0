@@ -56,37 +56,6 @@ Begin ContainerControl contEIPLs
       Visible         =   True
       Width           =   230
    End
-   Begin entPushButton bRefresh
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   True
-      Caption         =   "Refresh"
-      Default         =   True
-      Enabled         =   True
-      Height          =   24
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   2
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   2
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   2
-      Underline       =   False
-      Visible         =   True
-      Width           =   54
-   End
    Begin SearchControl scSearchField
       AutoDeactivate  =   True
       Enabled         =   True
@@ -114,37 +83,6 @@ Begin ContainerControl contEIPLs
       Top             =   4
       Visible         =   True
       Width           =   113
-   End
-   Begin entPushButton bAddItem
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Add Item"
-      Default         =   False
-      Enabled         =   True
-      Height          =   24
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   56
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   4
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   2
-      Underline       =   False
-      Visible         =   True
-      Width           =   61
    End
    Begin CheckBox chbShowHidden
       AutoDeactivate  =   True
@@ -178,6 +116,94 @@ Begin ContainerControl contEIPLs
       Visible         =   True
       Width           =   100
    End
+   Begin entRefreshButton pbRefresh
+      AcceptFocus     =   True
+      AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
+      Bold            =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
+      Enabled         =   True
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
+      HelpTag         =   ""
+      Icon            =   277895167
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   4
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      MenuValue       =   0
+      Scope           =   0
+      TabIndex        =   7
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextColor       =   &c00000000
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   2
+      Underline       =   False
+      Value           =   False
+      Visible         =   True
+      Width           =   30
+   End
+   Begin entAddButton pbAdd
+      AcceptFocus     =   True
+      AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
+      Bold            =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
+      Enabled         =   True
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
+      HelpTag         =   ""
+      Icon            =   633014271
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   35
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      MenuValue       =   0
+      Scope           =   0
+      TabIndex        =   8
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextColor       =   &c00000000
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   1
+      Underline       =   False
+      Value           =   False
+      Visible         =   True
+      Width           =   30
+   End
 End
 #tag EndWindow
 
@@ -198,8 +224,8 @@ End
 		  evdefOpen
 		  
 		  If PickerMode Then
-		    bAddItem.Enabled = False
-		    bAddItem.Visible = False
+		    pbAdd.Enabled = False
+		    pbAdd.Visible = False
 		  End If
 		  
 		End Sub
@@ -695,14 +721,22 @@ End
 	#tag Method, Flags = &h0
 		Sub methOpenRecordInTab(oStor as RecordStorageClass)
 		  dim sName as String = oStor.oTableRecord.GetRecordName
+		  dim oEIPL as DataFile.tbl_eipl = oStor.GetTableRecordVariant
 		  
-		  dim NewCont as New contEI
 		  
-		  app.MainWindow.AddTab(sName)
+		  Select Case oEIPL.seipl_type
+		  Case "Estimate", "Proforma", "Invoice"
+		    dim NewCont as New contEI
+		    app.MainWindow.AddTab(sName)
+		    NewCont.EmbedWithinPanel(app.MainWindow.tbMainWindow, app.MainWindow.tbMainWindow.PanelCount - 1)
+		    NewCont.methLoadMe(oStor.sUUID )
+		  Case "Pack List"
+		    dim NewCont as New contPL
+		    app.MainWindow.AddTab(sName)
+		    NewCont.EmbedWithinPanel(app.MainWindow.tbMainWindow, app.MainWindow.tbMainWindow.PanelCount - 1)
+		    NewCont.methLoadMe(oStor.sUUID )
+		  End Select
 		  
-		  NewCont.EmbedWithinPanel(app.MainWindow.tbMainWindow, app.MainWindow.tbMainWindow.PanelCount - 1)
-		  
-		  NewCont.methLoadMe(oStor.sUUID )
 		End Sub
 	#tag EndMethod
 
@@ -1046,13 +1080,6 @@ End
 		End Function
 	#tag EndEvent
 #tag EndEvents
-#tag Events bRefresh
-	#tag Event
-		Sub Action()
-		  methRefresh
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events scSearchField
 	#tag Event
 		Sub Search()
@@ -1119,17 +1146,24 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events bAddItem
-	#tag Event
-		Sub Action()
-		  methAddItem
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events chbShowHidden
 	#tag Event
 		Sub Action()
 		  methRefresh
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events pbRefresh
+	#tag Event
+		Sub Action()
+		  methRefresh
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events pbAdd
+	#tag Event
+		Sub Action()
+		  methAddItem
 		End Sub
 	#tag EndEvent
 #tag EndEvents

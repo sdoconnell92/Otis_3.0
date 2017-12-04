@@ -37,7 +37,7 @@ Begin ContainerControl contEventContactablesList
       GridLinesColor  =   &c00000000
       HasBackColor    =   False
       HasHeading      =   True
-      Height          =   187
+      Height          =   192
       HelpTag         =   ""
       InitialParent   =   ""
       Left            =   3
@@ -50,42 +50,55 @@ Begin ContainerControl contEventContactablesList
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
-      Top             =   35
+      Top             =   30
       Transparent     =   True
       UseFocusRing    =   False
       Visible         =   True
       Width           =   332
    End
-   Begin entPushButton pbRefresh
+   Begin entRefreshButton pbRefresh
+      AcceptFocus     =   True
       AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
       Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Refresh"
-      Default         =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
       Enabled         =   True
-      Height          =   30
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
       HelpTag         =   ""
+      Icon            =   277895167
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   2
+      Left            =   3
       LockBottom      =   False
       LockedInPosition=   False
-      LockLeft        =   False
+      LockLeft        =   True
       LockRight       =   False
-      LockTop         =   False
+      LockTop         =   True
+      MenuValue       =   0
       Scope           =   0
       TabIndex        =   1
       TabPanelIndex   =   0
       TabStop         =   True
+      TextColor       =   &c00000000
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
       Top             =   3
       Underline       =   False
+      Value           =   False
       Visible         =   True
-      Width           =   66
+      Width           =   44
    End
 End
 #tag EndWindow
@@ -268,7 +281,6 @@ End
 	#tag Event
 		Sub Action()
 		  methRefresh
-		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents

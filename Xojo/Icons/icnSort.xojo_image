@@ -1,0 +1,46 @@
+#tag MultiImage
+Image icnSort
+	#tag ImageRepresentation
+		SaveInfo = APHRcwECAQAAAABEQzpcVXNlcnNcc2VhblxXb3J0aFNhdmluZ1xyZXBvc1xPdGlzXzMuMFxJbWFnZXNcSWNvbnNcc29ydF8yMHgyMC5wbmcDAAAAAAEABAAAAAABAAAAAAAAAA==
+		FullPath = C:\Users\sean\WorthSaving\repos\Otis_3.0\Images\Icons\sort_20x20.png
+		PartialPath = ..\Images\Icons\sort_20x20.png
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = -1.00
+			Orientation = Any
+			Platform = 15
+			PPI = 72
+			VSize = -1.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+	#tag ImageRepresentation
+		SaveInfo = APHRcwECAQAAAABEQzpcVXNlcnNcc2VhblxXb3J0aFNhdmluZ1xyZXBvc1xPdGlzXzMuMFxJbWFnZXNcSWNvbnNcc29ydF80MHg0MC5wbmcDAAAAAAEABAAAAAABAAAAAAAAAA==
+		FullPath = C:\Users\sean\WorthSaving\repos\Otis_3.0\Images\Icons\sort_40x40.png
+		PartialPath = ..\Images\Icons\sort_40x40.png
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = -1.00
+			Orientation = Any
+			Platform = 15
+			PPI = 144
+			VSize = -1.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+	#tag ImageRepresentation
+		SaveInfo = APHRcwECAQAAAABEQzpcVXNlcnNcc2VhblxXb3J0aFNhdmluZ1xyZXBvc1xPdGlzXzMuMFxJbWFnZXNcSWNvbnNcc29ydF82MHg2MC5wbmcDAAAAAAEABAAAAAABAAAAAAAAAA==
+		FullPath = C:\Users\sean\WorthSaving\repos\Otis_3.0\Images\Icons\sort_60x60.png
+		PartialPath = ..\Images\Icons\sort_60x60.png
+		#tag ImageSpecification
+			Comment = 
+			Device = 31
+			HSize = -1.00
+			Orientation = Any
+			Platform = 15
+			PPI = 216
+			VSize = -1.00
+		#tag EndImageSpecification
+	#tag EndImageRepresentation
+End Image
+#tag EndMultiImage

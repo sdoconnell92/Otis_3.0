@@ -51,6 +51,16 @@ Inherits InnerObjectBase
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="Bold"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FontSize"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Height"
 			Group="Behavior"
 			Type="Integer"

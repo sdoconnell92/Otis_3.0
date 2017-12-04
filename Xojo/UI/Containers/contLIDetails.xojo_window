@@ -76,7 +76,7 @@ Begin ContainerControl contLIDetails
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   51
+      Left            =   57
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False
@@ -152,7 +152,7 @@ Begin ContainerControl contLIDetails
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   51
+      Left            =   57
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False
@@ -262,7 +262,7 @@ Begin ContainerControl contLIDetails
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   51
+      Left            =   57
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False
@@ -304,7 +304,7 @@ Begin ContainerControl contLIDetails
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   51
+      Left            =   57
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False
@@ -340,7 +340,7 @@ Begin ContainerControl contLIDetails
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   186
+      Left            =   192
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -374,7 +374,7 @@ Begin ContainerControl contLIDetails
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   186
+      Left            =   192
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -408,7 +408,7 @@ Begin ContainerControl contLIDetails
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   186
+      Left            =   192
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -442,7 +442,7 @@ Begin ContainerControl contLIDetails
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   186
+      Left            =   192
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -477,7 +477,7 @@ Begin ContainerControl contLIDetails
       InitialParent   =   ""
       InitialValue    =   ""
       Italic          =   False
-      Left            =   238
+      Left            =   250
       ListIndex       =   0
       LockBottom      =   False
       LockedInPosition=   False
@@ -513,7 +513,7 @@ Begin ContainerControl contLIDetails
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   238
+      Left            =   250
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False
@@ -555,7 +555,7 @@ Begin ContainerControl contLIDetails
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   238
+      Left            =   250
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False
@@ -597,7 +597,7 @@ Begin ContainerControl contLIDetails
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   238
+      Left            =   250
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False
@@ -633,7 +633,7 @@ Begin ContainerControl contLIDetails
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   375
+      Left            =   387
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -667,7 +667,7 @@ Begin ContainerControl contLIDetails
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   375
+      Left            =   387
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -701,7 +701,7 @@ Begin ContainerControl contLIDetails
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   375
+      Left            =   387
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -735,7 +735,7 @@ Begin ContainerControl contLIDetails
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   375
+      Left            =   387
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -775,7 +775,7 @@ Begin ContainerControl contLIDetails
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   438
+      Left            =   456
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False
@@ -817,7 +817,7 @@ Begin ContainerControl contLIDetails
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   438
+      Left            =   456
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False
@@ -859,7 +859,7 @@ Begin ContainerControl contLIDetails
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   438
+      Left            =   456
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False
@@ -901,7 +901,7 @@ Begin ContainerControl contLIDetails
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   438
+      Left            =   456
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False
@@ -937,7 +937,7 @@ Begin ContainerControl contLIDetails
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   530
+      Left            =   548
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -971,7 +971,7 @@ Begin ContainerControl contLIDetails
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   530
+      Left            =   548
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -1011,7 +1011,7 @@ Begin ContainerControl contLIDetails
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   587
+      Left            =   611
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False
@@ -1048,7 +1048,7 @@ Begin ContainerControl contLIDetails
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   587
+      Left            =   611
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -1079,7 +1079,7 @@ Begin ContainerControl contLIDetails
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   530
+      Left            =   548
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -1119,7 +1119,7 @@ Begin ContainerControl contLIDetails
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   587
+      Left            =   611
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False

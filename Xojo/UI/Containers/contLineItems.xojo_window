@@ -56,37 +56,6 @@ Begin ContainerControl contLineItems
       Visible         =   True
       Width           =   695
    End
-   Begin entPushButton bRefresh
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   True
-      Caption         =   "Refresh"
-      Default         =   True
-      Enabled         =   True
-      Height          =   24
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   30
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   2
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   2
-      Underline       =   False
-      Visible         =   True
-      Width           =   81
-   End
    Begin SearchControl scSearchField
       AutoDeactivate  =   True
       Enabled         =   True
@@ -115,102 +84,6 @@ Begin ContainerControl contLineItems
       Visible         =   True
       Width           =   157
    End
-   Begin CheckBox chbShowItems
-      AutoDeactivate  =   True
-      Bold            =   False
-      Caption         =   "Show Items"
-      DataField       =   ""
-      DataSource      =   ""
-      Enabled         =   True
-      Height          =   20
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   123
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      State           =   1
-      TabIndex        =   10
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   4
-      Underline       =   False
-      Value           =   True
-      Visible         =   True
-      Width           =   81
-   End
-   Begin CheckBox chbShowLabor
-      AutoDeactivate  =   True
-      Bold            =   False
-      Caption         =   "Show Labor"
-      DataField       =   ""
-      DataSource      =   ""
-      Enabled         =   True
-      Height          =   20
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   204
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      State           =   1
-      TabIndex        =   11
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   4
-      Underline       =   False
-      Value           =   True
-      Visible         =   True
-      Width           =   81
-   End
-   Begin CheckBox chbShowPackages
-      AutoDeactivate  =   True
-      Bold            =   False
-      Caption         =   "Show Packages"
-      DataField       =   ""
-      DataSource      =   ""
-      Enabled         =   True
-      Height          =   20
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   286
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      State           =   1
-      TabIndex        =   12
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   4
-      Underline       =   False
-      Value           =   True
-      Visible         =   True
-      Width           =   102
-   End
    Begin PushButton pbAddLineItem
       AutoDeactivate  =   True
       Bold            =   False
@@ -219,12 +92,12 @@ Begin ContainerControl contLineItems
       Caption         =   "+"
       Default         =   False
       Enabled         =   True
-      Height          =   22
+      Height          =   24
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   3
+      Left            =   -8
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
@@ -237,10 +110,98 @@ Begin ContainerControl contLineItems
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   3
+      Top             =   -62
       Underline       =   False
       Visible         =   True
       Width           =   24
+   End
+   Begin entRefreshButton pbRefresh
+      AcceptFocus     =   True
+      AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
+      Bold            =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
+      Enabled         =   True
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
+      HelpTag         =   ""
+      Icon            =   277895167
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   3
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      MenuValue       =   0
+      Scope           =   0
+      TabIndex        =   14
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextColor       =   &c00000000
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   2
+      Underline       =   False
+      Value           =   False
+      Visible         =   True
+      Width           =   30
+   End
+   Begin entAddButton pbAdd
+      AcceptFocus     =   True
+      AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
+      Bold            =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
+      Enabled         =   True
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
+      HelpTag         =   ""
+      Icon            =   633014271
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   34
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      MenuValue       =   0
+      Scope           =   0
+      TabIndex        =   15
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextColor       =   &c00000000
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   1
+      Underline       =   False
+      Value           =   False
+      Visible         =   True
+      Width           =   30
    End
 End
 #tag EndWindow
@@ -566,7 +527,7 @@ End
 		  // Set up some basic stuff
 		  
 		  // trigger event to allow me to set information externally
-		  evdefListboxSettings(lb,dictCellTypes,dictFieldNames)
+		  dim s3() as string = evdefListboxSettings(lb,dictCellTypes,dictFieldNames)
 		  
 		  If dictFieldNames = Nil And dictCellTypes = Nil Then
 		    
@@ -809,7 +770,7 @@ End
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event evdefListboxSettings(lb as entListbox, ByRef dictCellTypes as Dictionary, ByRef dictFieldNames as Dictionary)
+		Event evdefListboxSettings(lb as entListbox, ByRef dictCellTypes as Dictionary, ByRef dictFieldNames as Dictionary) As String()
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -1093,13 +1054,6 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events bRefresh
-	#tag Event
-		Sub Action()
-		  methRefresh
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events scSearchField
 	#tag Event
 		Sub Search()
@@ -1172,6 +1126,21 @@ End
 		  AddLineItem
 		  methRefresh
 		  // select the item
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events pbRefresh
+	#tag Event
+		Sub Action()
+		  methRefresh
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events pbAdd
+	#tag Event
+		Sub Action()
+		  AddLineItem
+		  methRefresh
 		End Sub
 	#tag EndEvent
 #tag EndEvents

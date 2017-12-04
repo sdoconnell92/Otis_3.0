@@ -47,6 +47,7 @@ Begin ContainerControl contContactMethod
       Selectable      =   False
       TabIndex        =   9
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Method"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -124,6 +125,7 @@ Begin ContainerControl contContactMethod
       Selectable      =   False
       TabIndex        =   11
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Method Type"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -189,6 +191,7 @@ Begin ContainerControl contContactMethod
       Selectable      =   False
       TabIndex        =   13
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Method Location"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -266,6 +269,7 @@ Begin ContainerControl contContactMethod
       Selectable      =   False
       TabIndex        =   15
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Primary"
       TextAlign       =   2
       TextColor       =   &c00000000

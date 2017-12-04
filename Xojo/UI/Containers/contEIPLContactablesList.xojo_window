@@ -37,8 +37,9 @@ Begin ContainerControl contEIPLContactablesList
       GridLinesColor  =   &c00000000
       HasBackColor    =   False
       HasHeading      =   True
-      Height          =   199
+      Height          =   205
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   4
       LockBottom      =   True
@@ -50,42 +51,55 @@ Begin ContainerControl contEIPLContactablesList
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
-      Top             =   36
+      Top             =   30
       Transparent     =   True
       UseFocusRing    =   False
       Visible         =   True
       Width           =   331
    End
-   Begin entPushButton pbRefresh
+   Begin entRefreshButton pbRefresh
+      AcceptFocus     =   True
       AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
       Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Refresh"
-      Default         =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
       Enabled         =   True
-      Height          =   32
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
       HelpTag         =   ""
+      Icon            =   277895167
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   3
+      Left            =   4
       LockBottom      =   False
       LockedInPosition=   False
-      LockLeft        =   False
+      LockLeft        =   True
       LockRight       =   False
-      LockTop         =   False
+      LockTop         =   True
+      MenuValue       =   0
       Scope           =   0
       TabIndex        =   1
       TabPanelIndex   =   0
       TabStop         =   True
+      TextColor       =   &c00000000
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
       Top             =   3
       Underline       =   False
+      Value           =   False
       Visible         =   True
-      Width           =   64
+      Width           =   44
    End
 End
 #tag EndWindow

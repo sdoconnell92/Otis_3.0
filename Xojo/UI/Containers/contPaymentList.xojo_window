@@ -25,68 +25,6 @@ Begin ContainerControl contPaymentList
    UseFocusRing    =   False
    Visible         =   True
    Width           =   338
-   Begin PushButton pbRefresh
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Refresh"
-      Default         =   False
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   3
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   0
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   3
-      Underline       =   False
-      Visible         =   True
-      Width           =   80
-   End
-   Begin PushButton pbAddPayment
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Add"
-      Default         =   False
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   84
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   1
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   3
-      Underline       =   False
-      Visible         =   True
-      Width           =   80
-   End
    Begin entListbox lbPayments
       AcceptFocus     =   False
       AcceptTabs      =   True
@@ -117,6 +55,94 @@ Begin ContainerControl contPaymentList
       UseFocusRing    =   False
       Visible         =   True
       Width           =   331
+   End
+   Begin entRefreshButton pbRefresh
+      AcceptFocus     =   True
+      AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
+      Bold            =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
+      Enabled         =   True
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
+      HelpTag         =   ""
+      Icon            =   277895167
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   3
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      MenuValue       =   0
+      Scope           =   0
+      TabIndex        =   3
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextColor       =   &c00000000
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   2
+      Underline       =   False
+      Value           =   False
+      Visible         =   True
+      Width           =   30
+   End
+   Begin entAddButton pbAdd
+      AcceptFocus     =   True
+      AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
+      Bold            =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
+      Enabled         =   True
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
+      HelpTag         =   ""
+      Icon            =   633014271
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   34
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      MenuValue       =   0
+      Scope           =   0
+      TabIndex        =   4
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextColor       =   &c00000000
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   2
+      Underline       =   False
+      Value           =   False
+      Visible         =   True
+      Width           =   30
    End
 End
 #tag EndWindow
@@ -744,20 +770,6 @@ End
 
 #tag EndWindowCode
 
-#tag Events pbRefresh
-	#tag Event
-		Sub Action()
-		  methRefresh
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events pbAddPayment
-	#tag Event
-		Sub Action()
-		  methAddItem
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events lbPayments
 	#tag Event
 		Sub Open()
@@ -850,6 +862,20 @@ End
 		    
 		  End Select
 		End Function
+	#tag EndEvent
+#tag EndEvents
+#tag Events pbRefresh
+	#tag Event
+		Sub Action()
+		  methRefresh
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events pbAdd
+	#tag Event
+		Sub Action()
+		  methAddItem
+		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag ViewBehavior

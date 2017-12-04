@@ -39,7 +39,6 @@ Begin ContainerControl contGroupDiscountList
       HasHeading      =   True
       Height          =   273
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   4
       LockBottom      =   True
@@ -57,16 +56,26 @@ Begin ContainerControl contGroupDiscountList
       Visible         =   True
       Width           =   294
    End
-   Begin entPushButton pbRefresh
+   Begin entRefreshButton pbRefresh
+      AcceptFocus     =   True
       AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
       Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Refresh"
-      Default         =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
       Enabled         =   True
-      Height          =   22
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
       HelpTag         =   ""
+      Icon            =   277895167
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
@@ -76,48 +85,64 @@ Begin ContainerControl contGroupDiscountList
       LockLeft        =   True
       LockRight       =   False
       LockTop         =   True
+      MenuValue       =   0
       Scope           =   0
-      TabIndex        =   1
+      TabIndex        =   3
       TabPanelIndex   =   0
       TabStop         =   True
+      TextColor       =   &c00000000
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   3
+      Top             =   1
       Underline       =   False
+      Value           =   False
       Visible         =   True
-      Width           =   80
+      Width           =   30
    End
-   Begin entPushButton pbAddDiscount
+   Begin entAddButton pbAdd
+      AcceptFocus     =   True
       AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
       Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Add"
-      Default         =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
       Enabled         =   True
-      Height          =   22
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
       HelpTag         =   ""
+      Icon            =   633014271
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   83
+      Left            =   34
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   False
       LockTop         =   True
+      MenuValue       =   0
       Scope           =   0
-      TabIndex        =   2
+      TabIndex        =   4
       TabPanelIndex   =   0
       TabStop         =   True
+      TextColor       =   &c00000000
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   3
+      Top             =   1
       Underline       =   False
+      Value           =   False
       Visible         =   True
-      Width           =   80
+      Width           =   30
    End
 End
 #tag EndWindow
@@ -830,11 +855,10 @@ End
 	#tag Event
 		Sub Action()
 		  methRefresh
-		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events pbAddDiscount
+#tag Events pbAdd
 	#tag Event
 		Sub Action()
 		  If oCurrentEIPL <> Nil Then

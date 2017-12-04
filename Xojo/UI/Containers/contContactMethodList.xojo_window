@@ -116,16 +116,26 @@ Begin ContainerControl contContactMethodList
       Visible         =   True
       Width           =   68
    End
-   Begin entPushButton bRefresh
+   Begin entRefreshButton pbRefresh
+      AcceptFocus     =   True
       AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
       Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   True
-      Caption         =   "Refresh"
-      Default         =   True
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
       Enabled         =   True
+      HasBackColor    =   False
+      HasMenu         =   0
       Height          =   24
       HelpTag         =   ""
+      Icon            =   277895167
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
@@ -135,48 +145,64 @@ Begin ContainerControl contContactMethodList
       LockLeft        =   True
       LockRight       =   False
       LockTop         =   True
+      MenuValue       =   0
       Scope           =   0
-      TabIndex        =   3
+      TabIndex        =   5
       TabPanelIndex   =   0
       TabStop         =   True
+      TextColor       =   &c00000000
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   1
+      Top             =   2
       Underline       =   False
+      Value           =   False
       Visible         =   True
-      Width           =   58
+      Width           =   30
    End
-   Begin entPushButton bAddItem
+   Begin entAddButton pbAdd
+      AcceptFocus     =   True
       AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
       Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Add Item"
-      Default         =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
       Enabled         =   True
+      HasBackColor    =   False
+      HasMenu         =   0
       Height          =   24
       HelpTag         =   ""
+      Icon            =   633014271
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   63
+      Left            =   34
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   False
       LockTop         =   True
+      MenuValue       =   0
       Scope           =   0
-      TabIndex        =   4
+      TabIndex        =   6
       TabPanelIndex   =   0
       TabStop         =   True
+      TextColor       =   &c00000000
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
       Top             =   1
       Underline       =   False
+      Value           =   False
       Visible         =   True
-      Width           =   60
+      Width           =   30
    End
 End
 #tag EndWindow
@@ -219,6 +245,16 @@ End
 		  
 		  Return aroStor
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub methAddItem()
+		  
+		  
+		  dim oRecord as New DataFile.tbl_contact_methods
+		  oRecord.sfkcontactables = oParentRecord.suuid
+		  methOpenRecordInGroupBox(oRecord)
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -1080,22 +1116,17 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events bRefresh
+#tag Events pbRefresh
 	#tag Event
 		Sub Action()
-		  
 		  methRefresh
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events bAddItem
+#tag Events pbAdd
 	#tag Event
 		Sub Action()
-		  
-		  
-		  dim oRecord as New DataFile.tbl_contact_methods
-		  oRecord.sfkcontactables = oParentRecord.suuid
-		  methOpenRecordInGroupBox(oRecord)
+		  methAddItem
 		End Sub
 	#tag EndEvent
 #tag EndEvents

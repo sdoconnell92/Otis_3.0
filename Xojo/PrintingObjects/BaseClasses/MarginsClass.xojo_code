@@ -19,6 +19,12 @@ Protected Class MarginsClass
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="Bottom"
+			Group="Behavior"
+			InitialValue="80"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -37,6 +43,12 @@ Protected Class MarginsClass
 			Visible=true
 			Group="ID"
 			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Right"
+			Group="Behavior"
+			InitialValue="40"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Super"

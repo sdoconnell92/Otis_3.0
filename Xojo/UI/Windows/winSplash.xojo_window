@@ -27,6 +27,7 @@ Begin Window winSplash
    Visible         =   True
    Width           =   505
    Begin Timer tmrSplash
+      Enabled         =   True
       Index           =   -2147483648
       InitialParent   =   ""
       LockedInPosition=   False
@@ -57,6 +58,7 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   3
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Build:"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -91,6 +93,7 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   4
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Your Copyright Info here"
       TextAlign       =   1
       TextColor       =   &c00000000
@@ -125,6 +128,7 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   5
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Business \r\nManagement \r\nSystem"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -159,6 +163,7 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   6
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Otis"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -221,6 +226,7 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   8
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Progress"
       TextAlign       =   1
       TextColor       =   &c00000000
@@ -255,6 +261,7 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   9
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Secondary Progress"
       TextAlign       =   1
       TextColor       =   &c00000000
@@ -268,6 +275,7 @@ Begin Window winSplash
       Width           =   465
    End
    Begin Timer tmrProgressUpdater
+      Enabled         =   True
       Index           =   -2147483648
       LockedInPosition=   False
       Mode            =   0

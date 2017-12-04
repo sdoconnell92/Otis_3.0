@@ -379,6 +379,11 @@ Protected Class AppInit
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="bInitDone"
+			Group="Behavior"
+			Type="Boolean"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="bOpenMainWindow"
 			Group="Behavior"
 			Type="Boolean"

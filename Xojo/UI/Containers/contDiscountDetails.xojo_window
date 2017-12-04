@@ -89,6 +89,7 @@ Begin ContainerControl contDiscountDetails
       Selectable      =   False
       TabIndex        =   1
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Group Name"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -123,6 +124,7 @@ Begin ContainerControl contDiscountDetails
       Selectable      =   False
       TabIndex        =   2
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Discount"
       TextAlign       =   0
       TextColor       =   &c00000000

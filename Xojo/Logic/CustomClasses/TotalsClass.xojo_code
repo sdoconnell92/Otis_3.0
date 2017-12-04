@@ -115,6 +115,7 @@ Protected Class TotalsClass
 			Name="sDiscountPercent"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="sEIPLuuid"

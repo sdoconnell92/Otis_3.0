@@ -9,7 +9,7 @@ Begin ContainerControl contEI
    Enabled         =   True
    EraseBackground =   True
    HasBackColor    =   False
-   Height          =   518
+   Height          =   542
    HelpTag         =   ""
    InitialParent   =   ""
    Left            =   0
@@ -24,11 +24,11 @@ Begin ContainerControl contEI
    Transparent     =   True
    UseFocusRing    =   False
    Visible         =   True
-   Width           =   972
+   Width           =   1004
    Begin PagePanel ppEIPLSwitcher
       AutoDeactivate  =   True
       Enabled         =   True
-      Height          =   496
+      Height          =   515
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
@@ -36,17 +36,17 @@ Begin ContainerControl contEI
       LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
-      LockRight       =   True
-      LockTop         =   True
+      LockRight       =   False
+      LockTop         =   False
       PanelCount      =   2
       Panels          =   ""
       Scope           =   0
       TabIndex        =   2
       TabPanelIndex   =   0
-      Top             =   22
+      Top             =   27
       Value           =   0
       Visible         =   True
-      Width           =   972
+      Width           =   1004
       Begin contLineItems instLineItemList
          AcceptFocus     =   True
          AcceptTabs      =   True
@@ -58,26 +58,26 @@ Begin ContainerControl contEI
          Enabled         =   True
          EraseBackground =   True
          HasBackColor    =   False
-         Height          =   353
+         Height          =   367
          HelpTag         =   ""
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
          LastSearchValue =   ""
          Left            =   262
-         LockBottom      =   False
+         LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
-         LockRight       =   False
+         LockRight       =   True
          LockTop         =   True
          Scope           =   0
          TabIndex        =   0
          TabPanelIndex   =   1
          TabStop         =   True
-         Top             =   44
+         Top             =   54
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
-         Width           =   706
+         Width           =   742
       End
       Begin contInventory instInventoryList
          AcceptFocus     =   True
@@ -90,7 +90,7 @@ Begin ContainerControl contEI
          Enabled         =   True
          EraseBackground =   True
          HasBackColor    =   False
-         Height          =   473
+         Height          =   487
          HelpTag         =   ""
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
@@ -105,7 +105,7 @@ Begin ContainerControl contEI
          TabIndex        =   1
          TabPanelIndex   =   1
          TabStop         =   True
-         Top             =   44
+         Top             =   54
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
@@ -134,7 +134,7 @@ Begin ContainerControl contEI
          TabIndex        =   0
          TabPanelIndex   =   2
          TabStop         =   True
-         Top             =   61
+         Top             =   66
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
@@ -166,7 +166,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   241
+         Top             =   246
          Underline       =   False
          Visible         =   True
          Width           =   80
@@ -208,7 +208,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   41
+         Top             =   46
          Underline       =   False
          UseFocusRing    =   True
          Visible         =   True
@@ -242,7 +242,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   42
+         Top             =   47
          Transparent     =   True
          Underline       =   False
          Visible         =   True
@@ -276,7 +276,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   68
+         Top             =   73
          Transparent     =   True
          Underline       =   False
          Visible         =   True
@@ -308,7 +308,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   67
+         Top             =   72
          Underline       =   False
          Visible         =   True
          Width           =   200
@@ -341,7 +341,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   94
+         Top             =   99
          Transparent     =   True
          Underline       =   False
          Visible         =   True
@@ -380,7 +380,7 @@ Begin ContainerControl contEI
          TabIndex        =   7
          TabPanelIndex   =   2
          TabStop         =   True
-         Top             =   93
+         Top             =   98
          Visible         =   True
          Width           =   200
          WinFontBold     =   False
@@ -417,7 +417,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   119
+         Top             =   124
          Transparent     =   True
          Underline       =   False
          Visible         =   True
@@ -460,7 +460,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   118
+         Top             =   123
          Underline       =   False
          UseFocusRing    =   True
          Visible         =   True
@@ -479,20 +479,20 @@ Begin ContainerControl contEI
          HelpTag         =   ""
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   262
-         LockBottom      =   False
+         LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
+         LockRight       =   True
+         LockTop         =   False
          Scope           =   0
          TabIndex        =   2
          TabPanelIndex   =   1
          TabStop         =   True
-         Top             =   398
+         Top             =   422
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
-         Width           =   706
+         Width           =   742
       End
       Begin contGroupDiscountList instGroupDiscountList
          AcceptFocus     =   False
@@ -521,7 +521,7 @@ Begin ContainerControl contEI
          TabIndex        =   10
          TabPanelIndex   =   2
          TabStop         =   True
-         Top             =   297
+         Top             =   321
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
@@ -555,7 +555,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   277
+         Top             =   301
          Transparent     =   True
          Underline       =   False
          Visible         =   True
@@ -589,7 +589,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   24
+         Top             =   33
          Transparent     =   True
          Underline       =   False
          Visible         =   True
@@ -623,7 +623,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   145
+         Top             =   150
          Transparent     =   True
          Underline       =   False
          Visible         =   True
@@ -666,7 +666,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   144
+         Top             =   149
          Underline       =   False
          UseFocusRing    =   True
          Visible         =   True
@@ -699,7 +699,7 @@ Begin ContainerControl contEI
          TabIndex        =   15
          TabPanelIndex   =   2
          TabStop         =   True
-         Top             =   297
+         Top             =   321
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
@@ -733,7 +733,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   42
+         Top             =   47
          Transparent     =   True
          Underline       =   False
          Visible         =   True
@@ -767,7 +767,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   277
+         Top             =   301
          Transparent     =   True
          Underline       =   False
          Visible         =   True
@@ -786,7 +786,7 @@ Begin ContainerControl contEI
          Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Italic          =   False
-         Left            =   892
+         Left            =   922
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   False
@@ -799,7 +799,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   23
+         Top             =   32
          Underline       =   False
          Visible         =   True
          Width           =   80
@@ -832,11 +832,11 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   24
+         Top             =   33
          Transparent     =   True
          Underline       =   False
          Visible         =   True
-         Width           =   143
+         Width           =   154
       End
       Begin Label labDiscountSum
          AutoDeactivate  =   True
@@ -849,7 +849,7 @@ Begin ContainerControl contEI
          Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Italic          =   False
-         Left            =   273
+         Left            =   283
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -866,11 +866,11 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   24
+         Top             =   33
          Transparent     =   True
          Underline       =   False
          Visible         =   True
-         Width           =   149
+         Width           =   169
       End
       Begin Label labTaxSum
          AutoDeactivate  =   True
@@ -883,7 +883,7 @@ Begin ContainerControl contEI
          Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Italic          =   False
-         Left            =   427
+         Left            =   463
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -900,7 +900,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   24
+         Top             =   33
          Transparent     =   True
          Underline       =   False
          Visible         =   True
@@ -917,7 +917,7 @@ Begin ContainerControl contEI
          Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Italic          =   False
-         Left            =   673
+         Left            =   709
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -934,7 +934,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   24
+         Top             =   33
          Transparent     =   True
          Underline       =   False
          Visible         =   True
@@ -951,7 +951,7 @@ Begin ContainerControl contEI
          Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Italic          =   False
-         Left            =   531
+         Left            =   563
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   True
@@ -968,7 +968,7 @@ Begin ContainerControl contEI
          TextFont        =   "System"
          TextSize        =   0.0
          TextUnit        =   0
-         Top             =   23
+         Top             =   32
          Transparent     =   True
          Underline       =   False
          Visible         =   True
@@ -1004,7 +1004,7 @@ Begin ContainerControl contEI
       Underline       =   False
       Value           =   0
       Visible         =   True
-      Width           =   972
+      Width           =   1004
    End
 End
 #tag EndWindow

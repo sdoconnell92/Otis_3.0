@@ -243,6 +243,7 @@ Inherits BaseDocInitObject
 			Name="Box8_PaymentDue"
 			Group="Behavior"
 			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="BoxA_AddressLine1"
@@ -383,6 +384,11 @@ Inherits BaseDocInitObject
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="LI_FontSize"
+			Group="Behavior"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="LogoImage"

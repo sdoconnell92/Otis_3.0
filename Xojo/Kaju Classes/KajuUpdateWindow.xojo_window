@@ -315,9 +315,7 @@ Begin Window KajuUpdateWindow
       LockedInPosition=   False
       Scope           =   2
       Secure          =   False
-      TabIndex        =   9
       TabPanelIndex   =   0
-      TabStop         =   True
    End
    Begin Kaju.ZipShell shZipper
       Arguments       =   ""
@@ -329,9 +327,7 @@ Begin Window KajuUpdateWindow
       LockedInPosition=   False
       Mode            =   1
       Scope           =   2
-      TabIndex        =   10
       TabPanelIndex   =   0
-      TabStop         =   True
       TimeOut         =   0
    End
    Begin HTMLViewer hvNewWindow

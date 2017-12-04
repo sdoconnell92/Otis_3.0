@@ -385,7 +385,7 @@ Begin ContainerControl contEvent
       TimeFormat      =   0
       Top             =   97
       Visible         =   True
-      Width           =   78
+      Width           =   94
       WinFontBold     =   False
       WinTextFont     =   "System"
       WinTextSize     =   0.0
@@ -404,7 +404,7 @@ Begin ContainerControl contEvent
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
-      Left            =   217
+      Left            =   229
       LinuxDropDownMode=   True
       LinuxFontBold   =   False
       LinuxTextFont   =   "System"
@@ -464,7 +464,7 @@ Begin ContainerControl contEvent
       TimeFormat      =   0
       Top             =   123
       Visible         =   True
-      Width           =   78
+      Width           =   94
       WinFontBold     =   False
       WinTextFont     =   "System"
       WinTextSize     =   0.0
@@ -483,7 +483,7 @@ Begin ContainerControl contEvent
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
-      Left            =   217
+      Left            =   229
       LinuxDropDownMode=   True
       LinuxFontBold   =   False
       LinuxTextFont   =   "System"
@@ -543,7 +543,7 @@ Begin ContainerControl contEvent
       TimeFormat      =   0
       Top             =   149
       Visible         =   True
-      Width           =   78
+      Width           =   94
       WinFontBold     =   False
       WinTextFont     =   "System"
       WinTextSize     =   0.0
@@ -562,7 +562,7 @@ Begin ContainerControl contEvent
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
-      Left            =   217
+      Left            =   229
       LinuxDropDownMode=   True
       LinuxFontBold   =   False
       LinuxTextFont   =   "System"
@@ -622,7 +622,7 @@ Begin ContainerControl contEvent
       TimeFormat      =   0
       Top             =   176
       Visible         =   True
-      Width           =   78
+      Width           =   94
       WinFontBold     =   False
       WinTextFont     =   "System"
       WinTextSize     =   0.0
@@ -641,7 +641,7 @@ Begin ContainerControl contEvent
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
-      Left            =   217
+      Left            =   229
       LinuxDropDownMode=   True
       LinuxFontBold   =   False
       LinuxTextFont   =   "System"
@@ -797,7 +797,7 @@ Begin ContainerControl contEvent
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   246
+      Left            =   257
       LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
@@ -869,7 +869,7 @@ Begin ContainerControl contEvent
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   192
+      Left            =   203
       LimitText       =   0
       LockBottom      =   True
       LockedInPosition=   False
@@ -888,7 +888,7 @@ Begin ContainerControl contEvent
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   493
+      Top             =   494
       Underline       =   False
       UseFocusRing    =   True
       Visible         =   True
@@ -1095,8 +1095,6 @@ Begin ContainerControl contEvent
       AutoDeactivate  =   True
       BackColor       =   &cFFFFFF00
       Backdrop        =   0
-      bDisplayGrouped =   False
-      bPickerMode     =   False
       Enabled         =   True
       EraseBackground =   True
       EventID         =   ""
@@ -1105,8 +1103,6 @@ Begin ContainerControl contEvent
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
-      iStartingTop    =   0
-      LastSearchValue =   ""
       Left            =   412
       LockBottom      =   False
       LockedInPosition=   False
@@ -1149,7 +1145,7 @@ Begin ContainerControl contEvent
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   149
+      Top             =   150
       Underline       =   False
       Visible         =   True
       Width           =   80

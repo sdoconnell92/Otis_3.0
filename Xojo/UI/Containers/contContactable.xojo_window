@@ -78,7 +78,6 @@ Begin ContainerControl contContactable
       Selectable      =   False
       TabIndex        =   12
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Type"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -113,7 +112,6 @@ Begin ContainerControl contContactable
       Selectable      =   False
       TabIndex        =   13
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "First Name"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -191,7 +189,6 @@ Begin ContainerControl contContactable
       Selectable      =   False
       TabIndex        =   14
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Last Name"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -268,7 +265,6 @@ Begin ContainerControl contContactable
       Selectable      =   False
       TabIndex        =   15
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Job Title"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -345,7 +341,6 @@ Begin ContainerControl contContactable
       Selectable      =   False
       TabIndex        =   16
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Company"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -422,7 +417,6 @@ Begin ContainerControl contContactable
       Selectable      =   False
       TabIndex        =   17
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "State"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -457,7 +451,6 @@ Begin ContainerControl contContactable
       Selectable      =   False
       TabIndex        =   18
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "City"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -492,7 +485,6 @@ Begin ContainerControl contContactable
       Selectable      =   False
       TabIndex        =   19
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Address Line 1"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -527,7 +519,6 @@ Begin ContainerControl contContactable
       Selectable      =   False
       TabIndex        =   20
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Address Line 2"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -730,7 +721,6 @@ Begin ContainerControl contContactable
       Selectable      =   False
       TabIndex        =   21
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Zip"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -765,7 +755,6 @@ Begin ContainerControl contContactable
       Selectable      =   False
       TabIndex        =   22
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Country"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -884,7 +873,6 @@ Begin ContainerControl contContactable
       Selectable      =   False
       TabIndex        =   23
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Hide"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -943,7 +931,6 @@ Begin ContainerControl contContactable
       HasBackColor    =   False
       Height          =   121
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       iStartingTop    =   0
       LastSearchValue =   ""
@@ -976,7 +963,6 @@ Begin ContainerControl contContactable
       HasBackColor    =   False
       Height          =   144
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       LastSearchValue =   ""
       Left            =   132
@@ -997,36 +983,49 @@ Begin ContainerControl contContactable
       Visible         =   True
       Width           =   569
    End
-   Begin entPushButton pbAddChildEvent
+   Begin entAddButton pbAddChild
+      AcceptFocus     =   True
       AutoDeactivate  =   True
+      BackColor       =   &c00000000
+      Bevel           =   0
       Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Add Child"
-      Default         =   False
+      ButtonType      =   0
+      Caption         =   ""
+      CaptionAlign    =   3
+      CaptionDelta    =   0
+      CaptionPlacement=   1
       Enabled         =   True
-      Height          =   22
+      HasBackColor    =   False
+      HasMenu         =   0
+      Height          =   24
       HelpTag         =   ""
+      Icon            =   633014271
+      IconAlign       =   1
+      IconDX          =   0
+      IconDY          =   0
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   132
-      LockBottom      =   True
+      Left            =   135
+      LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   False
-      LockTop         =   False
+      LockTop         =   True
+      MenuValue       =   0
       Scope           =   0
-      TabIndex        =   27
+      TabIndex        =   29
       TabPanelIndex   =   0
       TabStop         =   True
+      TextColor       =   &c00000000
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   490
+      Top             =   486
       Underline       =   False
+      Value           =   False
       Visible         =   True
-      Width           =   82
+      Width           =   30
    End
 End
 #tag EndWindow
@@ -1458,7 +1457,7 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events pbAddChildEvent
+#tag Events pbAddChild
 	#tag Event
 		Sub Action()
 		  dim sNewOrExisting as string
