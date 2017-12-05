@@ -64,6 +64,24 @@
         "URL":"http:\/\/104.238.132.54\/kaju\/OtisBusinessManagement\/win\/v3.0.1a0\/OtisBusinessManagement.zip",
         "ExecutableName":"OtisBusinessManagement.exe"
       }
+    },
+    {
+      "AppName":"OtisBusinessManagement",
+      "ImageURL":"",
+      "MinimumRequiredVersion":"3.0.2a0",
+      "ReleaseNotes":"- Decripted plugins",
+      "RequiresPayment":false,
+      "UseTransparency":true,
+      "Version":"3.0.2a0",
+      "MacBinary":{
+        "Hash":"716C3CAC138B1917EC0F5D9B307A240A",
+        "URL":"http:\/\/104.238.132.54\/kaju\/OtisBusinessManagement\/osx\/v3.0.2a0\/OtisBusinessManagement.zip"
+      },
+      "WindowsBinary":{
+        "Hash":"C30D7E94D190322370D09AAB9619A61E",
+        "URL":"http:\/\/104.238.132.54\/kaju\/OtisBusinessManagement\/win\/v3.0.2a0\/OtisBusinessManagement.zip",
+        "ExecutableName":"OtisBusinessManagement.exe"
+      }
     }
   ]
 }
