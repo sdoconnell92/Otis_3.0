@@ -42,10 +42,7 @@ Inherits Application
 
 	#tag Method, Flags = &h0
 		Sub OpenMainWindow()
-		  UiColors.DefaultScheme
-		  
 		  // Launch main windows
-		  app.db = DataFile.ConnectDB
 		  dim winMain as New winMain_1TabPanel
 		  app.MainWindow = winMain
 		  app.MainWindow.Show
@@ -54,7 +51,9 @@ Inherits Application
 
 	#tag Method, Flags = &h0
 		Sub UIInit()
-		  
+		  UiColors.DefaultScheme
+		  app.db = DataFile.ConnectDB
+		  OpenMainWindow
 		End Sub
 	#tag EndMethod
 
