@@ -1,7 +1,7 @@
 #tag Module
 Protected Module Updater
-	#tag Method, Flags = &h1
-		Protected Sub Init()
+	#tag Method, Flags = &h0
+		Sub Init()
 		  dim rd as New ResourceDirectories
 		  
 		  dim updater as new Kaju.UpdateChecker( rd.kaju_folder.FilePath )
@@ -13,8 +13,8 @@ Protected Module Updater
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Sub Run()
+	#tag Method, Flags = &h0
+		Sub Run()
 		  // Checker.Execute
 		End Sub
 	#tag EndMethod

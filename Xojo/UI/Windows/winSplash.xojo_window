@@ -5,7 +5,7 @@ Begin Window winSplash
    CloseButton     =   False
    Compatibility   =   ""
    Composite       =   False
-   Frame           =   2
+   Frame           =   4
    FullScreen      =   False
    FullScreenButton=   False
    HasBackColor    =   True
@@ -397,12 +397,12 @@ End
 #tag Events tmrUpdateWaiter
 	#tag Event
 		Sub Action()
-		  If app.UpdateInitiater = Nil And Updater.Checker = Nil Then
+		  If app.UpdateInitiater = Nil And Updater.Checker.UpdateWindowIsOpen = False Then
 		    Break
 		    me.Mode = Timer.ModeOff
 		    HandleInitialize
 		    
-		    app.OpenMainWindow
+		    //app.OpenMainWindow
 		    
 		  Else
 		    
