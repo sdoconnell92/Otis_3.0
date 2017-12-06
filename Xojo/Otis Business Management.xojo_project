@@ -142,6 +142,7 @@ Class=entAddButton;UI/CustomControls/entAddButton.xojo_code;&hD53FFF;&h2FFCDFFF;
 Class=entSortButton;UI/CustomControls/entSortButton.xojo_code;&h1B8207FF;&h2FFCDFFF;false
 MultiImage=icnSort;Icons/icnSort.xojo_image;&h487727FF;&h2F2847FF;false
 Folder=Kaju Classes;Kaju Classes;&hE75CFFF;&h0;false
+Module=Updater;Logic/Updater.xojo_code;&h4B69BFFF;&h21EA3FFF;false
 AppMenuBar=MainMenuBar
 MajorVersion=3
 MinorVersion=1

@@ -27,7 +27,6 @@ Begin Window winSplash
    Visible         =   True
    Width           =   505
    Begin Timer tmrSplash
-      Enabled         =   True
       Index           =   -2147483648
       InitialParent   =   ""
       LockedInPosition=   False
@@ -58,7 +57,6 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   3
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Build:"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -93,7 +91,6 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   4
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Your Copyright Info here"
       TextAlign       =   1
       TextColor       =   &c00000000
@@ -128,7 +125,6 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   5
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Business \r\nManagement \r\nSystem"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -163,7 +159,6 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   6
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Otis"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -226,7 +221,6 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   8
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Progress"
       TextAlign       =   1
       TextColor       =   &c00000000
@@ -261,7 +255,6 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   9
       TabPanelIndex   =   0
-      TabStop         =   True
       Text            =   "Secondary Progress"
       TextAlign       =   1
       TextColor       =   &c00000000
@@ -275,7 +268,14 @@ Begin Window winSplash
       Width           =   465
    End
    Begin Timer tmrProgressUpdater
-      Enabled         =   True
+      Index           =   -2147483648
+      LockedInPosition=   False
+      Mode            =   0
+      Period          =   500
+      Scope           =   0
+      TabPanelIndex   =   0
+   End
+   Begin Timer tmrUpdateWaiter
       Index           =   -2147483648
       LockedInPosition=   False
       Mode            =   0
@@ -295,7 +295,11 @@ End
 		  #Endif
 		  
 		  tmrSplash.Mode = timer.ModeSingle
-		  self.ShowModal
+		  // self.ShowModal
+		  
+		  self.Visible = True
+		  
+		  
 		End Sub
 	#tag EndMethod
 
@@ -324,9 +328,12 @@ End
 	#tag Event
 		Sub Action()
 		  me.Mode = Timer.ModeOff
-		  HandleInitialize
+		  // HandleInitialize
 		  
+		  Updater.Init
+		  Updater.Run
 		  
+		  tmrUpdateWaiter.Mode = Timer.ModeMultiple
 		  
 		  
 		  
@@ -383,6 +390,22 @@ End
 		    Else
 		      Quit
 		    End If
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events tmrUpdateWaiter
+	#tag Event
+		Sub Action()
+		  If app.UpdateInitiater = Nil And Updater.Checker = Nil Then
+		    Break
+		    me.Mode = Timer.ModeOff
+		    HandleInitialize
+		    
+		    app.OpenMainWindow
+		    
+		  Else
+		    
 		  End If
 		End Sub
 	#tag EndEvent
