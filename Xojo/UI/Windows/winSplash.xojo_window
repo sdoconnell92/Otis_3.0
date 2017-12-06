@@ -398,7 +398,7 @@ End
 	#tag Event
 		Sub Action()
 		  If app.UpdateInitiater = Nil And Updater.Checker.UpdateWindowIsOpen = False Then
-		    Break
+		    
 		    me.Mode = Timer.ModeOff
 		    HandleInitialize
 		    

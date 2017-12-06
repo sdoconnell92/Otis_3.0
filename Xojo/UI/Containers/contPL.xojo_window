@@ -24,7 +24,7 @@ Begin ContainerControl contPL
    Transparent     =   True
    UseFocusRing    =   False
    Visible         =   True
-   Width           =   972
+   Width           =   1004
    Begin PagePanel ppEIPLSwitcher
       AutoDeactivate  =   True
       Enabled         =   True
@@ -46,7 +46,7 @@ Begin ContainerControl contPL
       Top             =   22
       Value           =   0
       Visible         =   True
-      Width           =   972
+      Width           =   1004
       Begin contLineItems instLineItemList
          AcceptFocus     =   True
          AcceptTabs      =   True
@@ -64,10 +64,10 @@ Begin ContainerControl contPL
          iStartingTop    =   0
          LastSearchValue =   ""
          Left            =   262
-         LockBottom      =   False
+         LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
-         LockRight       =   False
+         LockRight       =   True
          LockTop         =   True
          Scope           =   0
          TabIndex        =   0
@@ -77,7 +77,7 @@ Begin ContainerControl contPL
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
-         Width           =   706
+         Width           =   738
       End
       Begin contInventory instInventoryList
          AcceptFocus     =   True
@@ -394,7 +394,7 @@ Begin ContainerControl contPL
          Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Italic          =   False
-         Left            =   892
+         Left            =   918
          LockBottom      =   False
          LockedInPosition=   False
          LockLeft        =   False
@@ -425,11 +425,11 @@ Begin ContainerControl contPL
          HelpTag         =   ""
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   262
-         LockBottom      =   False
+         LockBottom      =   True
          LockedInPosition=   False
          LockLeft        =   True
-         LockRight       =   False
-         LockTop         =   True
+         LockRight       =   True
+         LockTop         =   False
          Scope           =   0
          TabIndex        =   11
          TabPanelIndex   =   1
@@ -438,7 +438,7 @@ Begin ContainerControl contPL
          Transparent     =   True
          UseFocusRing    =   False
          Visible         =   True
-         Width           =   706
+         Width           =   738
       End
    End
    Begin TabPanel tbEIPLSwitcher
@@ -470,7 +470,7 @@ Begin ContainerControl contPL
       Underline       =   False
       Value           =   0
       Visible         =   True
-      Width           =   972
+      Width           =   1004
    End
 End
 #tag EndWindow
