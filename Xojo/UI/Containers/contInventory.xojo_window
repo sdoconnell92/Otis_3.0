@@ -701,7 +701,7 @@ End
 		  dim lb as entListbox = methGetListbox
 		  
 		  oParentRecord = oRecord
-		  Break
+		  
 		  dim oStor as RecordStorageClass = DataFile.StorifyRecords(oRecord)
 		  DataFile.GetChildren(oStor)
 		  

@@ -108,6 +108,12 @@ Protected Class RecordStorageClass
 		    
 		    dim jsFieldValues as JSONItem = oTableRecord.GetMyFieldValues(True)
 		    dim sTableName as String = oTableRecord.GetTableName
+		    dim sLinkTableName as String 
+		    dim jsLinkFieldValues as New JSONItem
+		    If oLinkRecord <> Nil Then
+		      sLinkTableName = oLinkRecord.GetTableName
+		      jsLinkFieldValues = oLinkRecord.GetMyFieldValues(True)
+		    End If
 		    
 		    redim oRowData.arsColumnValues(-1)
 		    
@@ -130,25 +136,58 @@ Protected Class RecordStorageClass
 		      End If
 		      
 		      // Check that the field actually exists
-		      If jsFieldValues.Names.IndexOf( sFField ) <> -1 Then
-		        ' the field exists
+		      Select Case sFieldName
+		      Case "CalcTotal"
+		        dim retTots as TotalsClass = CalculateSingleLine(me)
+		        dim sColumnValue as String
+		        sColumnValue = str( retTots.a_SubTotal, "\$#,###,###,###.00" )
 		        
-		        dim sValue as String = jsFieldValues.Value( sFField )
-		        sValue = str( sValue, modFieldFormatting.GetFormattingString( sDBDotNotation ) )
-		        
-		        oRowData.arsColumnValues.Append( sValue )
-		        
+		        oRowData.arsColumnValues.Append( sColumnValue )
 		      Else
-		        // Check if this is a calculated field
-		        Select Case sFieldName
-		        Case "CalcTotal"
-		          dim retTots as TotalsClass = CalculateSingleLine(me)
-		          dim sColumnValue as String
-		          sColumnValue = str( retTots.a_SubTotal, "\$#,###,###,###.00" )
-		          
-		          oRowData.arsColumnValues.Append( sColumnValue )
-		        End Select
-		      End If
+		        If sFTable = sTableName Then
+		          If jsFieldValues.Names.IndexOf( sFField ) <> -1 Then
+		            ' the field exists
+		            
+		            dim sValue as String = jsFieldValues.Value( sFField )
+		            sValue = str( sValue, modFieldFormatting.GetFormattingString( sDBDotNotation ) )
+		            
+		            oRowData.arsColumnValues.Append( sValue )
+		          End If
+		        ElseIf sFTable = sLinkTableName Then
+		          If jsLinkFieldValues.Names.IndexOf( sFField ) <> -1 Then
+		            ' the field exists
+		            
+		            dim sValue as String = jsLinkFieldValues.Value( sFField )
+		            sValue = str( sValue, modFieldFormatting.GetFormattingString( sDBDotNotation ) )
+		            
+		            oRowData.arsColumnValues.Append( sValue )
+		          End If
+		        Else
+		          oRowData.arsColumnValues.Append( "" )
+		        End If
+		      End Select
+		      
+		      
+		      
+		      // If jsFieldValues.Names.IndexOf( sFField ) <> -1 Then
+		      // ' the field exists
+		      // 
+		      // dim sValue as String = jsFieldValues.Value( sFField )
+		      // sValue = str( sValue, modFieldFormatting.GetFormattingString( sDBDotNotation ) )
+		      // 
+		      // oRowData.arsColumnValues.Append( sValue )
+		      // 
+		      // Else
+		      // // Check if this is a calculated field
+		      // Select Case sFieldName
+		      // Case "CalcTotal"
+		      // dim retTots as TotalsClass = CalculateSingleLine(me)
+		      // dim sColumnValue as String
+		      // sColumnValue = str( retTots.a_SubTotal, "\$#,###,###,###.00" )
+		      // 
+		      // oRowData.arsColumnValues.Append( sColumnValue )
+		      // End Select
+		      // End If
 		      
 		    Next
 		  End If
@@ -166,7 +205,6 @@ Protected Class RecordStorageClass
 		Sub PopulateLbData(dictFieldNames as Dictionary, dictCellTypes as Dictionary)
 		  dim arsFieldNames() as String
 		  dim ariCellTypes() as Integer
-		  
 		  
 		  // Get the cell types and field names
 		  Select Case StorType
@@ -206,6 +244,12 @@ Protected Class RecordStorageClass
 		    
 		    dim jsFieldValues as JSONItem = oTableRecord.GetMyFieldValues(True)
 		    dim sTableName as String = oTableRecord.GetTableName
+		    dim sLinkTableName as String 
+		    dim jsLinkFieldValues as New JSONItem
+		    If oLinkRecord <> Nil Then
+		      sLinkTableName = oLinkRecord.GetTableName
+		      jsLinkFieldValues = oLinkRecord.GetMyFieldValues(True)
+		    End If
 		    
 		    redim oPrintData.arsColumnValues(-1)
 		    
@@ -228,28 +272,60 @@ Protected Class RecordStorageClass
 		      End If
 		      
 		      // Check that the field actually exists
-		      If jsFieldValues.Names.IndexOf( sFField ) <> -1 Then
-		        ' the field exists
+		      Select Case sFieldName
+		      Case "CalcTotal"
+		        dim retTots as TotalsClass = CalculateSingleLine(me)
+		        dim sColumnValue as String
+		        sColumnValue = str( retTots.a_SubTotal, "\$#,###,###,###.00" )
 		        
-		        dim sValue as String = jsFieldValues.Value( sFField )
-		        sValue = str( sValue, modFieldFormatting.GetFormattingString( sDBDotNotation ) )
-		        
-		        oPrintData.arsColumnValues.Append( sValue )
-		        
+		        oRowData.arsColumnValues.Append( sColumnValue )
 		      Else
-		        // Check if this is a calculated field or a checkbox field
-		        Select Case sFieldName
-		        Case "CalcTotal"
-		          dim retTots as TotalsClass = CalculateSingleLine(me)
-		          dim sColumnValue as String
-		          sColumnValue = str( retTots.a_SubTotal, "\$#,###,###,###.00" )
-		          
-		          oPrintData.arsColumnValues.Append( sColumnValue )
-		        Case "CheckBox"
-		          oPrintData.arsColumnValues.Append( "??!!??CheckBox??!!??" )
-		        End Select
-		        
-		      End If
+		        If sFTable = sTableName Then
+		          If jsFieldValues.Names.IndexOf( sFField ) <> -1 Then
+		            ' the field exists
+		            
+		            dim sValue as String = jsFieldValues.Value( sFField )
+		            sValue = str( sValue, modFieldFormatting.GetFormattingString( sDBDotNotation ) )
+		            
+		            oRowData.arsColumnValues.Append( sValue )
+		          End If
+		        ElseIf sFTable = sLinkTableName Then
+		          If jsLinkFieldValues.Names.IndexOf( sFField ) <> -1 Then
+		            ' the field exists
+		            
+		            dim sValue as String = jsLinkFieldValues.Value( sFField )
+		            sValue = str( sValue, modFieldFormatting.GetFormattingString( sDBDotNotation ) )
+		            
+		            oRowData.arsColumnValues.Append( sValue )
+		          End If
+		        Else
+		          oRowData.arsColumnValues.Append( "" )
+		        End If
+		      End Select
+		      // 
+		      // // Check that the field actually exists
+		      // If jsFieldValues.Names.IndexOf( sFField ) <> -1 Then
+		      // ' the field exists
+		      // 
+		      // dim sValue as String = jsFieldValues.Value( sFField )
+		      // sValue = str( sValue, modFieldFormatting.GetFormattingString( sDBDotNotation ) )
+		      // 
+		      // oPrintData.arsColumnValues.Append( sValue )
+		      // 
+		      // Else
+		      // // Check if this is a calculated field or a checkbox field
+		      // Select Case sFieldName
+		      // Case "CalcTotal"
+		      // dim retTots as TotalsClass = CalculateSingleLine(me)
+		      // dim sColumnValue as String
+		      // sColumnValue = str( retTots.a_SubTotal, "\$#,###,###,###.00" )
+		      // 
+		      // oPrintData.arsColumnValues.Append( sColumnValue )
+		      // Case "CheckBox"
+		      // oPrintData.arsColumnValues.Append( "??!!??CheckBox??!!??" )
+		      // End Select
+		      // 
+		      // End If
 		      
 		    Next
 		  End If
