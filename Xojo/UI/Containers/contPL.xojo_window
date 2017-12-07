@@ -43,6 +43,7 @@ Begin ContainerControl contPL
       Scope           =   0
       TabIndex        =   2
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   22
       Value           =   0
       Visible         =   True
@@ -60,6 +61,7 @@ Begin ContainerControl contPL
          HasBackColor    =   False
          Height          =   353
          HelpTag         =   ""
+         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
          LastSearchValue =   ""
@@ -92,6 +94,7 @@ Begin ContainerControl contPL
          HasBackColor    =   False
          Height          =   473
          HelpTag         =   ""
+         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          iStartingTop    =   0
          LastSearchValue =   ""
@@ -123,6 +126,7 @@ Begin ContainerControl contPL
          HasBackColor    =   False
          Height          =   181
          HelpTag         =   ""
+         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   343
          LockBottom      =   False
@@ -236,6 +240,7 @@ Begin ContainerControl contPL
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   2
+         TabStop         =   True
          Text            =   "EIPL Name"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -270,6 +275,7 @@ Begin ContainerControl contPL
          Selectable      =   False
          TabIndex        =   4
          TabPanelIndex   =   2
+         TabStop         =   True
          Text            =   "EIPL Type"
          TextAlign       =   2
          TextColor       =   &c00000000
@@ -335,6 +341,7 @@ Begin ContainerControl contPL
          Selectable      =   False
          TabIndex        =   3
          TabPanelIndex   =   1
+         TabStop         =   True
          Text            =   "EIPL Number"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -369,6 +376,7 @@ Begin ContainerControl contPL
          Selectable      =   False
          TabIndex        =   16
          TabPanelIndex   =   2
+         TabStop         =   True
          Text            =   "Contactables"
          TextAlign       =   0
          TextColor       =   &c00000000
@@ -423,6 +431,7 @@ Begin ContainerControl contPL
          HasBackColor    =   False
          Height          =   120
          HelpTag         =   ""
+         Index           =   -2147483648
          InitialParent   =   "ppEIPLSwitcher"
          Left            =   262
          LockBottom      =   True
@@ -1272,7 +1281,7 @@ End
 		Sub evdefOpen()
 		  
 		  me.bDisplayGrouped = True
-		  me.bPickerMode = True
+		  
 		End Sub
 	#tag EndEvent
 	#tag Event

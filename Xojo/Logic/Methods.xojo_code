@@ -15,6 +15,16 @@ Protected Module Methods
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Invert(extends b as Boolean) As Boolean
+		  If b Then
+		    Return False
+		  ElseIf Not b Then
+		    Return True
+		  End If
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function StripNonDigitsDecimals(sString as String) As String
 		  

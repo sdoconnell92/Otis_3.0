@@ -9,14 +9,14 @@ Begin ContainerControl contFirmwareLatest
    Enabled         =   True
    EraseBackground =   True
    HasBackColor    =   False
-   Height          =   55
+   Height          =   57
    HelpTag         =   ""
    InitialParent   =   ""
    Left            =   0
    LockBottom      =   False
-   LockLeft        =   False
-   LockRight       =   False
-   LockTop         =   False
+   LockLeft        =   True
+   LockRight       =   True
+   LockTop         =   True
    TabIndex        =   0
    TabPanelIndex   =   0
    TabStop         =   True
@@ -24,7 +24,7 @@ Begin ContainerControl contFirmwareLatest
    Transparent     =   True
    UseFocusRing    =   False
    Visible         =   True
-   Width           =   202
+   Width           =   224
    Begin DateControl dcUpdateDate
       AutoDeactivate  =   True
       Checked         =   False
@@ -38,7 +38,7 @@ Begin ContainerControl contFirmwareLatest
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
-      Left            =   83
+      Left            =   90
       LinuxDropDownMode=   True
       LinuxFontBold   =   False
       LinuxTextFont   =   "System"
@@ -46,8 +46,8 @@ Begin ContainerControl contFirmwareLatest
       LinuxTextUnit   =   0
       LockBottom      =   False
       LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
+      LockLeft        =   False
+      LockRight       =   True
       LockTop         =   True
       MacFontBold     =   False
       MacTextFont     =   "System"
@@ -60,7 +60,7 @@ Begin ContainerControl contFirmwareLatest
       TabStop         =   True
       Top             =   3
       Visible         =   True
-      Width           =   115
+      Width           =   131
       WinFontBold     =   False
       WinTextFont     =   "System"
       WinTextSize     =   0.0
@@ -78,11 +78,11 @@ Begin ContainerControl contFirmwareLatest
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   -10
+      Left            =   7
       LockBottom      =   False
       LockedInPosition=   False
-      LockLeft        =   False
-      LockRight       =   True
+      LockLeft        =   True
+      LockRight       =   False
       LockTop         =   True
       Multiline       =   False
       Scope           =   0
@@ -99,7 +99,7 @@ Begin ContainerControl contFirmwareLatest
       Transparent     =   True
       Underline       =   False
       Visible         =   True
-      Width           =   85
+      Width           =   75
    End
    Begin Label labVersion
       AutoDeactivate  =   True
@@ -112,11 +112,11 @@ Begin ContainerControl contFirmwareLatest
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   -10
+      Left            =   7
       LockBottom      =   False
       LockedInPosition=   False
-      LockLeft        =   False
-      LockRight       =   True
+      LockLeft        =   True
+      LockRight       =   False
       LockTop         =   True
       Multiline       =   False
       Scope           =   0
@@ -133,7 +133,7 @@ Begin ContainerControl contFirmwareLatest
       Transparent     =   True
       Underline       =   False
       Visible         =   True
-      Width           =   85
+      Width           =   75
    End
    Begin entTextField tfVersion
       AcceptTabs      =   False
@@ -152,12 +152,12 @@ Begin ContainerControl contFirmwareLatest
       HelpTag         =   ""
       Index           =   -2147483648
       Italic          =   False
-      Left            =   83
+      Left            =   90
       LimitText       =   0
       LockBottom      =   False
       LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
+      LockLeft        =   False
+      LockRight       =   True
       LockTop         =   True
       Mask            =   ""
       Password        =   False
@@ -175,7 +175,7 @@ Begin ContainerControl contFirmwareLatest
       Underline       =   False
       UseFocusRing    =   True
       Visible         =   True
-      Width           =   115
+      Width           =   131
    End
 End
 #tag EndWindow

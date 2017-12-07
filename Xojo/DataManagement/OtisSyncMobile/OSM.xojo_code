@@ -495,7 +495,7 @@ Protected Module OSM
 		  Dim rs1 as RecordSet
 		  Dim SQLScript as String
 		  Dim db1 as PostgreSQLDatabase = app.RegDB
-		  
+		  Break
 		  If db1 = Nil Then
 		    MsgBox("Otis is offline right now. Cannot push changes to server.")
 		    Return

@@ -1021,7 +1021,7 @@ End
 	#tag Event
 		Function MouseDown(x As Integer, y As Integer) As Boolean
 		  
-		  if IsContextualClick then return true
+		  // if IsContextualClick then return true
 		  
 		  Return entMouseDown(x,y)
 		End Function

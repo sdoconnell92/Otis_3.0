@@ -712,10 +712,11 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methOpenRecordInTab(oStor as RecordStorageClass)
-		  // Get the name
-		  dim sName as String = oStor.oTableRecord.GetRecordName
-		  
-		  If oStor.sUUID <> "" Then
+		  If oStor.oTableRecord <> Nil Then
+		    
+		    // Get the name
+		    dim sName as String = oStor.oTableRecord.GetRecordName
+		    dim oRecord as DataFile.tbl_events = oStor.GetTableRecordVariant
 		    
 		    // load up an Event container
 		    dim conEventInst as New contEvent
@@ -725,7 +726,7 @@ End
 		    
 		    conEventInst.EmbedWithinPanel(oTabPanel,oTabPanel.PanelCount - 1 )
 		    
-		    conEventInst.LoadEvent(oStor.sUUID)
+		    conEventInst.LoadEvent(oRecord)
 		    
 		  End If
 		End Sub
@@ -1160,7 +1161,9 @@ End
 #tag Events pbAdd
 	#tag Event
 		Sub Action()
+		  Break
 		  methAddEvent
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents

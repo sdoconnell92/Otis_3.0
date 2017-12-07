@@ -1721,7 +1721,7 @@ End
 		Sub evdefOpen()
 		  
 		  me.bDisplayGrouped = True
-		  me.bPickerMode = True
+		  
 		End Sub
 	#tag EndEvent
 	#tag Event

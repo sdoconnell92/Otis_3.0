@@ -131,7 +131,17 @@ Protected Module modFieldFormatting
 		      Return tbl_eipl.discount
 		    End Select
 		    
-		    
+		  Case "tbl_payments"
+		    Select Case sFieldName
+		    Case "payment_amount"
+		      Return tbl_payments.payment_amount
+		    Case "payment_date"
+		      Return tbl_payments.payment_date
+		    Case "payment_memo"
+		      Return tbl_payments.payment_memo
+		    Case "payment_type"
+		      Return tbl_payments.payment_type
+		    End Select
 		    
 		  End Select
 		  

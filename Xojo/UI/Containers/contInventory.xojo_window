@@ -257,6 +257,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub methAddItem()
+		  Break
 		  dim oNewItem as New DataFile.tbl_inventory
 		  oNewItem.PopulateBlank
 		  oNewItem.Save
@@ -837,6 +838,21 @@ End
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function PickerMode() As Boolean
+		  Return bPickerMode
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Sub PickerMode(assigns value as Boolean)
+		  bPickerMode = value
+		  
+		  pbAdd.Enabled = value.Invert
+		  pbAdd.Visible = value.Invert
+		End Sub
+	#tag EndMethod
+
 
 	#tag Hook, Flags = &h0
 		Event evdefConstructContextualMenu(base as MenuItem, x as integer, y as integer) As Boolean
@@ -867,8 +883,8 @@ End
 		bDisplayGrouped As Boolean
 	#tag EndProperty
 
-	#tag Property, Flags = &h0
-		bPickerMode As Boolean
+	#tag Property, Flags = &h21
+		Private bPickerMode As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -1237,11 +1253,6 @@ End
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="bDisplayGrouped"
-		Group="Behavior"
-		Type="Boolean"
-	#tag EndViewProperty
-	#tag ViewProperty
-		Name="bPickerMode"
 		Group="Behavior"
 		Type="Boolean"
 	#tag EndViewProperty

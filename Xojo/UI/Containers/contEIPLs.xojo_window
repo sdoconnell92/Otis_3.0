@@ -1079,6 +1079,11 @@ End
 		  Return methHandleMouseWheel(X,Y,DeltaX,DeltaY)
 		End Function
 	#tag EndEvent
+	#tag Event
+		Sub DoubleClick()
+		  methHandleDoubleClick
+		End Sub
+	#tag EndEvent
 #tag EndEvents
 #tag Events scSearchField
 	#tag Event
