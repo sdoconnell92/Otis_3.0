@@ -1,0 +1,152 @@
+#tag Class
+Protected Class SQL
+Inherits String
+	#tag Method, Flags = &h1
+		Protected Sub ExtractFields()
+		  
+		  Select Case QueryType
+		  Case "Insert"
+		    
+		    // Find the start and end and length of the fields section
+		    dim st,en,length as integer
+		    st = self.InStr("(") + 1
+		    en = self.InStr(")") - 1
+		    length = en - st + 1
+		    
+		    // Extract the field section
+		    dim fs as string = Mid( self, st, length )
+		    // split the field section into array
+		    dim ars() as string = fs.Split(",")
+		    Return ars()
+		    
+		  Case "Update", "Delete"
+		    
+		    dim cmpt as Boolean
+		    dim srchst as integer
+		    dim ars() as string
+		    
+		    // loop until all fields are found
+		    While Not cmpt
+		      // find start end length of field name
+		      dim equal_loc,st,en,length as integer
+		      equal_loc = self.InStr( srchst, "=" )
+		      if equal_loc = -1 Then
+		        cmpt = True
+		        exit
+		      end if
+		      en = equal_loc -1
+		      st = self.InStrReverse( equal_loc, " " ) + 1
+		      length = en - st + 1
+		      
+		      // extract
+		      dim field as string = Mid( self, st, length )
+		      ars.Append(field)
+		      
+		      // increase the search string start location to search past this =
+		      srchst = equal_loc + 2
+		      if Len(self) - 1 <= srchst then cmpt = True
+		    Wend
+		    
+		    Return ars()
+		    
+		  End Select
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InStr() As Integer
+		  dim s as string = ToString
+		  Return s.InStr
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function InStrReverse() As Integer
+		  dim s as string = ToString
+		  Return s.InStrReverse
+		  
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function QueryType() As String
+		  dim s as string = self.ToString
+		  
+		  dim selectIndex as string = s.InStr( "Select" )
+		  dim insertIndex as string = s.InStr( "Insert" )
+		  dim updateIndex as string = s.InStr( "Update" )
+		  dim deleteIndex as string = s.InStr( "Delete" )
+		  
+		  dim ari() as string = Array( selectIndex + " :Select", insertIndex + " :Insert", updateIndex + " :Update", deleteIndex + " :Delete" )
+		  ari.Sort
+		  
+		  dim i as integer = -1
+		  For i1 as Integer = 0 To ari.Ubound
+		    If val( Left( ari(i1), ari(i1).InStr(" :") ) ) <> -1 Then
+		      i = i1
+		      Exit
+		    End If
+		  Next
+		  
+		  If ari(i).InStr(" :Select") Then
+		    Return "Select"
+		  ElseIf ari(i).InStr(" :Insert") Then
+		    Return "Insert"
+		  ElseIf ari(i).InStr(" :Update") Then
+		    Return "Update"
+		  ElseIf ari(i).InStr(" :Delete") Then
+		    Return "Delete"
+		  End If
+		  
+		  Return "Error: Uknown Statement Type"
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function ToString() As String
+		  dim v as Variant = self
+		  dim s as string = v
+		  
+		  Return s
+		End Function
+	#tag EndMethod
+
+
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="-2147483648"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			Type="String"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+		#tag EndViewProperty
+	#tag EndViewBehavior
+End Class
+#tag EndClass
