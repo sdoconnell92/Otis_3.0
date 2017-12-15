@@ -46,7 +46,6 @@ Protected Module SqliteSync
 		  db.DatabaseFile = dbFile
 		  
 		  If db.CreateDatabaseFile Then
-		    SyncDB = db
 		    Return db
 		  End If
 		  
@@ -55,19 +54,19 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function CreateLocalChangeJSON(xml as String) As jsonItem
-		  dim js as New JSONItem
+		Private Function CreateLocalChangeJSON(xml as String, UserID as string) As String
+		  dim builder() as string
 		  
-		  js.Value("subscriber") = SqliteSync.UserId
-		  js.Value("content") = xml
-		  js.Value("version") = "3"
+		  builder.Append( "{")
+		  builder.Append( """subscriber"":""" + UserID + """, ""content"":""" + xml.JSONify + """, ""version"":""3""" )
+		  builder.Append( "}" )
 		  
-		  Return js
+		  Return Join(builder, "")
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function CreateLocalChangeXML() As String
+		Private Function CreateLocalChangeXML(SyncDB as SQLiteDatabase) As String
 		  dim builder() as String
 		  dim tables() as String
 		  
@@ -175,12 +174,12 @@ Protected Module SqliteSync
 		  
 		  builder.Append( "</SyncData>" )
 		  
-		  Return Join(builder, EndOfLine)
+		  Return Join(builder, "")
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function CreateSQLFromInitialize(js as JSONItem) As SQLitePreparedStatement()
+		Private Function CreateSQLFromInitialize(js as JSONItem, SyncDb as SQLiteDatabase) As SQLitePreparedStatement()
 		  dim ars() as SQLitePreparedStatement
 		  dim db as SQLiteDatabase = SyncDB
 		  
@@ -199,22 +198,29 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function CreateSQLFromSync(js as JSONItem) As SQLitePreparedStatement()
+		Private Function CreateSQLFromSync(js as JSONItem, SyncDB as SQLiteDatabase) As SQLitePreparedStatement()
 		  dim s as string
 		  dim ars() as SQLitePreparedStatement
 		  dim db as SQLiteDatabase = SyncDB
 		  dim tn as string = js.Value( "TableName" ).StringValue
-		  
+		  Break
 		  s = "TriggerInsertDrop"
+		  dim tests as string = js.Value(s).StringValue
 		  If js.Value(s).StringValue <> "" Then ars.Append( db.Prepare( js.Value(s).StringValue ) )
 		  
 		  s = "TriggerUpdateDrop"
+		  tests = js.Value(s).StringValue
 		  If js.Value(s).StringValue <> "" Then ars.Append( db.Prepare( js.Value(s).StringValue ) )
 		  
 		  s = "TriggerDeleteDrop"
+		  tests = js.Value(s).StringValue
 		  If js.Value(s).StringValue <> "" Then ars.Append( db.Prepare( js.Value(s).StringValue ) )
 		  
 		  s = js.Value("Records").StringValue
+		  If s = "" Then 
+		    ReDim ars(-1)
+		    Return ars
+		  End If
 		  dim xml as New XmlDocument(s)
 		  
 		  // Get the field types from sqlite database
@@ -274,12 +280,15 @@ Protected Module SqliteSync
 		  
 		  
 		  s = "TriggerInsert"
+		  tests = js.Value(s).StringValue
 		  If js.Value(s).StringValue <> "" Then ars.Append( db.Prepare( js.Value(s).StringValue ) )
 		  
 		  s = "TriggerUpdate"
+		  tests = js.Value(s).StringValue
 		  If js.Value(s).StringValue <> "" Then ars.Append( db.Prepare( js.Value(s).StringValue ) )
 		  
 		  s = "TriggerDelete"
+		  tests = js.Value(s).StringValue
 		  If js.Value(s).StringValue <> "" Then ars.Append( db.Prepare( js.Value(s).StringValue ) )
 		  
 		  
@@ -288,39 +297,30 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ExecAddTables(ExcludeTables as string = "")
-		  dim stables() as string
-		  dim extn() as string = ExcludeTables.Split(",")
-		  
-		  dim sql as string = "select tbl_Name from sqlite_master where type='table' and sql like '%RowId%'  and tbl_Name != 'android_metadata' and tbl_Name != 'MergeDelete' and tbl_Name !='MergeIdentity';"
-		  
-		  dim db as SQLiteDatabase = SyncDB
-		  dim rs as RecordSet = db.SQLSelect(sql)
-		  While not rs.EOF
-		    dim s as string = rs.Field("tbl_Name").StringValue
-		    If extn.IndexOf(s) = -1 Then stables.Append(s)
-		    rs.MoveNext
-		  Wend
-		  
-		  For i as integer = 0 To stables.Ubound
-		    dim tn as string = stables(i)
-		    
-		    dim s as string = reqAddTable(ServerHost, tn)
+		Protected Sub ExecAddTables(ServerHost as string, TableNames() as string)
+		  // Loop through each TableName and use the single tablename version of this 
+		  For Each tn as string In TableNames()
+		    ExecAddTables(ServerHost, tn)
 		  Next
-		  
-		  Tables = stables
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function ExecInitialize() As Boolean
-		  UserId = GetNewUUID
+		Protected Sub ExecAddTables(ServerHost as string, TableName as string)
 		  
+		  // Add the table to the list of tables to sync on server
+		  dim s as string = reqAddTable(ServerHost, TableName)
+		  
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function ExecInitialize(ServerHost as string, UserID as string, SyncDB as SQLiteDatabase) As Boolean
 		  dim js as JSONItem = reqInitialize(ServerHost,UserId)
 		  
-		  dim ars() as SQLitePreparedStatement = CreateSQLFromInitialize(js)
+		  dim ars() as SQLitePreparedStatement = CreateSQLFromInitialize(js, SyncDB)
 		  
-		  dim ers() as string = ExecuteStatements(ars())
+		  dim ers() as string = ExecuteStatements(ars(), SyncDB)
 		  If ers.Ubound = -1 Then
 		    'success
 		    Return True
@@ -334,29 +334,36 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ExecPushChanges()
+		Protected Sub ExecPushChanges(ServerHost as String, SyncDB as SQLiteDatabase, UserID as string, Tables() as string)
 		  
-		  dim s as string = CreateLocalChangeXML
+		  dim s as string = CreateLocalChangeXML(SyncDB)
 		  
-		  dim js as JSONItem = CreateLocalChangeJSON(s)
+		  dim js as String = CreateLocalChangeJSON(s, UserID)
 		  
-		  reqPostChanges( ServerHost, js.ToString )
+		  reqPostChanges( ServerHost, js )
+		  
+		  ResetMergeUpdate(SyncDB, Tables())
+		  ResetMergeDelete(SyncDB)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function ExecSync() As Boolean
+		Protected Function ExecSync(ServerHost as string, SyncDB as sqlitedatabase, Tables() as String, UserID as string) As Boolean
 		  dim errors as New Dictionary
 		  
 		  For i as integer = 0 To Tables.Ubound
 		    dim tn as string  = Tables(i)
-		    dim js as JSONItem = reqSync(SqliteSync.ServerHost, SqliteSync.UserId, tn)
+		    dim js as JSONItem = reqSync(ServerHost, UserId, tn)
 		    
-		    dim ars() as SQLitePreparedStatement = CreateSQLFromSync(js)
+		    dim ars() as SQLitePreparedStatement = CreateSQLFromSync(js, SyncDB)
+		    If ars.Ubound = -1 Then Return True
 		    
-		    dim ers() as string = ExecuteStatements(ars())
+		    dim ers() as string = ExecuteStatements(ars(), SyncDB)
 		    If ers.Ubound = -1 Then
 		      'success
+		      dim syncid as string = js.Value("SyncId").StringValue
+		      // Send a commit back to server
+		      reqCommitSync(ServerHost, syncid)
 		    Else
 		      ' error things have been rolled back
 		      Break
@@ -375,7 +382,7 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function ExecuteStatements(ars() as SQLitePreparedStatement) As String()
+		Private Function ExecuteStatements(ars() as SQLitePreparedStatement, SyncDB as SQLiteDatabase) As String()
 		  dim db as SQLiteDatabase = SyncDB
 		  dim errors() as string
 		  
@@ -402,55 +409,9 @@ Protected Module SqliteSync
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h21
-		Private Function ExtractFieldsFromQuery(QueryType as String, sql as String) As String()
-		  
-		  Select Case QueryType
-		  Case "INSERT"
-		    
-		    // Find the start and end and length of the fields section
-		    dim st,en,length as integer
-		    st = sql.InStr("(") + 1
-		    en = sql.InStr(")") - 1
-		    length = en - st + 1
-		    
-		    // Extract the field section
-		    dim fs as string = Mid( sql, st, length )
-		    // split the field section into array
-		    dim ars() as string = fs.Split(",")
-		    Return ars()
-		    
-		  Case "UPDATE", "DELETE"
-		    
-		    dim cmpt as Boolean
-		    dim srchst as integer
-		    dim ars() as string
-		    
-		    // loop until all fields are found
-		    While Not cmpt
-		      // find start end length of field name
-		      dim equal_loc,st,en,length as integer
-		      equal_loc = sql.InStr( srchst, "=" )
-		      if equal_loc = -1 Then
-		        cmpt = True
-		        exit
-		      end if
-		      en = equal_loc -1
-		      st = sql.InStrReverse( equal_loc, " " ) + 1
-		      length = en - st + 1
-		      
-		      // extract
-		      dim field as string = Mid( sql, st, length )
-		      ars.Append(field)
-		      
-		      // increase the search string start location to search past this =
-		      srchst = equal_loc + 2
-		      if Len(sql) - 1 <= srchst then cmpt = True
-		    Wend
-		    
-		    Return ars()
-		    
-		  End Select
+	#tag Method, Flags = &h1
+		Protected Function GetErrors() As String()
+		  Return errors
 		End Function
 	#tag EndMethod
 
@@ -463,6 +424,17 @@ Protected Module SqliteSync
 		  
 		  Return uuid
 		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub LogError(content as string)
+		  dim s as string
+		  dim d as New date
+		  
+		  s = "[" + d.SQLDateTime + "] " + content
+		  
+		  errors.Append(s)
+		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -532,7 +504,7 @@ Protected Module SqliteSync
 		  sock.Post( rq )
 		  // sock.SendRequest("Post", rq)
 		  dim s as string = Str(sock.HTTPStatusCode)
-		  Break
+		  
 		End Sub
 	#tag EndMethod
 
@@ -567,21 +539,36 @@ Protected Module SqliteSync
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Sub ResetMergeDelete(SyncDB as SQLiteDatabase)
+		  dim db as SQLiteDatabase = SyncDB
+		  
+		  dim s as string = "Delete From MergeDelete;"
+		  db.SQLExecute(s)
+		  If db.Error Then Break
+		End Sub
+	#tag EndMethod
 
-	#tag Property, Flags = &h1
-		Protected ServerHost As String = "207.246.68.7"
-	#tag EndProperty
+	#tag Method, Flags = &h21
+		Private Sub ResetMergeUpdate(SyncDB as SQLiteDatabase, Tables() as string)
+		  dim db as SQLiteDatabase = SyncDB
+		  dim errors as New Dictionary
+		  
+		  For Each tn as String In Tables()
+		    dim s as string = "Update " + tn + " set MergeUpdate=0 Where MergeUpdate > 0;"
+		    db.SQLExecute(s)
+		    If db.Error Then
+		      errors.Value(s) = db.ErrorMessage
+		    End If
+		  Next
+		  
+		  If errors.Keys.Ubound <> -1 Then Break
+		End Sub
+	#tag EndMethod
 
-	#tag Property, Flags = &h1
-		Protected SyncDB As SQLiteDatabase
-	#tag EndProperty
 
-	#tag Property, Flags = &h1
-		Protected Tables() As String
-	#tag EndProperty
-
-	#tag Property, Flags = &h1
-		Protected UserId As String
+	#tag Property, Flags = &h21
+		Private errors() As String
 	#tag EndProperty
 
 

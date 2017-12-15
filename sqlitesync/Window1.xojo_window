@@ -26,37 +26,6 @@ Begin Window Window1
    Title           =   "Untitled"
    Visible         =   True
    Width           =   600
-   Begin PushButton pbInit
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Init"
-      Default         =   True
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   8
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   0
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   27
-      Underline       =   False
-      Visible         =   True
-      Width           =   80
-   End
    Begin TextArea TextArea1
       AcceptTabs      =   False
       Alignment       =   0
@@ -146,12 +115,12 @@ Begin Window Window1
       Visible         =   True
       Width           =   204
    End
-   Begin PushButton PushButton2
+   Begin PushButton pbNewUUIDinText
       AutoDeactivate  =   True
       Bold            =   False
       ButtonStyle     =   "0"
       Cancel          =   False
-      Caption         =   "Button"
+      Caption         =   "New"
       Default         =   False
       Enabled         =   True
       Height          =   22
@@ -159,7 +128,7 @@ Begin Window Window1
       Index           =   -2147483648
       InitialParent   =   ""
       Italic          =   False
-      Left            =   299
+      Left            =   333
       LockBottom      =   False
       LockedInPosition=   False
       LockLeft        =   False
@@ -175,7 +144,7 @@ Begin Window Window1
       Top             =   3
       Underline       =   False
       Visible         =   True
-      Width           =   80
+      Width           =   46
    End
    Begin PushButton pbSync
       AutoDeactivate  =   True
@@ -203,17 +172,17 @@ Begin Window Window1
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   80
+      Top             =   27
       Underline       =   False
       Visible         =   True
       Width           =   80
    End
-   Begin PushButton pbConnectDb
+   Begin PushButton pbLoadClass
       AutoDeactivate  =   True
       Bold            =   False
       ButtonStyle     =   "0"
       Cancel          =   False
-      Caption         =   "ConnectDb"
+      Caption         =   "Load Class"
       Default         =   True
       Enabled         =   True
       Height          =   22
@@ -239,12 +208,12 @@ Begin Window Window1
       Visible         =   True
       Width           =   80
    End
-   Begin PushButton pbAddTables
+   Begin PushButton pbPushLocal
       AutoDeactivate  =   True
       Bold            =   False
       ButtonStyle     =   "0"
       Cancel          =   False
-      Caption         =   "AddTables"
+      Caption         =   "Push Local"
       Default         =   True
       Enabled         =   True
       Height          =   22
@@ -259,44 +228,13 @@ Begin Window Window1
       LockRight       =   False
       LockTop         =   True
       Scope           =   0
-      TabIndex        =   6
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   53
-      Underline       =   False
-      Visible         =   True
-      Width           =   80
-   End
-   Begin PushButton pbPushLocal
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Push Local"
-      Default         =   True
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   130
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
       TabIndex        =   7
       TabPanelIndex   =   0
       TabStop         =   True
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   3
+      Top             =   51
       Underline       =   False
       Visible         =   True
       Width           =   80
@@ -373,75 +311,14 @@ End
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub RetrieveDetails()
-		  dim utilitydb as New SQLiteDatabase
-		  utilitydb.DatabaseFile = SpecialFolder.Desktop.Child("utildb.sqlite")
-		  
-		  if utilitydb.Connect Then
-		    
-		    dim s as string = "Select * From sqlitesync;"
-		    
-		    dim rs as RecordSet = utilitydb.SQLSelect(s)
-		    If utilitydb.Error Then
-		      Addtota(utilitydb.ErrorMessage)
-		    Else
-		      Addtota("Loaded")
-		    End If
-		    
-		    SqliteSync.UserId = rs.Field("user_id").StringValue
-		    SqliteSync.Tables() = Split( rs.Field("tables").StringValue, "," )
-		    
-		    Addtota(SqliteSync.UserId)
-		    Addtota( Join(SqliteSync.Tables, "," ) )
-		    
-		  Else
-		    Addtota("Could not connect to db: " + utilitydb.ErrorMessage )
-		  end if
-		End Sub
-	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub SaveDetails()
-		  dim utilitydb as New SQLiteDatabase
-		  utilitydb.DatabaseFile = SpecialFolder.Desktop.Child("utildb.sqlite")
-		  
-		  if utilitydb.Connect Then
-		    
-		    dim s as string = "Insert Into sqlitesync(user_id,tables) Values(?,?);"
-		    
-		    dim ps as SQLitePreparedStatement = utilitydb.Prepare(s)
-		    ps.BindType(0,SQLitePreparedStatement.SQLITE_TEXT)
-		    ps.BindType(1,SQLitePreparedStatement.SQLITE_TEXT)
-		    ps.Bind(0,SqliteSync.UserId)
-		    ps.Bind(1, Join(SqliteSync.Tables,",") )
-		    
-		    ps.SQLExecute
-		    If utilitydb.Error Then
-		      Addtota(utilitydb.ErrorMessage)
-		    Else
-		      Addtota("Saved")
-		    End If
-		    
-		  Else
-		    Addtota("Could not connect to db: " + utilitydb.ErrorMessage )
-		  end if
-		End Sub
-	#tag EndMethod
+	#tag Property, Flags = &h0
+		sqsync_class As SqliteSync.SqlSyncClass
+	#tag EndProperty
 
 
 #tag EndWindowCode
 
-#tag Events pbInit
-	#tag Event
-		Sub Action()
-		  Break
-		  If SqliteSync.ExecInitialize() Then
-		    
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events TextField1
 	#tag Event
 		Sub Open()
@@ -449,7 +326,7 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton2
+#tag Events pbNewUUIDinText
 	#tag Event
 		Sub Action()
 		  TextField1.Text = GetNewUUID
@@ -459,57 +336,52 @@ End
 #tag Events pbSync
 	#tag Event
 		Sub Action()
-		  
-		  Break
-		  if SqliteSync.ExecSync Then
-		    dim s as string
-		  else
-		    dim s as string
-		  end if
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events pbConnectDb
-	#tag Event
-		Sub Action()
-		  
-		  dim f as FolderItem = SpecialFolder.Desktop.Child("testdb.sqlite")
-		  dim db as SQLiteDatabase = SqliteSync.ConnectDB(f)
-		  If db <> Nil Then
-		    TextArea1.Text = TextArea1.Text + "Connected" + EndOfLine
-		  Else
-		    TextArea1.Text = TextArea1.Text + "Not Connected" + EndOfLine
+		  If sqsync_class = Nil Then
+		    Addtota("Cannot Sync class is nil")
+		    Return
 		  End If
+		  
+		  If sqsync_class.Sync Then
+		    Addtota("Sync Successful!")
+		  Else
+		    Addtota("Sync Failed!")
+		  End If
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events pbAddTables
+#tag Events pbLoadClass
 	#tag Event
 		Sub Action()
-		  Break
-		  SqliteSync.ExecAddTables
+		  dim utildb as FolderItem = SpecialFolder.Desktop.Child("util.sqlite")
+		  dim sh as string = "45.76.230.210:8080"
+		  dim syncdb as FolderItem = SpecialFolder.Desktop.Child("sqlitesync.sqlite")
+		  dim synctables() as string = Array("test_table")
+		  sqsync_class = SqliteSync.SqlSyncClass.Init(sh,syncdb,utildb,synctables)
+		  
+		  If sqsync_class <> Nil Then
+		    Addtota("Class Loaded!")
+		  Else
+		    Addtota("Error Loading Class")
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events pbPushLocal
 	#tag Event
 		Sub Action()
-		  Break
-		  SqliteSync.ExecPushChanges
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events pbLoadDetails
-	#tag Event
-		Sub Action()
-		  RetrieveDetails
+		  sqsync_class.PushChanges
+		  //If sqsync_class.Sync Then
+		  
+		  //End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events pbSaveDetails
 	#tag Event
 		Sub Action()
-		  SaveDetails
+		  dim utildb as FolderItem = SpecialFolder.Desktop.Child("util.sqlite")
+		  sqsync_class.SaveToFile(utildb.Parent, utildb.Name)
 		End Sub
 	#tag EndEvent
 #tag EndEvents

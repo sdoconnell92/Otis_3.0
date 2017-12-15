@@ -8,6 +8,7 @@ Module=RefValues;RefValues.xojo_code;&h74E55FFF;&h0;false
 BuildSteps=Build Automation;Build Automation.xojo_code;&h42B087FF;&h0;false
 Module=SqliteSync;SqliteSync.xojo_code;&h7B7C77FF;&h0;false
 Module=StringUtils;StringUtils.xojo_code;&hBD184573;&h0;false
+Class=SqlSyncClass;SqliteSync/SqlSyncClass.xojo_code;&h769C37FF;&h7B7C77FF;false
 DefaultWindow=Window1
 AppMenuBar=MainMenuBar
 MajorVersion=1

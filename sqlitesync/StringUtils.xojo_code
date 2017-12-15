@@ -716,6 +716,12 @@ Protected Module StringUtils
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function JSONify(extends s as String) As String
+		  Return s.ReplaceAll(chr(34), chr(92) + chr(34) )
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function LineEnding(s As String) As String
 		  // Return the first line ending (of any standard sort: Unix, classic Mac, or Windows)
@@ -2302,7 +2308,7 @@ Protected Module StringUtils
 
 	#tag Method, Flags = &h0
 		Function SQLExtractFields(extends sql as string) As String()
-		  Break
+		  
 		  Select Case sql.SQLQueryType
 		  Case "Insert"
 		    
@@ -2335,6 +2341,9 @@ Protected Module StringUtils
 		      end if
 		      en = equal_loc -1
 		      st = sql.InStrReverse( equal_loc, " " ) + 1
+		      If st < srchst Then
+		        st = sql.InStrReverse( equal_loc, "," ) + 1
+		      End If
 		      length = en - st + 1
 		      
 		      // extract
