@@ -203,7 +203,7 @@ Protected Module SqliteSync
 		  dim ars() as SQLitePreparedStatement
 		  dim db as SQLiteDatabase = SyncDB
 		  dim tn as string = js.Value( "TableName" ).StringValue
-		  Break
+		  
 		  s = "TriggerInsertDrop"
 		  dim tests as string = js.Value(s).StringValue
 		  If js.Value(s).StringValue <> "" Then ars.Append( db.Prepare( js.Value(s).StringValue ) )
