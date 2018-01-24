@@ -176,6 +176,12 @@ Inherits DataFile.ActiveRecordBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function GetNewEiplNumber() As String
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Shared Function List(stmt as PreparedSQLStatement) As DataFile.tbl_eipl()
 		  //Note: You should use this method if your query contains user entered data. Using this method will help prevent SQL injection attacks
 		  dim aro() as DataFile.tbl_eipl
@@ -392,7 +398,11 @@ Inherits DataFile.ActiveRecordBase
 
 
 	#tag Property, Flags = &h0
-		ieipl_number As Integer
+		ibranch_number As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		irevision_number As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -405,6 +415,10 @@ Inherits DataFile.ActiveRecordBase
 
 	#tag Property, Flags = &h0
 		seipl_name As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		seipl_number As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -425,11 +439,6 @@ Inherits DataFile.ActiveRecordBase
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="ieipl_number"
-			Group="Behavior"
-			Type="Integer"
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Index"
 			Visible=true
@@ -472,6 +481,11 @@ Inherits DataFile.ActiveRecordBase
 			Group="Behavior"
 			Type="String"
 			EditorType="MultiLineEditor"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="seipl_number"
+			Group="Behavior"
+			Type="Integer"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="seipl_tax_rate"

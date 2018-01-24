@@ -129,11 +129,11 @@ End
 
 
 	#tag Property, Flags = &h0
-		CancelButtonText As String
+		CancelButtonText As String = "Cancel"
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		OkButtonText As String
+		OkButtonText As String = "OK"
 	#tag EndProperty
 
 

@@ -49,33 +49,17 @@ Inherits Application
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub UIInit()
-		  UiColors.DefaultScheme
-		  app.db = DataFile.ConnectDB
-		  OpenMainWindow
-		End Sub
-	#tag EndMethod
-
 
 	#tag Property, Flags = &h0
-		bOnline As Boolean
+		bOffline As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		bUserAuthenticationFailed As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		db As SQLiteDatabase
+		DbSync As SqliteSync.SqlSyncClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
 		MainWindow As winMain_1TabPanel
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		regDB As PostgreSQLDatabase
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -104,12 +88,7 @@ Inherits Application
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="bOnline"
-			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="bUserAuthenticationFailed"
+			Name="bOffline"
 			Group="Behavior"
 			Type="Boolean"
 		#tag EndViewProperty

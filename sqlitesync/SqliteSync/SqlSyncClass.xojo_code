@@ -14,7 +14,7 @@ Protected Class SqlSyncClass
 	#tag Method, Flags = &h0
 		Shared Function Init(ServerHost as string, SyncDBFile as FolderItem, DetailsFile as FolderItem, SyncTables() as string) As SqliteSync.SqlSyncClass
 		  // 1.  Try to load from file
-		  Break
+		  
 		  dim cl as SqliteSync.SqlSyncClass
 		  dim NeedInit as Boolean
 		  dim NeedNewCl as Boolean
@@ -68,13 +68,25 @@ Protected Class SqlSyncClass
 
 	#tag Method, Flags = &h0
 		Shared Function LoadFromFile(FilePath as FolderItem, FileName as string) As SqliteSync.SqlSyncClass
-		  dim db as New SQLiteDatabase
 		  dim s as string
+		  dim t as TextInputStream
+		  dim content as string
 		  
 		  If FilePath.Exists Then 
 		    FilePath = FilePath.Child(FileName)
 		    If FilePath.Exists Then
-		      db.DatabaseFile = FilePath
+		      
+		      // Try to read the file
+		      Try
+		        t = TextInputStream.Open(FilePath)
+		        content = t.ReadAll
+		      Catch e as IOException
+		        ErrManage( "SqliteSync LoadFromFile", e.Message + " | " + "Could not load class info from file."
+		        Return Nil
+		      End Try
+		      
+		      If content = "" Then Return Nil
+		      
 		    Else
 		      Return Nil
 		    End If
@@ -82,19 +94,21 @@ Protected Class SqlSyncClass
 		    Return Nil
 		  End If
 		  
-		  If Not db.Connect Then Return Nil
+		  // Convert To JSON
+		  dim js as New JSONItem
+		  Try
+		    js.load(content)
+		  Catch e as JSONException
+		    ErrManage( "SqliteSync LoadFromFile", e.Message + " | " + "Could not load json from file
+		    Return Nil
+		  End Try
 		  
-		  // Pull the record from the database
-		  s = "Select * From sqlitesync_dets;"
-		  dim rs as RecordSet = db.SQLSelect(s)
-		  
-		  If rs = Nil Then Return Nil
-		  
+		  // Pull info from json
 		  dim sh,sdb,st,uid as String
-		  sh = rs.Field("serverhost").StringValue
-		  sdb = rs.Field("syncdb_filepath").StringValue
-		  st = rs.Field("sync_tables").StringValue
-		  uid = rs.Field("userid").StringValue
+		  sh = js.Value("serverhost")
+		  sdb = js.Value("syncdb_filepath")
+		  st = js.Value("sync_tables")
+		  uid = js.Value("userid")
 		  
 		  dim fi as New FolderItem(sdb, FolderItem.PathTypeNative)
 		  
@@ -112,64 +126,37 @@ Protected Class SqlSyncClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Function PushSync() As Boolean
+		  PushChanges
+		  If PushSync THen
+		    Return True
+		  End If
+		  
+		  Return False
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Sub SaveToFile(FilePath as FolderItem, FileName as string)
+		  dim js as New JSONItem
+		  
+		  js.Value("serverhost") = self.ServerHost
+		  js.Value("syncdb_filepath") = self.SyncDB.DatabaseFile.NativePath
+		  js.Value("sync_tables") = self.SyncTables.Join(",")
+		  js.Value("userid") = self.UserID
+		  
 		  // Create the containing folder if neccesary
 		  If Not FilePath.Exists Then FilePath.CreateAsFolder
 		  
-		  dim db as New SQLiteDatabase
-		  db.DatabaseFile = FilePath.Child(FileName)
-		  dim s as string
+		  Try
+		    dim tos as TextOutputStream = TextOutputStream.Create(FilePath.Child(FileName))
+		    tos.Write(js.ToString)
+		    tos.Close
+		  Catch e as IOException
+		    ErrManage("SqlSyncClass SaveToFile", "Could not save sync details to file." + " | " + e.Message
+		    Return Nil
+		  End Try
 		  
-		  // Try connecting to db
-		  If db.Connect Then
-		    // Check if there is a table named sqlitesync_dets
-		    s = "Select tbl_name From sqlite_master Where tbl_name = 'sqlitesync_dets';"
-		    dim rs as RecordSet = db.SQLSelect(s)
-		    If rs = Nil Then
-		      // there is not, Lets create it
-		      s = kCreateTable_sqlitesync_dets
-		      db.SQLExecute(s)
-		      If db.Error Then
-		        dim e as new RuntimeException
-		        e.Message = errCouldNotCreate_sqlitesync_dets + db.ErrorMessage
-		        Raise e
-		      End If
-		    End If
-		    
-		  Else
-		    // Couldn't connect
-		    // Create the database
-		    If db.CreateDatabaseFile Then
-		      s = kCreateTable_sqlitesync_dets
-		      db.SQLExecute(s)
-		      If db.Error Then
-		        dim e as New RuntimeException
-		        e.Message = errCouldNotCreate_sqlitesync_dets + db.ErrorMessage
-		        Raise E
-		      End If
-		    End If
-		  End If
-		  
-		  // Delete any current records
-		  s = "Delete From sqlitesync_dets;"
-		  db.SQLExecute(s)
-		  
-		  // Insert details into database
-		  s = "Insert Into sqlitesync_dets(serverhost,syncdb_filepath,sync_tables,userid) Values(?,?,?,?);"
-		  dim ps as SQLitePreparedStatement = db.Prepare(s)
-		  ps.BindType(0, SQLitePreparedStatement.SQLITE_TEXT)
-		  ps.BindType(1, SQLitePreparedStatement.SQLITE_TEXT)
-		  ps.BindType(2, SQLitePreparedStatement.SQLITE_TEXT)
-		  ps.BindType(3, SQLitePreparedStatement.SQLITE_TEXT)
-		  ps.Bind(0, self.ServerHost)
-		  ps.Bind(1, self.SyncDB.DatabaseFile.NativePath)
-		  ps.Bind(2, Join(self.SyncTables, ","))
-		  ps.Bind(3, self.UserID)
-		  
-		  ps.SQLExecute
-		  If db.Error Then
-		    Break
-		  End If
 		End Sub
 	#tag EndMethod
 
@@ -226,6 +213,10 @@ Protected Class SqlSyncClass
 
 	#tag Property, Flags = &h21
 		Private SyncDB As SQLiteDatabase
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private SyncSocket As HTTPSocket
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

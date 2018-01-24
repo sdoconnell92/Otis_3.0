@@ -2,7 +2,6 @@
 Protected Module ErrorManagement
 	#tag Method, Flags = &h0
 		Sub ErrManage(sFacility as string, sMessage as string)
-		  dim rd1 as New ResourceDirectories
 		  dim CurrentDate as New date
 		  
 		  // Assemble the error message
@@ -10,7 +9,7 @@ Protected Module ErrorManagement
 		  sErrorMessage = "{" + CurrentDate.SQLDateTime + "} [ " + sFacility + " ] - " + sMessage + EndOfLine
 		  
 		  // Get the error log filepath
-		  dim fiErrorFile as FolderItem = rd1.error_log_file.FilePath
+		  dim fiErrorFile as FolderItem = Directory.PrimaryLogFile
 		  
 		  // Open up a text output stream
 		  If fiErrorFile <> Nil Then

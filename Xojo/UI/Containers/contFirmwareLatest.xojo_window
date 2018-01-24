@@ -89,6 +89,7 @@ Begin ContainerControl contFirmwareLatest
       Selectable      =   False
       TabIndex        =   1
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Updated On"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -123,6 +124,7 @@ Begin ContainerControl contFirmwareLatest
       Selectable      =   False
       TabIndex        =   2
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Version"
       TextAlign       =   2
       TextColor       =   &c00000000

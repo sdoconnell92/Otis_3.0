@@ -16,7 +16,7 @@ Begin Window Window1
    MaxHeight       =   32000
    MaximizeButton  =   True
    MaxWidth        =   32000
-   MenuBar         =   1260357631
+   MenuBar         =   1580189695
    MenuBarVisible  =   True
    MinHeight       =   64
    MinimizeButton  =   True
@@ -26,362 +26,104 @@ Begin Window Window1
    Title           =   "Untitled"
    Visible         =   True
    Width           =   600
-   Begin TextArea TextArea1
-      AcceptTabs      =   False
-      Alignment       =   0
+   Begin PushButton PushButton1
       AutoDeactivate  =   True
-      AutomaticallyCheckSpelling=   True
-      BackColor       =   &cFFFFFF00
       Bold            =   False
-      Border          =   True
+      ButtonStyle     =   "0"
+      Cancel          =   False
+      Caption         =   "OK"
+      Default         =   True
+      Enabled         =   True
+      Height          =   22
+      HelpTag         =   ""
+      Index           =   -2147483648
+      InitialParent   =   ""
+      Italic          =   False
+      Left            =   20
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      Scope           =   2
+      TabIndex        =   0
+      TabPanelIndex   =   0
+      TabStop         =   True
+      TextFont        =   "System"
+      TextSize        =   0.0
+      TextUnit        =   0
+      Top             =   13
+      Underline       =   False
+      Visible         =   True
+      Width           =   80
+   End
+   Begin Label LabText
+      AutoDeactivate  =   True
+      Bold            =   False
       DataField       =   ""
       DataSource      =   ""
       Enabled         =   True
-      Format          =   ""
-      Height          =   286
+      Height          =   333
       HelpTag         =   ""
-      HideSelection   =   True
       Index           =   -2147483648
+      InitialParent   =   ""
       Italic          =   False
-      Left            =   0
-      LimitText       =   0
-      LineHeight      =   0.0
-      LineSpacing     =   1.0
+      Left            =   20
       LockBottom      =   True
       LockedInPosition=   False
       LockLeft        =   True
       LockRight       =   True
       LockTop         =   True
-      Mask            =   ""
       Multiline       =   True
-      ReadOnly        =   False
-      Scope           =   0
-      ScrollbarHorizontal=   False
-      ScrollbarVertical=   True
-      Styled          =   True
+      Scope           =   2
+      Selectable      =   False
       TabIndex        =   1
       TabPanelIndex   =   0
       TabStop         =   True
-      Text            =   ""
+      Text            =   "Untitled"
+      TextAlign       =   0
       TextColor       =   &c00000000
       TextFont        =   "System"
       TextSize        =   0.0
       TextUnit        =   0
-      Top             =   114
-      Underline       =   False
-      UseFocusRing    =   True
-      Visible         =   True
-      Width           =   600
-   End
-   Begin TextField TextField1
-      AcceptTabs      =   False
-      Alignment       =   0
-      AutoDeactivate  =   True
-      AutomaticallyCheckSpelling=   False
-      BackColor       =   &cFFFFFF00
-      Bold            =   False
-      Border          =   True
-      CueText         =   ""
-      DataField       =   ""
-      DataSource      =   ""
-      Enabled         =   True
-      Format          =   ""
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      Italic          =   False
-      Left            =   381
-      LimitText       =   0
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   False
-      LockRight       =   True
-      LockTop         =   True
-      Mask            =   ""
-      Password        =   False
-      ReadOnly        =   False
-      Scope           =   0
-      TabIndex        =   2
-      TabPanelIndex   =   0
-      TabStop         =   True
-      Text            =   ""
-      TextColor       =   &c00000000
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   3
-      Underline       =   False
-      UseFocusRing    =   True
-      Visible         =   True
-      Width           =   204
-   End
-   Begin PushButton pbNewUUIDinText
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "New"
-      Default         =   False
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   333
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   False
-      LockRight       =   True
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   3
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   3
+      Top             =   47
+      Transparent     =   True
       Underline       =   False
       Visible         =   True
-      Width           =   46
-   End
-   Begin PushButton pbSync
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Sync"
-      Default         =   True
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   8
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   4
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   27
-      Underline       =   False
-      Visible         =   True
-      Width           =   80
-   End
-   Begin PushButton pbLoadClass
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Load Class"
-      Default         =   True
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   8
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   5
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   3
-      Underline       =   False
-      Visible         =   True
-      Width           =   80
-   End
-   Begin PushButton pbPushLocal
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Push Local"
-      Default         =   True
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   8
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   7
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   51
-      Underline       =   False
-      Visible         =   True
-      Width           =   80
-   End
-   Begin PushButton pbLoadDetails
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Load Details"
-      Default         =   True
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   505
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   8
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   64
-      Underline       =   False
-      Visible         =   True
-      Width           =   80
-   End
-   Begin PushButton pbSaveDetails
-      AutoDeactivate  =   True
-      Bold            =   False
-      ButtonStyle     =   "0"
-      Cancel          =   False
-      Caption         =   "Save Details"
-      Default         =   True
-      Enabled         =   True
-      Height          =   22
-      HelpTag         =   ""
-      Index           =   -2147483648
-      InitialParent   =   ""
-      Italic          =   False
-      Left            =   505
-      LockBottom      =   False
-      LockedInPosition=   False
-      LockLeft        =   True
-      LockRight       =   False
-      LockTop         =   True
-      Scope           =   0
-      TabIndex        =   9
-      TabPanelIndex   =   0
-      TabStop         =   True
-      TextFont        =   "System"
-      TextSize        =   0.0
-      TextUnit        =   0
-      Top             =   37
-      Underline       =   False
-      Visible         =   True
-      Width           =   80
+      Width           =   560
    End
 End
 #tag EndWindow
 
 #tag WindowCode
-	#tag Method, Flags = &h0
-		Sub Addtota(s as string)
-		  TextArea1.Text = TextArea1.Text + s + EndOfLine
-		End Sub
-	#tag EndMethod
-
-
-	#tag Property, Flags = &h0
-		sqsync_class As SqliteSync.SqlSyncClass
-	#tag EndProperty
-
-
 #tag EndWindowCode
 
-#tag Events TextField1
-	#tag Event
-		Sub Open()
-		  me.Text = GetNewUUID
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events pbNewUUIDinText
+#tag Events PushButton1
 	#tag Event
 		Sub Action()
-		  TextField1.Text = GetNewUUID
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events pbSync
-	#tag Event
-		Sub Action()
-		  If sqsync_class = Nil Then
-		    Addtota("Cannot Sync class is nil")
-		    Return
-		  End If
+		  App.RequestID = GetNewUUID
 		  
-		  If sqsync_class.Sync Then
-		    Addtota("Sync Successful!")
+		  dim sock as New sdosocket
+		  sock.Secure = False
+		  dim rq as string = "207.148.9.123:8080/SqliteSync_315/API3/"
+		  
+		  dim s as string
+		  s = sock.get(rq, 30)
+		  
+		  If s.InStr("SQLite-Sync.COM is working correctly") <> 0 Then
+		    'we connected
+		    If Auth.SaveCredsToFile Then
+		    End If
 		  Else
-		    Addtota("Sync Failed!")
+		    'login failed
+		    MsgBox("LoginFailed")
 		  End If
 		  
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events pbLoadClass
-	#tag Event
-		Sub Action()
-		  dim utildb as FolderItem = SpecialFolder.Desktop.Child("util.sqlite")
-		  dim sh as string = "45.76.230.210:8080"
-		  dim syncdb as FolderItem = SpecialFolder.Desktop.Child("sqlitesync.sqlite")
-		  dim synctables() as string = Array("test_table")
-		  sqsync_class = SqliteSync.SqlSyncClass.Init(sh,syncdb,utildb,synctables)
 		  
-		  If sqsync_class <> Nil Then
-		    Addtota("Class Loaded!")
-		  Else
-		    Addtota("Error Loading Class")
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events pbPushLocal
-	#tag Event
-		Sub Action()
-		  sqsync_class.PushChanges
-		  //If sqsync_class.Sync Then
 		  
-		  //End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events pbSaveDetails
-	#tag Event
-		Sub Action()
-		  dim utildb as FolderItem = SpecialFolder.Desktop.Child("util.sqlite")
-		  sqsync_class.SaveToFile(utildb.Parent, utildb.Name)
+		  dim ppasdojfasd as string
+		  
+		  labtext.text = s
 		End Sub
 	#tag EndEvent
 #tag EndEvents

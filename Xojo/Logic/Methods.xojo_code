@@ -16,25 +16,13 @@ Protected Module Methods
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Invert(extends b as Boolean) As Boolean
-		  If b Then
-		    Return False
-		  ElseIf Not b Then
-		    Return True
-		  End If
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function StripNonDigitsDecimals(sString as String) As String
+		Function GetNewUUID() As String
+		  Dim crypt As New Chilkat.Crypt2
 		  
+		  Dim uuid As String
+		  uuid = crypt.GenerateUuid()
 		  
-		  dim re as new RegEx
-		  re.SearchPattern = "[^\d.]"
-		  re.ReplacementPattern = ""
-		  re.Options.ReplaceAllMatches = True
-		  
-		  Return re.Replace(sString)
+		  Return uuid
 		End Function
 	#tag EndMethod
 

@@ -39,6 +39,7 @@ Begin ContainerControl contEventContactablesList
       HasHeading      =   True
       Height          =   192
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   3
       LockBottom      =   True

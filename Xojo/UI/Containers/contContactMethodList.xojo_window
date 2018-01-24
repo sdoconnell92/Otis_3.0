@@ -39,6 +39,7 @@ Begin ContainerControl contContactMethodList
       HasHeading      =   True
       Height          =   171
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   3
       LockBottom      =   True

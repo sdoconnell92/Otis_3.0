@@ -688,6 +688,12 @@ Protected Module StringUtils
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Join(extends ars() as string, delimiter as string) As String
+		  Return Join(ars(), ",")
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function JoinQuoted(fields() as String, delimiter as String) As String
 		  // Join the given strings with a delimiter, just like RB's intrinsic Join

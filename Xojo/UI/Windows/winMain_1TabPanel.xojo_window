@@ -75,6 +75,7 @@ Begin Window winMain_1TabPanel
       Scope           =   0
       TabIndex        =   2
       TabPanelIndex   =   0
+      TabStop         =   True
       Top             =   26
       Value           =   2
       Visible         =   True
@@ -92,6 +93,7 @@ Begin Window winMain_1TabPanel
          HasBackColor    =   False
          Height          =   545
          HelpTag         =   ""
+         Index           =   -2147483648
          InitialParent   =   "tbMainWindow"
          iStartingTop    =   0
          LastSearchValue =   ""
@@ -119,12 +121,13 @@ Begin Window winMain_1TabPanel
          BackColor       =   &cFFFFFF00
          Backdrop        =   0
          bDisplayGrouped =   False
-         bPickerMode     =   False
+         bPickerMode     =   "False"
          Enabled         =   True
          EraseBackground =   True
          HasBackColor    =   False
          Height          =   544
          HelpTag         =   ""
+         Index           =   -2147483648
          InitialParent   =   "tbMainWindow"
          iStartingTop    =   0
          LastSearchValue =   ""
@@ -157,6 +160,7 @@ Begin Window winMain_1TabPanel
          HasBackColor    =   False
          Height          =   542
          HelpTag         =   ""
+         Index           =   -2147483648
          InitialParent   =   "tbMainWindow"
          LastSearchValue =   ""
          Left            =   3

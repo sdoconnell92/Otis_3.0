@@ -39,6 +39,7 @@ Begin ContainerControl contEIPLs
       HasHeading      =   True
       Height          =   389
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   4
       LockBottom      =   True

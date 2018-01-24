@@ -26,15 +26,6 @@ Begin Window winSplash
    Title           =   "Splash"
    Visible         =   True
    Width           =   505
-   Begin Timer tmrSplash
-      Index           =   -2147483648
-      InitialParent   =   ""
-      LockedInPosition=   False
-      Mode            =   0
-      Period          =   2000
-      Scope           =   0
-      TabPanelIndex   =   0
-   End
    Begin Label lblVersion
       AutoDeactivate  =   True
       Bold            =   False
@@ -57,6 +48,7 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   3
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Build:"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -91,6 +83,7 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   4
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Your Copyright Info here"
       TextAlign       =   1
       TextColor       =   &c00000000
@@ -109,7 +102,7 @@ Begin Window winSplash
       DataField       =   ""
       DataSource      =   ""
       Enabled         =   True
-      Height          =   58
+      Height          =   100
       HelpTag         =   ""
       Index           =   -2147483648
       InitialParent   =   ""
@@ -125,6 +118,7 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   5
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Business \r\nManagement \r\nSystem"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -159,6 +153,7 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   6
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Otis"
       TextAlign       =   0
       TextColor       =   &c00000000
@@ -221,7 +216,8 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   8
       TabPanelIndex   =   0
-      Text            =   "Progress"
+      TabStop         =   True
+      Text            =   "-"
       TextAlign       =   1
       TextColor       =   &c00000000
       TextFont        =   "System"
@@ -255,7 +251,8 @@ Begin Window winSplash
       Selectable      =   False
       TabIndex        =   9
       TabPanelIndex   =   0
-      Text            =   "Secondary Progress"
+      TabStop         =   True
+      Text            =   "-"
       TextAlign       =   1
       TextColor       =   &c00000000
       TextFont        =   "System"
@@ -267,35 +264,12 @@ Begin Window winSplash
       Visible         =   True
       Width           =   465
    End
-   Begin Timer tmrProgressUpdater
-      Index           =   -2147483648
-      LockedInPosition=   False
-      Mode            =   0
-      Period          =   500
-      Scope           =   0
-      TabPanelIndex   =   0
-   End
-   Begin Timer tmrUpdateWaiter
-      Index           =   -2147483648
-      LockedInPosition=   False
-      Mode            =   0
-      Period          =   500
-      Scope           =   0
-      TabPanelIndex   =   0
-   End
 End
 #tag EndWindow
 
 #tag WindowCode
 	#tag Method, Flags = &h0
 		Sub Display()
-		  #if DebugBuild then
-		    'If we are in the debugger we don't really want to wait 2s. Lets wait .5s
-		    tmrSplash.Period = 500
-		  #Endif
-		  
-		  tmrSplash.Mode = timer.ModeSingle
-		  // self.ShowModal
 		  
 		  self.Visible = True
 		  
@@ -303,44 +277,9 @@ End
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub HandleInitialize()
-		  dim rd as New ResourceDirectories
-		  
-		  clInit = New AppInit
-		  tmrProgressUpdater.Mode = Timer.ModeMultiple
-		  clInit.Go
-		  
-		  'App.Initialize
-		  'self.close
-		End Sub
-	#tag EndMethod
-
-
-	#tag Property, Flags = &h0
-		clInit As AppInit
-	#tag EndProperty
-
 
 #tag EndWindowCode
 
-#tag Events tmrSplash
-	#tag Event
-		Sub Action()
-		  me.Mode = Timer.ModeOff
-		  // HandleInitialize
-		  
-		  Updater.Init
-		  Updater.Run
-		  
-		  tmrUpdateWaiter.Mode = Timer.ModeMultiple
-		  
-		  
-		  
-		  
-		End Sub
-	#tag EndEvent
-#tag EndEvents
 #tag Events lblVersion
 	#tag Event
 		Sub Open()
@@ -367,46 +306,7 @@ End
 #tag Events cvLogo
 	#tag Event
 		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
-		  'For more information on DrawPicture see:
-		  'http://docs.xojo.com/index.php/Graphics.DrawPicture
 		  g.DrawPicture(appLogo, 0, 0,g.Width,g.Height,0,0,appLogo.Width * (appLogo.Height / g.Height),appLogo.Height)
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events tmrProgressUpdater
-	#tag Event
-		Sub Action()
-		  
-		  'clInit.CheckUIState
-		  
-		  labLoadingProgress.Text = InitializationModule.sProgressString
-		  labSecondaryLoadingProgress.Text = InitializationModule.sSecondaryProgressString
-		  
-		  If clInit.bInitDone Then
-		    me.Mode = Timer.ModeOff
-		    If clInit.bOpenMainWindow Then
-		      self.TrueWindow.Close
-		      App.UIInit
-		    Else
-		      Quit
-		    End If
-		  End If
-		End Sub
-	#tag EndEvent
-#tag EndEvents
-#tag Events tmrUpdateWaiter
-	#tag Event
-		Sub Action()
-		  If app.UpdateInitiater = Nil And Updater.Checker.UpdateWindowIsOpen = False Then
-		    
-		    me.Mode = Timer.ModeOff
-		    HandleInitialize
-		    
-		    //app.OpenMainWindow
-		    
-		  Else
-		    
-		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents

@@ -39,6 +39,7 @@ Begin ContainerControl contInventory
       HasHeading      =   True
       Height          =   386
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   4
       LockBottom      =   True
