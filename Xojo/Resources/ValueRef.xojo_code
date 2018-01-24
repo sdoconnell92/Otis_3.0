@@ -16,7 +16,7 @@ Protected Module ValueRef
 	#tag EndConstant
 
 	#tag Constant, Name = kSyncServerAddress, Type = String, Dynamic = False, Default = \"", Scope = Protected
-		#Tag Instance, Platform = Any, Language = Default, Definition  = \"45.76.230.210:8080"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"207.148.9.123:8080"
 	#tag EndConstant
 
 	#tag Constant, Name = kSyncTables, Type = String, Dynamic = False, Default = \"", Scope = Protected

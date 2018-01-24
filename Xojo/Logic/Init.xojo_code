@@ -2,7 +2,11 @@
 Protected Module Init
 	#tag Method, Flags = &h21
 		Private Function Authenticate() As Boolean
-		  
+		  If Auth.Authenticate Then
+		    Return True
+		  Else
+		    Return False
+		  End If
 		End Function
 	#tag EndMethod
 
@@ -91,7 +95,7 @@ Protected Module Init
 
 	#tag Method, Flags = &h21
 		Private Sub HandleThreadRun(sender as Thread)
-		  
+		  dim bOfflineReady as Boolean
 		  
 		  If Not InitDirectories Then
 		    ErrManage("Init.InitDirectories", "Could not initialize file system directory. Must Close App")
@@ -101,7 +105,56 @@ Protected Module Init
 		  
 		  bDisplaySplash = True
 		  
+		  // Start the updater, then wait for it to complete
+		  RunUpdater
+		  dim bDone as Boolean
+		  While Not bDone
+		    sender.Sleep(1000)
+		    If UpdateDone Then
+		      bDone = True
+		      Exit
+		    End If
+		  Wend
 		  
+		  bOfflineReady = ValidateSqliteSyncThings
+		  
+		  If Init.Authenticate Then
+		    ' Authentication succeesful
+		    Init.ToggleOffline(False)
+		  Else
+		    ' Authentication unsuccesful
+		    If bOfflineReady Then
+		      If CreateOfflinePrompt Then
+		        Init.ToggleOffline(True)
+		      Else
+		        Init.CloseApp
+		        Return
+		      End If
+		    Else
+		      init.CloseApp
+		      Return
+		    End If
+		  End If
+		  
+		  If Not app.bOffline Then
+		    ' we are online
+		    init.UpdateTempEiplNumbers
+		  End If
+		  
+		  Init.DisplayMainWindow
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub HandleUpdateWaiterTimerAction(sender as timer)
+		  If app.UpdateInitiater = Nil And Updater.Checker.UpdateWindowIsOpen = False Then
+		    
+		    me.Mode = Timer.ModeOff
+		    Init.UpdateDone = True
+		    
+		  Else
+		    
+		  End If
 		End Sub
 	#tag EndMethod
 
@@ -176,6 +229,14 @@ Protected Module Init
 
 	#tag Property, Flags = &h21
 		Private tmSplashDisplay As Timer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private tmUpdateWaiter As Timer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private UpdateDone As Boolean
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

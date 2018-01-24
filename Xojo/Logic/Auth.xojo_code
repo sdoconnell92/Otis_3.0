@@ -1,5 +1,28 @@
 #tag Module
 Protected Module Auth
+	#tag Method, Flags = &h1
+		Protected Function Authenticate() As Boolean
+		  dim sock as New HTTPSecureSocket
+		  AddHandler sock.AuthenticationRequired, AddressOf Auth.HandleAuthenticationRequest
+		  
+		  dim rq as string = ValueRef.kSyncServerAddress + "/SqliteSync_315/API3/"
+		  
+		  dim s as string = sock.get(rq, 30)
+		  
+		  If s.InStr("SQLite-Sync.COM is working correctly") <> 0 Then
+		    'we connected
+		    If Auth.SaveCredsToFile Then
+		      Return True
+		    End If
+		  Else
+		    'login failed
+		    Return False
+		  End If
+		  
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Function BuildCredsDb(f as FolderItem) As SQLiteDatabase
 		  dim db as new SQLiteDatabase
@@ -155,7 +178,7 @@ Protected Module Auth
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function HandleAuthenticationRequest(RequestID as string, ByRef un As String, ByRef pw As String, ErrorCode as integer = 0) As Boolean
+		Protected Function HandleAuthenticationRequest(sender as httpsecuresocket, RequestID as string, ByRef un As String, ByRef pw As String, ErrorCode as integer = 0) As Boolean
 		  
 		  // Check if the current RequestID is the same as the last request id 
 		  // We check this to see if this is a brand new authentication attempt 
