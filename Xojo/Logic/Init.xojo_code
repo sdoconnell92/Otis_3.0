@@ -7,6 +7,74 @@ Protected Module Init
 		  Else
 		    Return False
 		  End If
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
 		End Function
 	#tag EndMethod
 
@@ -14,6 +82,12 @@ Protected Module Init
 		Private Sub CloseApp()
 		  Quit
 		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function ConnectDatabase() As Boolean
+		  
+		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
@@ -168,10 +242,11 @@ Protected Module Init
 	#tag Method, Flags = &h21
 		Private Function InitLocalDb() As Boolean
 		  dim sqcl as SqliteSync.SqlSyncClass
-		  dim rd as New ResourceDirectories
+		  dim db as SQLiteDatabase = SqliteSync.ConnectDB(Directory.MainDatabase)
+		  App.db = db
 		  
 		  // Run class Init which will create the databse if neccesary and connect to it
-		  sqcl = SqliteSync.SqlSyncClass.Init(ValueRef.kSyncServerAddress, rd.otis_data_file, rd.SyncDets, ValueRef.kSyncTables )
+		  sqcl = SqliteSync.SqlSyncClass.Init(ValueRef.kSyncServerAddress, db, Directory.SyncDets, ValueRef.kSyncTables )
 		  
 		  If sqcl = Nil Then
 		    Return False

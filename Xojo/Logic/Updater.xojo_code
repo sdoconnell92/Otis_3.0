@@ -2,14 +2,13 @@
 Protected Module Updater
 	#tag Method, Flags = &h1
 		Protected Sub Run()
-		  dim rd as New ResourceDirectories
 		  
-		  dim updater as new Kaju.UpdateChecker( rd.kaju_folder.FilePath )
-		  updater.ServerPublicRSAKey = kPublicKey
-		  updater.UpdateURL = kUpdateURL
+		  dim o as new Kaju.UpdateChecker( Directory.KajuFolder )
+		  o.ServerPublicRSAKey = kPublicKey
+		  o.UpdateURL = kUpdateURL
 		  
-		  updater.Execute
-		  Checker = updater
+		  o.Execute
+		  Checker = o
 		End Sub
 	#tag EndMethod
 

@@ -660,7 +660,7 @@ End
 	#tag Method, Flags = &h0
 		Sub methLoadControls()
 		  
-		  labEIPLNumber.Text = "EIPL #: " + oCurrentRecord.ieipl_number.ToText
+		  labEIPLNumber.Text = "EIPL #: " + oCurrentRecord.seipl_number
 		  
 		  instInventoryList.methLoadMe
 		  
@@ -966,7 +966,7 @@ End
 		  dim arsDisc() as String = oCurrentRecord.GetDiscounts  ' Get the discounts
 		  If arsDisc(0) <> "" Then oEstimateInit.Box6_DiscountPercent = arsDisc(0)
 		  If arsDisc(1) <> "" Then oEstimateInit.Box6_DiscountAmount = arsDisc(1)
-		  If val(Methods.StripNonDigitsDecimals( oCurrentRecord.seipl_tax_rate )) <> 0 Then oEstimateInit.Box7_Tax = oCurrentRecord.seipl_tax_rate
+		  If val( oCurrentRecord.seipl_tax_rate.StripNonTenBase ) <> 0 Then oEstimateInit.Box7_Tax = oCurrentRecord.seipl_tax_rate
 		  oEstimateInit.Box8_PaymentDue = modFieldFormatting.FormatDateDisplay( oCurrentRecord.sdue_date )
 		  
 		  oEstimateInit.LI_Records = instLineItemList.aroStorClass

@@ -312,8 +312,7 @@ End
 #tag Events bRunSync
 	#tag Event
 		Sub Action()
-		  osm.RunSync
-		  'contInventory1.RefreshInventory(True)
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents

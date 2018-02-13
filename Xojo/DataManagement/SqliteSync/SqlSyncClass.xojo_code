@@ -1,10 +1,10 @@
 #tag Class
 Protected Class SqlSyncClass
 	#tag Method, Flags = &h0
-		Sub Constructor(ServerAddress as string, SyncDBFilePath as FolderItem, TablesToSync() as string, ClientID as string = "")
+		Sub Constructor(ServerAddress as string, db as sqliteDatabase, TablesToSync() as string, ClientID as string = "")
 		  
 		  ServerHost = ServerAddress
-		  SyncDB = SqliteSync.ConnectDB(SyncDBFilePath)
+		  SyncDB = db
 		  SyncTables = TablesToSync
 		  UserID = ClientID
 		  SyncSocket = New HTTPSocket
@@ -25,12 +25,12 @@ Protected Class SqlSyncClass
 
 	#tag Method, Flags = &h21
 		Private Function HandleAuthRequired(sock as HTTPSocket, Realm As String, Headers As InternetHeaders, ByRef Name As String, ByRef Password As String) As Boolean
-		  Auth.HandleAuthenticationRequest(SqliteSync.RequestID, Name, Password)
+		  Auth.HandleAuthenticationRequest(Name, Password)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Init(ServerHost as string, SyncDBFile as FolderItem, DetailsFile as FolderItem, SyncTables() as string) As SqliteSync.SqlSyncClass
+		Shared Function Init(ServerHost as string, SyncDB as sqlitedatabase, DetailsFile as FolderItem, SyncTables() as string) As SqliteSync.SqlSyncClass
 		  // 1.  Try to load from file
 		  dim cl as SqliteSync.SqlSyncClass
 		  dim NeedInit as Boolean
@@ -58,7 +58,7 @@ Protected Class SqlSyncClass
 		  If NeedNewCl Then
 		    cl = Nil
 		    dim suuid as string = GetNewUUID
-		    cl = New SqliteSync.SqlSyncClass(ServerHost, SyncDBFile, SyncTables, suuid)
+		    cl = New SqliteSync.SqlSyncClass(ServerHost, SyncDB, SyncTables, suuid)
 		    NeedNewCl = False
 		    NeedInit = True
 		  End If

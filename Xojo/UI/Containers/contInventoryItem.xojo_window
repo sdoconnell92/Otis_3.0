@@ -3361,7 +3361,7 @@ End
 		  
 		  dim s1 as string
 		  
-		  s1 = Methods.StripNonDigitsDecimals( me.Text )
+		  s1 = me.Text.StripNonTenBase
 		  
 		  oCurrentInventoryItem.sitem_rental_price = s1
 		  SaveItem
@@ -3763,7 +3763,7 @@ End
 		  
 		  dim s1 as string
 		  
-		  s1 = methods.StripNonDigitsDecimals( me.Text )
+		  s1 = me.Text.StripNonTenBase
 		  
 		  oCurrentInventoryItem.sitem_purchase_price = s1
 		  SaveItem
@@ -3779,7 +3779,7 @@ End
 		  
 		  dim s1 as string
 		  
-		  s1 = Methods.StripNonDigitsDecimals( me.Text )
+		  s1 = me.Text.StripNonTenBase
 		  
 		  oCurrentInventoryItem.sitem_sale_price = s1
 		  SaveItem

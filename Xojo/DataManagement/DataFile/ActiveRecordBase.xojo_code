@@ -20,7 +20,7 @@ Inherits DataFile.Base
 		  
 		  
 		  // Add a uuid
-		  dim sNewUUID as String = DataFile.GetNewUUID
+		  dim sNewUUID as String = GetNewUUID
 		  dim oRandomizer as New Random
 		  me.suuid = sNewUUID
 		  me.ipkid = oRandomizer.LessThan(999999999)

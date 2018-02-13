@@ -2488,8 +2488,8 @@ Protected Module StringUtils
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1
-		Protected Function StripNonTenBase(extends sString as String) As String
+	#tag Method, Flags = &h0
+		Function StripNonTenBase(extends sString as String) As String
 		  
 		  
 		  dim re as new RegEx

@@ -415,17 +415,6 @@ Protected Module SqliteSync
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Function GetNewUUID() As String
-		  Dim crypt As New Chilkat.Crypt2
-		  
-		  Dim uuid As String
-		  uuid = crypt.GenerateUuid()
-		  
-		  Return uuid
-		End Function
-	#tag EndMethod
-
 	#tag Method, Flags = &h21
 		Private Sub LogError(content as string)
 		  dim s as string
@@ -572,7 +561,7 @@ Protected Module SqliteSync
 		  
 		  SqliteSync.RequestID = GetNewUUID
 		  
-		  s = sock.Get(rq, timeout)
+		  s = sock.Get(request, timeout)
 		  
 		  Return s
 		End Function

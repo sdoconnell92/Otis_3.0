@@ -1162,7 +1162,7 @@ End
 		  
 		  dim s1 as string
 		  
-		  s1 = Methods.StripNonDigitsDecimals( me.Text )
+		  s1 = me.Text.StripNonTenBase
 		  
 		  oCurrentLog.swork_cost = s1
 		  SaveLog

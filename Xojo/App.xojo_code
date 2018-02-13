@@ -55,6 +55,10 @@ Inherits Application
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
+		db As SQLiteDatabase
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
 		DbSync As SqliteSync.SqlSyncClass
 	#tag EndProperty
 
@@ -90,6 +94,7 @@ Inherits Application
 		#tag ViewProperty
 			Name="bOffline"
 			Group="Behavior"
+			InitialValue="True"
 			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior

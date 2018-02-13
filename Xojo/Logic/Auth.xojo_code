@@ -3,11 +3,13 @@ Protected Module Auth
 	#tag Method, Flags = &h1
 		Protected Function Authenticate() As Boolean
 		  dim sock as New HTTPSecureSocket
-		  AddHandler sock.AuthenticationRequired, AddressOf Auth.HandleAuthenticationRequest
+		  AddHandler sock.AuthenticationRequired, AddressOf Auth.AuthenticationRouter
 		  
 		  dim rq as string = ValueRef.kSyncServerAddress + "/SqliteSync_315/API3/"
 		  
+		  Auth.RequestID = GetNewUUID
 		  dim s as string = sock.get(rq, 30)
+		  Auth.RequestID = ""
 		  
 		  If s.InStr("SQLite-Sync.COM is working correctly") <> 0 Then
 		    'we connected
@@ -20,6 +22,12 @@ Protected Module Auth
 		  End If
 		  
 		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function AuthenticationRouter(sender as HTTPSecureSocket, Realm As String, Headers As InternetHeaders, ByRef Name As String, ByRef Password As String) As Boolean
+		  Return auth.HandleAuthenticationRequest(Name, Password)
 		End Function
 	#tag EndMethod
 
@@ -178,12 +186,12 @@ Protected Module Auth
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function HandleAuthenticationRequest(sender as httpsecuresocket, RequestID as string, ByRef un As String, ByRef pw As String, ErrorCode as integer = 0) As Boolean
+		Protected Function HandleAuthenticationRequest(ByRef un As String, ByRef pw As String, ErrorCode as integer = 0) As Boolean
 		  
 		  // Check if the current RequestID is the same as the last request id 
 		  // We check this to see if this is a brand new authentication attempt 
 		  // or a continued authentication attempt because of wrong credentials
-		  If RequestID = LastReqID Then
+		  If Auth.RequestID = Auth.LastReqID Then
 		    RepeatedAttempt = True
 		    
 		    // Set the LastErrorCode if a specific error was not passed to us
@@ -194,7 +202,7 @@ Protected Module Auth
 		    End If
 		  Else
 		    RepeatedAttempt = False
-		    LastReqID = RequestID
+		    Auth.LastReqID = Auth.RequestID
 		    Auth.UserAbort = False
 		    
 		    // Set the last error code
@@ -269,6 +277,10 @@ Protected Module Auth
 
 	#tag Property, Flags = &h21
 		Private RepeatedAttempt As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private RequestID As String
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

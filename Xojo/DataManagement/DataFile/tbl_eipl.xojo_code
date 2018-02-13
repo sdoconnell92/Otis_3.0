@@ -10,10 +10,10 @@ Inherits DataFile.ActiveRecordBase
 	#tag Event
 		Sub PreInsert()
 		  
-		  dim iNewEIPLNumber as integer
+		  dim sNewEIPLNumber as String
 		  
-		  iNewEIPLNumber = DataFile.GetNextEIPLNumber(me.suuid)
-		  me.ieipl_number = iNewEIPLNumber
+		  sNewEIPLNumber = EIPLNumbering.GetNewEiplNumber(me.sfkevents, me.seipl_type)
+		  me.seipl_number = sNewEIPLNumber
 		End Sub
 	#tag EndEvent
 
@@ -160,12 +160,12 @@ Inherits DataFile.ActiveRecordBase
 		    End If
 		  Next
 		  
-		  If val(Methods.StripNonDigitsDecimals(sDiscountPercent)) <> 0 Then
+		  If val(sDiscountPercent.StripNonTenBase) <> 0 Then
 		    retS.Append(sDiscountPercent)
 		  Else
 		    retS.Append("")
 		  End If
-		  If val(Methods.StripNonDigitsDecimals(sDiscountAmount)) <> 0 Then
+		  If val(sDiscountAmount.StripNonTenBase) <> 0 Then
 		    retS.Append(sDiscountAmount)
 		  Else
 		    retS.Append("")
@@ -440,6 +440,11 @@ Inherits DataFile.ActiveRecordBase
 
 	#tag ViewBehavior
 		#tag ViewProperty
+			Name="ibranch_number"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
 			Name="Index"
 			Visible=true
 			Group="ID"
@@ -448,6 +453,11 @@ Inherits DataFile.ActiveRecordBase
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="ipkid"
+			Group="Behavior"
+			Type="Integer"
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="irevision_number"
 			Group="Behavior"
 			Type="Integer"
 		#tag EndViewProperty
@@ -485,7 +495,8 @@ Inherits DataFile.ActiveRecordBase
 		#tag ViewProperty
 			Name="seipl_number"
 			Group="Behavior"
-			Type="Integer"
+			Type="String"
+			EditorType="MultiLineEditor"
 		#tag EndViewProperty
 		#tag ViewProperty
 			Name="seipl_tax_rate"

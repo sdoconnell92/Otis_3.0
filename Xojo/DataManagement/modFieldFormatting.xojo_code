@@ -8,9 +8,9 @@ Protected Module modFieldFormatting
 		  arsDiscounts() = Split( sRawValue, ":" )
 		  For Each sDiscount as String In arsDiscounts()
 		    If InStr( sDiscount, "%" ) > 0 Then
-		      sDiscountPercent = Methods.StripNonDigitsDecimals( sDiscount )
+		      sDiscountPercent = sDiscount.StripNonTenBase
 		    Else
-		      sDiscountAmount = Methods.StripNonDigitsDecimals( sDiscount )
+		      sDiscountAmount = sDiscount.StripNonTenBase
 		    End If
 		  Next
 		  
@@ -52,9 +52,9 @@ Protected Module modFieldFormatting
 		  
 		  For Each sDiscount as string In arsRaw()
 		    If InStr( sDiscount, "%" ) > 0 Then
-		      sDiscountPercent = Methods.StripNonDigitsDecimals(sDiscount)
+		      sDiscountPercent = sDiscount.StripNonTenBase
 		    Else
-		      sDiscountAmount = Methods.StripNonDigitsDecimals(sDiscount)
+		      sDiscountAmount = sDiscount.StripNonTenBase
 		    End If
 		  Next
 		  
@@ -63,7 +63,7 @@ Protected Module modFieldFormatting
 		    sDiscountAmount = str( sDiscountAmount, "\$###,###,###,###.00" )
 		    arsDisplay.Append( sDiscountAmount )
 		  End If
-		  If val( Methods.StripNonDigitsDecimals( sDiscountPercent ) ) <> 0 Then
+		  If val( sDiscountPercent.StripNonTenBase ) <> 0 Then
 		    sDiscountPercent = str( sDiscountPercent, "###.###\%" )
 		    arsDisplay.Append( sDiscountPercent )
 		  End If

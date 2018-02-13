@@ -145,6 +145,7 @@ Module=ErrorCodes;Resources/ErrorCodes.xojo_code;&h000000003299CFFF;&h000000004F
 MultiImage=HexNut;Icons/HexNut.xojo_image;&h00000000137877FF;&h000000002F2847FF;false
 Module=EIPLNumbering;Logic/EIPLNumbering.xojo_code;&h000000002E09A7FF;&h0000000021EA3FFF;false
 Module=EIPLCodes;Resources/EIPLCodes.xojo_code;&h0000000029ECEFFF;&h000000004F7027FF;false
+Module=UserInfo;Logic/UserInfo.xojo_code;&h0000000036117FFF;&h0000000021EA3FFF;false
 AppMenuBar=MainMenuBar
 MajorVersion=3
 MinorVersion=1

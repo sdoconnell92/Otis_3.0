@@ -2,9 +2,9 @@
 Protected Module DataFile
 	#tag Method, Flags = &h0
 		Function ConnectDB() As SQLiteDatabase
-		  dim rd as New ResourceDirectories
+		  
 		  dim db as New SQLiteDatabase
-		  db.DatabaseFile = rd.otis_data_file.FilePath
+		  db.DatabaseFile = Directory.MainDatabase
 		  
 		  If db.Connect THen
 		    Return db
