@@ -26,7 +26,7 @@ Protected Module Directory
 		  
 		  UserDatabase = DatabaseFolder.Child( kUserDatabaseName )
 		  
-		  
+		  Return True
 		  
 		  
 		  Exception err as NilObjectException
@@ -102,7 +102,7 @@ Protected Module Directory
 		#Tag Instance, Platform = Any, Language = Default, Definition  = \"log_prime"
 	#tag EndConstant
 
-	#tag Constant, Name = kSqliteSyncDetailsName, Type = String, Dynamic = False, Default = \"", Scope = Private
+	#tag Constant, Name = kSqliteSyncDetailsName, Type = String, Dynamic = False, Default = \"", Scope = Protected
 		#Tag Instance, Platform = Any, Language = Default, Definition  = \"sqlitesync_details"
 	#tag EndConstant
 

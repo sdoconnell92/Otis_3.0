@@ -3,6 +3,8 @@ Protected Module Auth
 	#tag Method, Flags = &h1
 		Protected Function Authenticate() As Boolean
 		  dim sock as New HTTPSecureSocket
+		  sock.ConnectionType = 1
+		  sock.Secure = False
 		  AddHandler sock.AuthenticationRequired, AddressOf Auth.AuthenticationRouter
 		  
 		  dim rq as string = ValueRef.kSyncServerAddress + "/SqliteSync_315/API3/"
@@ -27,6 +29,7 @@ Protected Module Auth
 
 	#tag Method, Flags = &h1
 		Protected Function AuthenticationRouter(sender as HTTPSecureSocket, Realm As String, Headers As InternetHeaders, ByRef Name As String, ByRef Password As String) As Boolean
+		  
 		  Return auth.HandleAuthenticationRequest(Name, Password)
 		End Function
 	#tag EndMethod
@@ -61,7 +64,9 @@ Protected Module Auth
 		  dim w as New winLogin
 		  dim d as Dictionary
 		  
+		  w.Left = 20
 		  d = w.Display(un,pw,ErrorCode)
+		  
 		  
 		  Return d
 		End Function
@@ -154,7 +159,7 @@ Protected Module Auth
 		  // Enter loop asking user for creds
 		  // dont leave until user returns valid info or cancels
 		  While dictCreds = Nil
-		    dictCreds = DisplayLoginWindow(un,pw,Auth.LastErrorCode)
+		    dictCreds = InquireLoginCreds(un,pw,auth.LastErrorCode)
 		    If dictCreds <> Nil Then
 		      dim UserCancel as Boolean
 		      If dictCreds.Keys.IndexOf("UserCancelled") <> -1 Then UserCancel = dictCreds.Value("UserCancelled").BooleanValue
@@ -230,6 +235,53 @@ Protected Module Auth
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h21
+		Private Sub HandletmUIDisplayAction(sender as Timer)
+		  
+		  If bDisplayLogin Then
+		    bDisplayLogin = False
+		    dim d as Dictionary = DisplayLoginWindow(inUserName, inPassword, inErrorCode)
+		    
+		    outDictionary = d
+		  End If
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Sub Init()
+		  
+		  tmUIDisplay = New Timer
+		  AddHandler tmUIDisplay.Action, AddressOf HandletmUIDisplayAction
+		  tmUIDisplay.Period = 500
+		  tmUIDisplay.Enabled = True
+		  tmUIDisplay.Mode = Timer.ModeMultiple
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Function InquireLoginCreds(un as string, pw as string, ec as integer) As Dictionary
+		  inUserName = un
+		  inPassword = pw
+		  inErrorCode = ec
+		  
+		  outDictionary = Nil
+		  bDisplayLogin = True
+		  
+		  While outDictionary = Nil
+		    
+		    app.SleepCurrentThread(500)
+		    
+		  Wend
+		  
+		  
+		  If outDictionary <> Nil Then 
+		    Return outDictionary
+		  Else
+		    Return nil
+		  End If
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function SaveCredsToFile() As Boolean
 		  dim f as FolderItem = Directory.UserDatabase
@@ -264,11 +316,31 @@ Protected Module Auth
 
 
 	#tag Property, Flags = &h21
+		Private bDisplayLogin As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private inErrorCode As Integer
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private inPassword As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private inUserName As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private LastErrorCode As Integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
 		Private LastReqID As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private outDictionary As Dictionary
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -281,6 +353,10 @@ Protected Module Auth
 
 	#tag Property, Flags = &h21
 		Private RequestID As String
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private tmUIDisplay As Timer
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

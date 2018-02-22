@@ -21,12 +21,13 @@ Protected Module EIPLNumbering
 	#tag Method, Flags = &h21
 		Private Function CreateTemporary(EiplType as string) As String
 		  dim d as New Date
-		  dim ars(), s as string
+		  dim ars() as string
+		  dim s as string
 		  
-		  ars.Append( d.Month )
-		  ars.Append( d.Day )
-		  ars.Append( d.Hour )
-		  ars.Append( d.Minute )
+		  ars.Append( d.Month.ToText )
+		  ars.Append( d.Day.ToText )
+		  ars.Append( d.Hour.ToText )
+		  ars.Append( d.Minute.ToText )
 		  
 		  dim et as string = DetermineTypeID(EiplType)
 		  
@@ -51,6 +52,7 @@ Protected Module EIPLNumbering
 		  
 		  // Check for highest branch number used
 		  i = GetHighestBranchNumber(db)
+		  UpdateBranchNumberTable(db, i)
 		  Return i
 		End Function
 	#tag EndMethod
@@ -124,7 +126,7 @@ Protected Module EIPLNumbering
 		  dim sql as string
 		  
 		  // Check if we have a db connection
-		  If db = Nil Then Return ""
+		  If db = Nil Then Return 0
 		  
 		  // Create sql to grab defualt branch number from the event
 		  sql = "Select uuid, branch_number from tbl_events Where uuid = ?;"
@@ -139,7 +141,7 @@ Protected Module EIPLNumbering
 		    Return 0
 		  End If
 		  
-		  If rs = Nil Then Return ""
+		  If rs = Nil Then Return 0
 		  
 		  dim i as integer = rs.Field("branch_number").IntegerValue
 		  
@@ -219,7 +221,7 @@ Protected Module EIPLNumbering
 		  
 		  If rs = Nil Then Return i
 		  
-		  i = rs.Field("revision_number").StringValue
+		  i = rs.Field("revision_number").IntegerValue
 		  
 		  Return i
 		End Function
@@ -255,7 +257,7 @@ Protected Module EIPLNumbering
 	#tag Method, Flags = &h21
 		Private Sub ProcessTemporaryNumbers(db as SQLiteDatabase, ard() as Dictionary)
 		  
-		  If ard.Ubound -1 Then Return
+		  If ard.Ubound = -1 Then Return
 		  
 		  For Each d as Dictionary In ard()
 		    
@@ -276,6 +278,28 @@ Protected Module EIPLNumbering
 		    End If
 		    
 		  Next
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub UpdateBranchNumberTable(db as SQLiteDatabase, bn as integer)
+		  dim sql as string
+		  
+		  sql = "Insert Into tbl_branchnumbers(branch_number, uuid) Values(?,?);"
+		  
+		  dim ps as SQLitePreparedStatement
+		  ps = db.Prepare(sql)
+		  
+		  ps.BindType(0, SQLitePreparedStatement.SQLITE_INTEGER)
+		  ps.BindType(1, SQLitePreparedStatement.SQLITE_TEXT)
+		  ps.Bind(0, bn)
+		  ps.Bind(1, GetNewUUID)
+		  
+		  ps.SQLExecute
+		  If db.Error Then
+		    ErrManage("EIPLNumbering.UpdateBranchNumberTable", "Could not update branch number table: " + db.ErrorMessage)
+		    Return
+		  End If
 		End Sub
 	#tag EndMethod
 

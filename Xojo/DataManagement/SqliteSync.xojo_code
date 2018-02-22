@@ -297,26 +297,26 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ExecAddTables(ServerHost as string, TableNames() as string)
+		Protected Sub ExecAddTables(sock as HttpSecureSocket, TableNames() as string)
 		  // Loop through each TableName and use the single tablename version of this 
 		  For Each tn as string In TableNames()
-		    ExecAddTables(ServerHost, tn)
+		    ExecAddTables(sock, tn)
 		  Next
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ExecAddTables(ServerHost as string, TableName as string)
+		Protected Sub ExecAddTables(sock as HttpSecureSocket, TableName as string)
 		  
 		  // Add the table to the list of tables to sync on server
-		  dim s as string = reqAddTable(ServerHost, TableName)
+		  dim s as string = reqAddTable(sock, TableName)
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function ExecInitialize(ServerHost as string, UserID as string, SyncDB as SQLiteDatabase) As Boolean
-		  dim js as JSONItem = reqInitialize(ServerHost,UserId)
+		Protected Function ExecInitialize(sock as HttpSecureSocket, UserID as string, SyncDB as SQLiteDatabase) As Boolean
+		  dim js as JSONItem = reqInitialize(sock,UserId)
 		  
 		  dim ars() as SQLitePreparedStatement = CreateSQLFromInitialize(js, SyncDB)
 		  
@@ -334,13 +334,13 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub ExecPushChanges(ServerHost as String, SyncDB as SQLiteDatabase, UserID as string, Tables() as string)
+		Protected Sub ExecPushChanges(sock as HttpSecureSocket, SyncDB as SQLiteDatabase, UserID as string, Tables() as string)
 		  
 		  dim s as string = CreateLocalChangeXML(SyncDB)
 		  
 		  dim js as String = CreateLocalChangeJSON(s, UserID)
 		  
-		  reqPostChanges( ServerHost, js )
+		  reqPostChanges( sock, js )
 		  
 		  ResetMergeUpdate(SyncDB, Tables())
 		  ResetMergeDelete(SyncDB)
@@ -348,12 +348,12 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function ExecSync(ServerHost as string, SyncDB as sqlitedatabase, Tables() as String, UserID as string) As Boolean
+		Protected Function ExecSync(sock as HttpSecureSocket, SyncDB as sqlitedatabase, Tables() as String, UserID as string) As Boolean
 		  dim errors as New Dictionary
 		  
 		  For i as integer = 0 To Tables.Ubound
 		    dim tn as string  = Tables(i)
-		    dim js as JSONItem = reqSync(ServerHost, UserId, tn)
+		    dim js as JSONItem = reqSync(sock, UserId, tn)
 		    
 		    dim ars() as SQLitePreparedStatement = CreateSQLFromSync(js, SyncDB)
 		    If ars.Ubound = -1 Then Return True
@@ -363,7 +363,7 @@ Protected Module SqliteSync
 		      'success
 		      dim syncid as string = js.Value("SyncId").StringValue
 		      // Send a commit back to server
-		      reqCommitSync(ServerHost, syncid)
+		      reqCommitSync(sock, syncid)
 		    Else
 		      ' error things have been rolled back
 		      Break
@@ -437,10 +437,9 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function reqAddTable(Host as string, Table as string) As String
-		  dim sock as New HTTPSocket
+		Private Function reqAddTable(sock as HttpSecureSocket, Table as string) As String
 		  
-		  dim rq as string = "http://" + Host + "/SqliteSync_315/API3/AddTable/" + Table
+		  dim rq as string = "http://" + ValueRef.kSyncServerAddress + "/SqliteSync_315/API3/AddTable/" + Table
 		  
 		  // Grab the data back from the server
 		  Dim data As String = SqliteSync.SocketGet(sock,rq,30)
@@ -450,11 +449,10 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub reqCommitSync(Host as string, SyncId as string)
-		  Dim sock As New HTTPSocket
+		Private Sub reqCommitSync(sock as HttpSecureSocket, SyncId as string)
 		  
 		  // Build request string
-		  dim rq as string = "http://" + Host + "/SqliteSync_315/API3/CommitSync/" + SyncId
+		  dim rq as string = "http://" + ValueRef.kSyncServerAddress + "/SqliteSync_315/API3/CommitSync/" + SyncId
 		  
 		  // Grab the data back from the server
 		  Dim data As String = SqliteSync.SocketGet(sock,rq,30)
@@ -462,11 +460,10 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function reqInitialize(Host as string, ClientID as string) As JSONItem
-		  Dim sock As New HTTPSocket
+		Private Function reqInitialize(sock as HttpSecureSocket, ClientID as string) As JSONItem
 		  
 		  // Build request string
-		  dim rq as string = "http://" + Host + "/SqliteSync_315/API3/InitializeSubscriber/" + ClientId
+		  dim rq as string = "http://" + ValueRef.kSyncServerAddress + "/SqliteSync_315/API3/InitializeSubscriber/" + ClientId
 		  
 		  // Grab the data back from the server
 		  Dim data As String = SqliteSync.SocketGet(sock,rq,30)
@@ -480,13 +477,12 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub reqPostChanges(Host as string, content as string)
-		  dim sock as New HTTPSocket
+		Private Sub reqPostChanges(sock as HttpSecureSocket, content as string)
 		  
 		  dim content_type as string = "application/json"
 		  
 		  // Build request string
-		  dim rq as string = "http://" + Host + "/SqliteSync_315/API3/Send/"
+		  dim rq as string = "http://" + ValueRef.kSyncServerAddress + "/SqliteSync_315/API3/Send/"
 		  
 		  sock.SetRequestContent( content, content_type )
 		  
@@ -498,10 +494,9 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function reqRemoveTable(Host as string, Table as string) As String
-		  dim sock as New HTTPSocket
+		Private Function reqRemoveTable(sock as HttpSecureSocket, Table as string) As String
 		  
-		  dim rq as string = "http://" + Host + "/SqliteSync_315/API3/RemoveTable/" + Table
+		  dim rq as string = "http://" + ValueRef.kSyncServerAddress + "/SqliteSync_315/API3/RemoveTable/" + Table
 		  
 		  // Grab the data back from the server
 		  Dim data As String = SqliteSync.SocketGet(sock,rq,30)
@@ -511,11 +506,10 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function reqSync(Host as string, ClientId as string, TableName as string) As JSONItem
-		  Dim sock As New HTTPSocket
+		Private Function reqSync(sock as HttpSecureSocket, ClientId as string, TableName as string) As JSONItem
 		  
 		  // Build request string
-		  dim rq as string = "http://" + Host + "/SqliteSync_315/API3/Sync/" + ClientId + "/" + TableName
+		  dim rq as string = "http://" + ValueRef.kSyncServerAddress + "/SqliteSync_315/API3/Sync/" + ClientId + "/" + TableName
 		  
 		  // Grab the data back from the server
 		  Dim data As String = SqliteSync.SocketGet(sock,rq,30)
@@ -556,7 +550,7 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function SocketGet(sock as HTTPSocket, request as string, timeout as integer) As String
+		Private Function SocketGet(sock as HTTPSecureSocket, request as string, timeout as integer) As String
 		  dim s as string
 		  
 		  SqliteSync.RequestID = GetNewUUID
@@ -568,7 +562,7 @@ Protected Module SqliteSync
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub SocketPost(sock as HTTPSocket, request as string)
+		Private Sub SocketPost(sock as HTTPSecureSocket, request as string)
 		  
 		  SqliteSync.RequestID = GetNewUUID
 		  

@@ -7,7 +7,10 @@ Protected Class SqlSyncClass
 		  SyncDB = db
 		  SyncTables = TablesToSync
 		  UserID = ClientID
-		  SyncSocket = New HTTPSocket
+		  SyncSocket = New HTTPSecureSocket
+		  SyncSocket.Secure = False
+		  SyncSocket.ConnectionType = 1
+		  AddHandler SyncSocket.AuthenticationRequired, AddressOf HandleAuthRequired
 		End Sub
 	#tag EndMethod
 
@@ -24,13 +27,13 @@ Protected Class SqlSyncClass
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function HandleAuthRequired(sock as HTTPSocket, Realm As String, Headers As InternetHeaders, ByRef Name As String, ByRef Password As String) As Boolean
-		  Auth.HandleAuthenticationRequest(Name, Password)
+		Private Function HandleAuthRequired(sock as HTTPSecureSocket, Realm As String, Headers As InternetHeaders, ByRef Name As String, ByRef Password As String) As Boolean
+		  Return Auth.HandleAuthenticationRequest(Name, Password)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Shared Function Init(ServerHost as string, SyncDB as sqlitedatabase, DetailsFile as FolderItem, SyncTables() as string) As SqliteSync.SqlSyncClass
+		Shared Function Init(ServerHost as string, SyncDB as sqlitedatabase, DetailsFile as FolderItem, SyncTables() as string, Offline as Boolean) As SqliteSync.SqlSyncClass
 		  // 1.  Try to load from file
 		  dim cl as SqliteSync.SqlSyncClass
 		  dim NeedInit as Boolean
@@ -56,6 +59,7 @@ Protected Class SqlSyncClass
 		  
 		  
 		  If NeedNewCl Then
+		    If Offline Then Return Nil
 		    cl = Nil
 		    dim suuid as string = GetNewUUID
 		    cl = New SqliteSync.SqlSyncClass(ServerHost, SyncDB, SyncTables, suuid)
@@ -69,11 +73,11 @@ Protected Class SqlSyncClass
 		  
 		  dim abort as Boolean
 		  If Not cl.ValidateDets Then 
-		    Self.DeleteDets
+		    cl.DeleteDets
 		    abort = True
 		  End If
 		  If Not cl.ValidateDatabase Then 
-		    Self.DeleteDatabase
+		    cl.DeleteDatabase
 		    abort = True
 		  End If
 		  
@@ -85,9 +89,11 @@ Protected Class SqlSyncClass
 
 	#tag Method, Flags = &h0
 		Sub InitializeSubscriber()
-		  If SqliteSync.ExecInitialize(ServerHost, UserID, SyncDB) Then
-		    
-		    
+		  If SqliteSync.ExecInitialize(Self.SyncSocket, UserID, SyncDB) Then
+		    If Self.Sync Then
+		      
+		    End If
+		    Self.SaveToFile( Directory.InfoFolder, Directory.kSqliteSyncDetailsName )
 		  End If
 		End Sub
 	#tag EndMethod
@@ -107,7 +113,7 @@ Protected Class SqlSyncClass
 		        t = TextInputStream.Open(FilePath)
 		        content = t.ReadAll
 		      Catch e as IOException
-		        ErrManage( "SqliteSync LoadFromFile", e.Message + " | " + "Could not load class info from file."
+		        ErrManage( "SqliteSync LoadFromFile", e.Message + " | " + "Could not load class info from file." )
 		        Return Nil
 		      End Try
 		      
@@ -125,20 +131,26 @@ Protected Class SqlSyncClass
 		  Try
 		    js.load(content)
 		  Catch e as JSONException
-		    ErrManage( "SqliteSync LoadFromFile", e.Message + " | " + "Could not load json from file
+		    ErrManage( "SqliteSync LoadFromFile", e.Message + " | " + "Could not load json from file" )
 		    Return Nil
 		  End Try
 		  
 		  // Pull info from json
 		  dim sh,sdb,st,uid as String
-		  sh = js.Value("serverhost")
-		  sdb = js.Value("syncdb_filepath")
-		  st = js.Value("sync_tables")
-		  uid = js.Value("userid")
+		  Try
+		    sh = js.Value("serverhost")
+		    sdb = js.Value("syncdb_filepath")
+		    st = js.Value("sync_tables")
+		    uid = js.Value("userid")
+		  Catch err as JSONException
+		    Return Nil
+		  End Try
+		  
+		  If sh = "" Or sdb = "" Or st = "" Or uid = "" Then Return Nil
 		  
 		  dim fi as New FolderItem(sdb, FolderItem.PathTypeNative)
 		  
-		  Dim cl as New SqliteSync.SqlSyncClass(sh, fi, Split(st,","), uid)
+		  Dim cl as New SqliteSync.SqlSyncClass(sh, datafile.GetDB, Split(st,","), uid)
 		  
 		  Return cl
 		  
@@ -147,14 +159,14 @@ Protected Class SqlSyncClass
 
 	#tag Method, Flags = &h0
 		Sub PushChanges()
-		  SqliteSync.ExecPushChanges(ServerHost, SyncDB, UserID, SyncTables)
+		  SqliteSync.ExecPushChanges(Self.SyncSocket, SyncDB, UserID, SyncTables)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function PushSync() As Boolean
 		  PushChanges
-		  If PushSync THen
+		  If Self.Sync Then
 		    Return True
 		  End If
 		  
@@ -179,8 +191,8 @@ Protected Class SqlSyncClass
 		    tos.Write(js.ToString)
 		    tos.Close
 		  Catch e as IOException
-		    ErrManage("SqlSyncClass SaveToFile", "Could not save sync details to file." + " | " + e.Message
-		    Return Nil
+		    ErrManage("SqlSyncClass SaveToFile", "Could not save sync details to file." + " | " + e.Message )
+		    Return
 		  End Try
 		  
 		End Sub
@@ -188,7 +200,7 @@ Protected Class SqlSyncClass
 
 	#tag Method, Flags = &h0
 		Function Sync() As Boolean
-		  If SqliteSync.ExecSync(self.ServerHost, self.SyncDB, self.SyncTables, self.UserID) Then
+		  If SqliteSync.ExecSync(Self.SyncSocket, self.SyncDB, self.SyncTables, self.UserID) Then
 		    Return True
 		  Else
 		    Return False
@@ -223,6 +235,7 @@ Protected Class SqlSyncClass
 
 	#tag Method, Flags = &h0
 		Function ValidateDets() As Boolean
+		  Break
 		  If ServerHost.IsEmpty Then Return False
 		  If SyncDB = Nil Then Return False
 		  If SyncTables.Ubound = -1 Then Return False
@@ -242,7 +255,7 @@ Protected Class SqlSyncClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		SyncSocket As HTTPSocket
+		SyncSocket As HTTPSecureSocket
 	#tag EndProperty
 
 	#tag Property, Flags = &h21

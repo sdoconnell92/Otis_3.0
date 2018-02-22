@@ -17,10 +17,7 @@ Inherits Application
 
 	#tag Event
 		Sub Open()
-		  
-		  // winSplash will call app.initialize before closing
-		  dim w as new winSplash
-		  w.Display
+		  Init.Go
 		End Sub
 	#tag EndEvent
 

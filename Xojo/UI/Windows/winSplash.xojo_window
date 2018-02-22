@@ -264,6 +264,14 @@ Begin Window winSplash
       Visible         =   True
       Width           =   465
    End
+   Begin Timer tmWait
+      Index           =   -2147483648
+      LockedInPosition=   False
+      Mode            =   1
+      Period          =   2000
+      Scope           =   2
+      TabPanelIndex   =   0
+   End
 End
 #tag EndWindow
 
@@ -306,7 +314,16 @@ End
 #tag Events cvLogo
 	#tag Event
 		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
-		  g.DrawPicture(appLogo, 0, 0,g.Width,g.Height,0,0,appLogo.Width * (appLogo.Height / g.Height),appLogo.Height)
+		  If appLogo <> Nil Then
+		    g.DrawPicture(appLogo, 0, 0,g.Width,g.Height,0,0,appLogo.Width * (appLogo.Height / g.Height),appLogo.Height)
+		  End If
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events tmWait
+	#tag Event
+		Sub Action()
+		  Init.oThread.Run
 		End Sub
 	#tag EndEvent
 #tag EndEvents

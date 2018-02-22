@@ -16,10 +16,11 @@ Protected Module ValueRef
 	#tag EndConstant
 
 	#tag Constant, Name = kSyncServerAddress, Type = String, Dynamic = False, Default = \"", Scope = Protected
-		#Tag Instance, Platform = Any, Language = Default, Definition  = \"207.148.9.123:8080"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"104.207.139.64:8080"
 	#tag EndConstant
 
 	#tag Constant, Name = kSyncTables, Type = String, Dynamic = False, Default = \"", Scope = Protected
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"tbl_events\x2Ctbl_events_link\x2Ctbl_lineitems\x2Ctbl_inventory\x2Ctbl_firmware\x2Ctbl_maintenance_logs\x2Ctbl_eipl\x2Ctbl_contactables\x2Ctbl_contact_methods\x2Ctbl_internal_linking\x2Ctbl_contactable_linking\x2Ctbl_group_discounts\x2Ctbl_payments\x2Ctbl_contracts\x2Ctbl_branchnumbers"
 	#tag EndConstant
 
 	#tag Constant, Name = PaymentTypes, Type = String, Dynamic = False, Default = \"", Scope = Protected

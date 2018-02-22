@@ -2,6 +2,10 @@
 Protected Module Updater
 	#tag Method, Flags = &h1
 		Protected Sub Run()
+		  // not working right now, seems to crash app this is just to bypass until solution is found
+		  'Return
+		  // **********************
+		  
 		  
 		  dim o as new Kaju.UpdateChecker( Directory.KajuFolder )
 		  o.ServerPublicRSAKey = kPublicKey
