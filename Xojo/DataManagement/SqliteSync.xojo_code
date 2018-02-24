@@ -114,6 +114,7 @@ Protected Module SqliteSync
 		          For Each col as string in cols
 		            If col = "MergeUpdate" Then Continue
 		            dim s as string = rs.Field(col).StringValue
+		            If s = "" Then s = "Null"
 		            builder.Append( "<" + col + "><![CDATA[" + s + "]]></" + col + ">" ) 
 		          Next
 		          
@@ -141,6 +142,7 @@ Protected Module SqliteSync
 		          For Each col as string in cols
 		            If col = "MergeUpdate" Then Continue
 		            dim s as string = rs.Field(col).StringValue
+		            If s = "" Then s = "Null"
 		            builder.Append( "<" + col + "><![CDATA[" + s + "]]></" + col + ">" ) 
 		          Next
 		          
@@ -317,6 +319,7 @@ Protected Module SqliteSync
 	#tag Method, Flags = &h1
 		Protected Function ExecInitialize(sock as HttpSecureSocket, UserID as string, SyncDB as SQLiteDatabase) As Boolean
 		  dim js as JSONItem = reqInitialize(sock,UserId)
+		  If js = Nil then Return False
 		  
 		  dim ars() as SQLitePreparedStatement = CreateSQLFromInitialize(js, SyncDB)
 		  
@@ -468,6 +471,11 @@ Protected Module SqliteSync
 		  // Grab the data back from the server
 		  Dim data As String = SqliteSync.SocketGet(sock,rq,30)
 		  
+		  If data.InStr("Error creating new subscriber") > 0 Then
+		    ErrManage( "SqliteSync.reqInitialize", "Could not Initialize Subscriber: data" )
+		    Return Nil
+		  End If
+		  
 		  // Convert data to a json object
 		  dim js as New JSONItem(data)
 		  
@@ -483,7 +491,7 @@ Protected Module SqliteSync
 		  
 		  // Build request string
 		  dim rq as string = "http://" + ValueRef.kSyncServerAddress + "/SqliteSync_315/API3/Send/"
-		  
+		  Break
 		  sock.SetRequestContent( content, content_type )
 		  
 		  SqliteSync.SocketPost(sock, rq)
@@ -536,7 +544,7 @@ Protected Module SqliteSync
 		Private Sub ResetMergeUpdate(SyncDB as SQLiteDatabase, Tables() as string)
 		  dim db as SQLiteDatabase = SyncDB
 		  dim errors as New Dictionary
-		  
+		  Break
 		  For Each tn as String In Tables()
 		    dim s as string = "Update " + tn + " set MergeUpdate=0 Where MergeUpdate > 0;"
 		    db.SQLExecute(s)

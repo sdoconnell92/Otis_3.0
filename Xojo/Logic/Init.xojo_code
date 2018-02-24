@@ -215,6 +215,8 @@ Protected Module Init
 		    init.UpdateTempEiplNumbers
 		  End If
 		  
+		  Init.InitColors
+		  
 		  Init.TriggerMainWindow
 		End Sub
 	#tag EndMethod
@@ -278,6 +280,12 @@ Protected Module Init
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
+		Private Sub InitColors()
+		  UiColors.DefaultScheme
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
 		Private Function InitDirectories() As Boolean
 		  
 		  Return Directory.Init
@@ -286,17 +294,18 @@ Protected Module Init
 
 	#tag Method, Flags = &h21
 		Private Function InitLocalDb(Offline as Boolean) As Boolean
-		  Break
+		  
 		  dim sqcl as SqliteSync.SqlSyncClass
 		  dim db as SQLiteDatabase = SqliteSync.ConnectDB(Directory.MainDatabase)
 		  App.db = db
 		  
 		  // Run class Init which will create the databse if neccesary and connect to it
-		  sqcl = SqliteSync.SqlSyncClass.Init(ValueRef.kSyncServerAddress, db, Directory.SqliteSyncDetails, ValueRef.kSyncTables.Split, Offline )
+		  sqcl = SqliteSync.SqlSyncClass.Init(ValueRef.kSyncServerAddress, db, Directory.SqliteSyncDetails, ValueRef.kSyncTables.Split(","), Offline )
 		  
 		  If sqcl = Nil Then
 		    Return False
 		  Else
+		    App.DbSync = sqcl
 		    Return True
 		  End If
 		End Function

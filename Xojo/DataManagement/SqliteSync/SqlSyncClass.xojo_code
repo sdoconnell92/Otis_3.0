@@ -159,12 +159,14 @@ Protected Class SqlSyncClass
 
 	#tag Method, Flags = &h0
 		Sub PushChanges()
+		  Break
 		  SqliteSync.ExecPushChanges(Self.SyncSocket, SyncDB, UserID, SyncTables)
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function PushSync() As Boolean
+		  
 		  PushChanges
 		  If Self.Sync Then
 		    Return True
@@ -200,6 +202,7 @@ Protected Class SqlSyncClass
 
 	#tag Method, Flags = &h0
 		Function Sync() As Boolean
+		  Break
 		  If SqliteSync.ExecSync(Self.SyncSocket, self.SyncDB, self.SyncTables, self.UserID) Then
 		    Return True
 		  Else
@@ -235,7 +238,7 @@ Protected Class SqlSyncClass
 
 	#tag Method, Flags = &h0
 		Function ValidateDets() As Boolean
-		  Break
+		  
 		  If ServerHost.IsEmpty Then Return False
 		  If SyncDB = Nil Then Return False
 		  If SyncTables.Ubound = -1 Then Return False

@@ -75,9 +75,8 @@ Begin Window winMain_1TabPanel
       Scope           =   0
       TabIndex        =   2
       TabPanelIndex   =   0
-      TabStop         =   True
       Top             =   26
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   1010
       Begin contEventList contEventList1
@@ -93,7 +92,6 @@ Begin Window winMain_1TabPanel
          HasBackColor    =   False
          Height          =   545
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "tbMainWindow"
          iStartingTop    =   0
          LastSearchValue =   ""
@@ -121,13 +119,11 @@ Begin Window winMain_1TabPanel
          BackColor       =   &cFFFFFF00
          Backdrop        =   0
          bDisplayGrouped =   False
-         bPickerMode     =   "False"
          Enabled         =   True
          EraseBackground =   True
          HasBackColor    =   False
          Height          =   544
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "tbMainWindow"
          iStartingTop    =   0
          LastSearchValue =   ""
@@ -160,7 +156,6 @@ Begin Window winMain_1TabPanel
          HasBackColor    =   False
          Height          =   542
          HelpTag         =   ""
-         Index           =   -2147483648
          InitialParent   =   "tbMainWindow"
          LastSearchValue =   ""
          Left            =   3
@@ -312,7 +307,11 @@ End
 #tag Events bRunSync
 	#tag Event
 		Sub Action()
-		  
+		  Break
+		  If App.DbSync.PushSync Then 
+		  Else
+		    Break
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents

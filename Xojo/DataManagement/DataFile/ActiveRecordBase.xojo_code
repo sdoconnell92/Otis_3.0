@@ -23,7 +23,7 @@ Inherits DataFile.Base
 		  dim sNewUUID as String = GetNewUUID
 		  dim oRandomizer as New Random
 		  me.suuid = sNewUUID
-		  me.ipkid = oRandomizer.LessThan(999999999)
+		  me.ipkid = oRandomizer.LessThan(99) '999999999)
 		  
 		  // Fill in Create and Modified Dates
 		  dim dCurrentDate as New Date
