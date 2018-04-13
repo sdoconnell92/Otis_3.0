@@ -1,49 +1,10 @@
 #tag Module
 Protected Module DataFile
-	#tag Method, Flags = &h1
-		Protected Sub AddEIPLtoNumberGetList(EIPLUUID as String)
-		  dim FileContents as string
-		  
-		  dim rd1 as New ResourceDirectories
-		  dim f1 as FolderItem = rd1.eipl_numbers_to_get_file.FilePath
-		  
-		  If f1 <> Nil Then
-		    If f1.Exists Then
-		      
-		      dim tis1 as TextInputStream
-		      Try
-		        tis1 = TextInputStream.Open(f1)
-		        FileContents = tis1.ReadAll
-		      Catch e as IOException
-		        dim s as string
-		      End Try
-		      
-		    End If
-		  End If
-		  
-		  dim NumberArray() as string = FileContents.Split(",")
-		  
-		  NumberArray.Append(EIPLUUID)
-		  FileContents = Join( NumberArray, "," )
-		  
-		  If f1 <> Nil Then
-		    Try
-		      Dim tos1 as TextOutputStream = TextOutputStream.Create(f1)
-		      tos1.Write( FileContents )
-		      tos1 = Nil
-		    Catch e as IOException
-		      dim s as string
-		    End Try
-		    
-		  End If
-		End Sub
-	#tag EndMethod
-
 	#tag Method, Flags = &h0
 		Function ConnectDB() As SQLiteDatabase
-		  dim rd as New ResourceDirectories
+		  
 		  dim db as New SQLiteDatabase
-		  db.DatabaseFile = rd.otis_data_file.FilePath
+		  db.DatabaseFile = Directory.MainDatabase
 		  
 		  If db.Connect THen
 		    Return db
@@ -61,51 +22,6 @@ Protected Module DataFile
 		  Next
 		  Return retS()
 		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Sub CreateNumbersForOfflineEIPLs()
-		  dim oEIPLS() as DataFile.tbl_eipl
-		  
-		  dim FileContents as string
-		  
-		  dim rd1 as New ResourceDirectories
-		  dim f1 as FolderItem = rd1.eipl_numbers_to_get_file.FilePath
-		  
-		  If f1 <> Nil Then
-		    If f1.Exists Then
-		      
-		      dim tis1 as TextInputStream
-		      Try
-		        tis1 = TextInputStream.Open(f1)
-		        FileContents = tis1.ReadAll
-		      Catch e as IOException
-		        dim s as string
-		      End Try
-		      
-		    End If
-		  End If
-		  
-		  dim NumberArray() as string = FileContents.Split(",")
-		  
-		  If NumberArray.Ubound <> -1 Then
-		    For Each sUUID as string In NumberArray()
-		      
-		      dim oEIPL as DataFile.tbl_eipl = DataFile.tbl_eipl.FindByID(sUUID)
-		      
-		      If oEIPL <> Nil Then
-		        dim iNewNumber as Integer = GetNextEIPLNumber("")
-		        If iNewNumber <> 0 Then
-		          oEIPL.ieipl_number = iNewNumber
-		          oEIPL.Save
-		        End If
-		      End If
-		    Next
-		    
-		    OSM.RunSync
-		    
-		  End If
-		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
@@ -210,54 +126,6 @@ Protected Module DataFile
 	#tag Method, Flags = &h1
 		Protected Function GetDB() As SQLiteDatabase
 		  Return app.db
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function GetNewUUID() As String
-		  Dim crypt As New Chilkat.Crypt2
-		  
-		  Dim uuid As String
-		  uuid = crypt.GenerateUuid()
-		  
-		  Return uuid
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1
-		Protected Function GetNextEIPLNumber(EIPLUUID as String) As Integer
-		  dim db1 as PostgreSQLDatabase = app.RegDB
-		  dim EIPLNumber as integer
-		  
-		  
-		  If db1 <> Nil And App.bOnline Then
-		    // we are online
-		    
-		    dim sql1 as string = "Select nextval('utility.seq_eipl_numbers');"
-		    dim rs1 as RecordSet = db1.SQLSelect(sql1)
-		    If db1.Error Then
-		      ErrManage("Methods.GetNextEIPLNumber", "Could not get next eipl_number from server: " + db1.ErrorMessage )
-		      If EIPLUUID <> "" Then
-		        AddEIPLtoNumberGetList(EIPLUUID)
-		        Return 0
-		      End If
-		    End If
-		    
-		    If rs1.RecordCount <> 0 Then
-		      EIPLNumber = rs1.Field( "nextval" ).IntegerValue
-		      Return EIPLNumber
-		    End If
-		    
-		  Else
-		    // we are offline
-		    
-		    If EIPLUUID <> "" Then
-		      AddEIPLtoNumberGetList(EIPLUUID)
-		      
-		      Return 0
-		    End If
-		    
-		  End If
 		End Function
 	#tag EndMethod
 

@@ -28,7 +28,7 @@ Inherits BaseStoryObject
 		    oTotalLine2.oPrintData.oParentStory = me
 		    oTotalLine2.isTotal = True
 		    dim sTitle as String
-		    If val(methods.StripNonDigitsDecimals(retTotals.sDiscountPercent)) <> 0 Then
+		    If val(retTotals.sDiscountPercent.StripNonTenBase) <> 0 Then
 		      sTitle = gn + " Discount(" + retTotals.sDiscountPercent + ")"
 		    Else
 		      sTitle = gn + " Discount"
@@ -183,11 +183,11 @@ Inherits BaseStoryObject
 		  If itc.InStr("%") <> 0  Then
 		    // THere is a % in the string
 		    
-		    dim i1 as double = val( Methods.StripNonDigitsDecimals(itc) ) / 100
+		    dim i1 as double = val( itc.StripNonTenBase ) / 100
 		    iRet = i1 * g.Width
 		    
 		  Else
-		    iRet = val( Methods.StripNonDigitsDecimals(itc) )
+		    iRet = val( itc.StripNonTenBase )
 		  End If
 		  
 		  Return iRet
@@ -211,12 +211,12 @@ Inherits BaseStoryObject
 		      
 		      If s1.InStr("%") <> 0 Then
 		        // this is a percent
-		        dim d1 as Double = val(Methods.StripNonDigitsDecimals(s1))
+		        dim d1 as Double = val(s1.StripNonTenBase)
 		        d1 = d1 / 100
 		        ariTrueWidths.Append(g.Width * d1)
 		      Else
 		        // not a percent
-		        dim i1 as integer = floor(val(Methods.StripNonDigitsDecimals(s1)))
+		        dim i1 as integer = floor(val(s1.StripNonTenBase))
 		        ariTrueWidths.Append(i1)
 		      End If
 		      

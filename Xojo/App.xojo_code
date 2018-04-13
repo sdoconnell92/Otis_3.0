@@ -17,10 +17,7 @@ Inherits Application
 
 	#tag Event
 		Sub Open()
-		  
-		  // winSplash will call app.initialize before closing
-		  dim w as new winSplash
-		  w.Display
+		  Init.Go
 		End Sub
 	#tag EndEvent
 
@@ -49,21 +46,9 @@ Inherits Application
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub UIInit()
-		  UiColors.DefaultScheme
-		  app.db = DataFile.ConnectDB
-		  OpenMainWindow
-		End Sub
-	#tag EndMethod
-
 
 	#tag Property, Flags = &h0
-		bOnline As Boolean
-	#tag EndProperty
-
-	#tag Property, Flags = &h0
-		bUserAuthenticationFailed As Boolean
+		bOffline As Boolean = True
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -71,11 +56,11 @@ Inherits Application
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		MainWindow As winMain_1TabPanel
+		DbSync As SqliteSync.SqlSyncClass
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		regDB As PostgreSQLDatabase
+		MainWindow As winMain_1TabPanel
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -104,13 +89,9 @@ Inherits Application
 
 	#tag ViewBehavior
 		#tag ViewProperty
-			Name="bOnline"
+			Name="bOffline"
 			Group="Behavior"
-			Type="Boolean"
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="bUserAuthenticationFailed"
-			Group="Behavior"
+			InitialValue="True"
 			Type="Boolean"
 		#tag EndViewProperty
 	#tag EndViewBehavior

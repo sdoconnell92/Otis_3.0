@@ -688,6 +688,12 @@ Protected Module StringUtils
 		End Function
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Function Join(extends ars() as string, delimiter as string) As String
+		  Return Join(ars(), ",")
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1
 		Protected Function JoinQuoted(fields() as String, delimiter as String) As String
 		  // Join the given strings with a delimiter, just like RB's intrinsic Join
@@ -713,6 +719,12 @@ Protected Module StringUtils
 		  
 		  return Join( quoted, delimiter )
 		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function JSONify(extends s as String) As String
+		  Return s.ReplaceAll(chr(34), chr(92) + chr(34) )
 		End Function
 	#tag EndMethod
 
@@ -2302,7 +2314,7 @@ Protected Module StringUtils
 
 	#tag Method, Flags = &h0
 		Function SQLExtractFields(extends sql as string) As String()
-		  Break
+		  
 		  Select Case sql.SQLQueryType
 		  Case "Insert"
 		    
@@ -2335,6 +2347,9 @@ Protected Module StringUtils
 		      end if
 		      en = equal_loc -1
 		      st = sql.InStrReverse( equal_loc, " " ) + 1
+		      If st < srchst Then
+		        st = sql.InStrReverse( equal_loc, "," ) + 1
+		      End If
 		      length = en - st + 1
 		      
 		      // extract

@@ -64,7 +64,7 @@ Begin Window winInventoryPicker
       BackColor       =   &cFFFF00FF
       Backdrop        =   0
       bDisplayGrouped =   False
-      bPickerMode     =   False
+      bPickerMode     =   "False"
       Enabled         =   True
       EraseBackground =   True
       HasBackColor    =   False

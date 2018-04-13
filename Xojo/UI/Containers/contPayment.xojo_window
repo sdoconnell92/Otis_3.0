@@ -430,7 +430,7 @@ End
 	#tag Event
 		Sub LostFocus()
 		  
-		  dim s1 as string = methods.StripNonDigitsDecimals( me.Text )
+		  dim s1 as string = me.Text.StripNonTenBase
 		  
 		  oCurrentRecord.spayment_amount = s1
 		  oCurrentRecord.Save

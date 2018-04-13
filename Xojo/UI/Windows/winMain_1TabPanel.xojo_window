@@ -76,7 +76,7 @@ Begin Window winMain_1TabPanel
       TabIndex        =   2
       TabPanelIndex   =   0
       Top             =   26
-      Value           =   2
+      Value           =   0
       Visible         =   True
       Width           =   1010
       Begin contEventList contEventList1
@@ -119,7 +119,6 @@ Begin Window winMain_1TabPanel
          BackColor       =   &cFFFFFF00
          Backdrop        =   0
          bDisplayGrouped =   False
-         bPickerMode     =   False
          Enabled         =   True
          EraseBackground =   True
          HasBackColor    =   False
@@ -308,8 +307,11 @@ End
 #tag Events bRunSync
 	#tag Event
 		Sub Action()
-		  osm.RunSync
-		  'contInventory1.RefreshInventory(True)
+		  Break
+		  If App.DbSync.PushSync Then 
+		  Else
+		    Break
+		  End If
 		End Sub
 	#tag EndEvent
 #tag EndEvents

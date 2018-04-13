@@ -123,6 +123,31 @@ Inherits DataFile.ActiveRecordBase
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
+		Shared Function FindEIplsByID(id as string) As DataFile.tbl_eipl()
+		  dim ev as DataFile.tbl_events
+		  
+		  ev = DataFile.tbl_events.FindByID(id)
+		  
+		  dim aro() as DataFile.tbl_eipl = ev.GetEipls
+		  
+		  Return aro
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
+		Function GetEipls() As DataFile.tbl_eipl()
+		  dim aroEipls() as DataFile.tbl_eipl
+		  
+		  aroEipls = DataFile.tbl_eipl.List("fkevents = '" + self.suuid + "'")
+		  
+		  Return aroEipls
+		  
+		  
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h0
 		Shared Function GroupRecordsOld(oRecordList() as DataFile.tbl_events, sGroupBy as String) As Dictionary
 		  dim jsMaster as New Dictionary
 		  
@@ -336,6 +361,10 @@ Inherits DataFile.ActiveRecordBase
 
 	#tag Property, Flags = &h0
 		bhide As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h0
+		ibranch_number As integer
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

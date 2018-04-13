@@ -730,7 +730,6 @@ Begin ContainerControl contEvent
       HasBackColor    =   False
       Height          =   182
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       iStartingTop    =   0
       LastSearchValue =   ""
@@ -1101,7 +1100,6 @@ Begin ContainerControl contEvent
       HasBackColor    =   False
       Height          =   133
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   412
       LockBottom      =   False
@@ -1163,7 +1161,6 @@ Begin ContainerControl contEvent
       HasBackColor    =   False
       Height          =   513
       HelpTag         =   ""
-      Index           =   -2147483648
       InitialParent   =   ""
       iStartingTop    =   0
       LastSearchValue =   ""
@@ -1578,8 +1575,11 @@ End
 		  
 		  If oCurrentEvent.suuid <> "" Then
 		    dim oRecord as DataFile.tbl_events = DataFile.tbl_events.FindByID(oCurrentEvent.suuid)
-		    dim oStor() as RecordStorageClass = DataFile.StorifyRecords( Array(oRecord) )
-		    contChildEventList.methLoadMe(oStor(0))
+		    // oRecord might be nil since if this record was just created it wont be fouind in the database
+		    If oRecord <> Nil Then
+		      dim oStor() as RecordStorageClass = DataFile.StorifyRecords( Array(oRecord) )
+		      contChildEventList.methLoadMe(oStor(0))
+		    End If
 		  Else
 		    contChildEventList.DoNotLoad = True
 		  End If
@@ -1637,6 +1637,7 @@ End
 
 	#tag Method, Flags = &h0
 		Sub SaveEvent()
+		  
 		  oCurrentEvent.Save
 		End Sub
 	#tag EndMethod

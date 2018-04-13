@@ -3,10 +3,7 @@ Protected Class ActiveRecordBase
 Inherits DataFile.Base
 	#tag Event
 		Sub AfterDelete()
-		  If oChangeDescription <> Nil Then
-		    // Store the Change Description in the local sync database
-		    osm.StoreSync(oChangeDescription)
-		  End If
+		  
 		  
 		  PostDelete
 		End Sub
@@ -14,10 +11,7 @@ Inherits DataFile.Base
 
 	#tag Event
 		Sub AfterSave()
-		  If oChangeDescription <> Nil Then
-		    // Store the Change Description in the local sync database
-		    osm.StoreSync(oChangeDescription)
-		  End If
+		  
 		End Sub
 	#tag EndEvent
 
@@ -26,10 +20,10 @@ Inherits DataFile.Base
 		  
 		  
 		  // Add a uuid
-		  dim sNewUUID as String = DataFile.GetNewUUID
+		  dim sNewUUID as String = GetNewUUID
 		  dim oRandomizer as New Random
 		  me.suuid = sNewUUID
-		  me.ipkid = oRandomizer.LessThan(999999999)
+		  me.ipkid = oRandomizer.LessThan(99) '999999999)
 		  
 		  // Fill in Create and Modified Dates
 		  dim dCurrentDate as New Date
@@ -42,84 +36,22 @@ Inherits DataFile.Base
 		  // Trigger Pre Insert Event
 		  PreInsert
 		  
-		  dim StatementType as string
-		  If me.IsModified Then
-		    
-		    // Get the values of all changed fields
-		    Dim oJSON as New JSONItem
-		    dim ojs as JSONItem = me.GetMyFieldValues
-		    If ojs.Names.IndexOf("uuid") = -1 Then
-		      ojs.Value("uuid") = me.suuid
-		    End If
-		    oJSON.Value("Fields") = ojs
-		    
-		    // Get the table name
-		    Dim TableName as string
-		    TableName = me.GetTableName
-		    
-		    // Compile into a json item
-		    StatementType = "Insert"
-		    oJSON.Value("StatementType") = StatementType
-		    oJSON.Value("TableName") = TableName
-		    oChangeDescription = oJSON
-		    
-		  Else 
-		    
-		    // No changes made so we set the changes description to nil
-		    oChangeDescription = Nil
-		    
-		  End If
 		End Sub
 	#tag EndEvent
 
 	#tag Event
 		Sub BeforeDelete()
-		  dim StatementType as String
-		  
-		  // Get the values of all changed fields
-		  Dim oJSON as New JSONItem
-		  
-		  // Get the table name
-		  Dim TableName as string
-		  TableName = me.GetTableName
-		  
-		  // Compile into a json item
-		  StatementType = "Delete"
-		  oJSON.Value("StatementType") = StatementType
-		  oJSON.Value("TableName") = TableName
-		  oJSON.Value("uuid") = suuid
-		  oChangeDescription = oJSON
+		  PreDelete
 		End Sub
 	#tag EndEvent
 
 	#tag Event
 		Sub BeforeUpdate()
-		  dim StatementType as String
-		  
 		  // Modify some values
 		  me.srow_username = UserInfo.Username
 		  dim d1 as New date
 		  me.srow_modified = d1.SQLDateTime
 		  
-		  If me.IsModified Then
-		    
-		    // Get the values of all changed fields
-		    Dim oJSON as New JSONItem
-		    oJSON.Value("Fields") = me.GetMyFieldValues
-		    
-		    // Get the table name
-		    Dim TableName as string
-		    TableName = me.GetTableName
-		    
-		    // Compile into a json item
-		    StatementType = "Update"
-		    oJSON.Value("StatementType") = StatementType
-		    oJSON.Value("TableName") = TableName
-		    oJSON.Value("uuid") = suuid
-		    oChangeDescription = oJSON
-		  Else
-		    oChangeDescription = Nil
-		  End If
 		End Sub
 	#tag EndEvent
 

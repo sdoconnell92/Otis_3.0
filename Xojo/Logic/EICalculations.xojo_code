@@ -27,9 +27,9 @@ Protected Module EICalculations
 		        dim sDiscount as string = arsDiscount(i1)
 		        If InStr( sDiscount , "%") > 0 Then
 		          ' discount is a percent
-		          iDiscountPercent = val( Methods.StripNonDigitsDecimals(sDiscount) ) /100
+		          iDiscountPercent = val( sDiscount.StripNonTenBase ) /100
 		        Else
-		          iDiscountAmount = val( Methods.StripNonDigitsDecimals(sDiscount) )
+		          iDiscountAmount = val( sDiscount.StripNonTenBase )
 		        End If
 		      Next
 		      
@@ -59,7 +59,7 @@ Protected Module EICalculations
 		      dim i as Currency
 		      If aroPayments.Ubound <> -1 Then
 		        For Each p as DataFile.tbl_payments In aroPayments()
-		          i = i + val(Methods.StripNonDigitsDecimals(p.spayment_amount))
+		          i = i + val( p.spayment_amount.StripNonTenBase)
 		        Next
 		      End If
 		      dim TotalPayed as Currency = i
@@ -131,9 +131,9 @@ Protected Module EICalculations
 		        If InStr( sDiscount , "%") > 0 Then
 		          ' discount is a percent
 		          sDiscountPercent = sDiscount
-		          iDiscountPercent = val( Methods.StripNonDigitsDecimals(sDiscount) ) /100
+		          iDiscountPercent = val( sDiscount.StripNonTenBase ) /100
 		        Else
-		          iDiscountAmount = val( Methods.StripNonDigitsDecimals(sDiscount) )
+		          iDiscountAmount = val( sDiscount.StripNonTenBase )
 		        End If
 		      Next
 		      
@@ -172,9 +172,9 @@ Protected Module EICalculations
 		      dim sDiscount as string = arsDiscounts(i1)
 		      If InStr( sDiscount , "%") > 0 Then
 		        ' discount is a percent
-		        iDiscountPercent = val( Methods.StripNonDigitsDecimals(sDiscount) ) /100
+		        iDiscountPercent = val( sDiscount.StripNonTenBase ) /100
 		      Else
-		        iDiscountAmount = val( Methods.StripNonDigitsDecimals(sDiscount) )
+		        iDiscountAmount = val( sDiscount.StripNonTenBase )
 		      End If
 		    Next
 		    
@@ -192,10 +192,10 @@ Protected Module EICalculations
 		      dim iQuantity as Integer
 		      dim iTime, iTax as Double
 		      
-		      iPrice = val( Methods.StripNonDigitsDecimals( oLIRecord.sli_price ) )
-		      iQuantity = val( Methods.StripNonDigitsDecimals( oLIRecord.sli_quantity ) )
-		      iTime = val( Methods.StripNonDigitsDecimals( oLIRecord.sli_time ) )
-		      iTax = val( Methods.StripNonDigitsDecimals( oEIPLRecord.seipl_tax_rate) )
+		      iPrice = val( oLIRecord.sli_price.StripNonTenBase )
+		      iQuantity = val( oLIRecord.sli_quantity.StripNonTenBase )
+		      iTime = val( oLIRecord.sli_time.StripNonTenBase )
+		      iTax = val( oEIPLRecord.seipl_tax_rate.StripNonTenBase )
 		      
 		      // Calculate the subtotal
 		      iSubTotal = iPrice * iQuantity * iTime

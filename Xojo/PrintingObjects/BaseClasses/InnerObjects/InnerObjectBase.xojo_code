@@ -94,11 +94,11 @@ Protected Class InnerObjectBase
 		  
 		  If InStr( xPosition, "%" ) > 0 Then
 		    // determine where x is 
-		    x = g.Width * val( Methods.StripNonDigitsDecimals(xPosition) )
-		    y = g.Height * val( Methods.StripNonDigitsDecimals(yPosition) )
+		    x = g.Width * val( xPosition.StripNonTenBase )
+		    y = g.Height * val( yPosition.StripNonTenBase )
 		  Else
-		    x = val( Methods.StripNonDigitsDecimals(xPosition) )
-		    y = val( Methods.StripNonDigitsDecimals(yPosition) )
+		    x = val( xPosition.StripNonTenBase )
+		    y = val( yPosition.StripNonTenBase )
 		  End If
 		  
 		  evdefDraw(g)

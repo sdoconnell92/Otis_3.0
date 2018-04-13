@@ -39,6 +39,7 @@ Begin ContainerControl contGroupDiscountList
       HasHeading      =   True
       Height          =   273
       HelpTag         =   ""
+      Index           =   -2147483648
       InitialParent   =   ""
       Left            =   4
       LockBottom      =   True

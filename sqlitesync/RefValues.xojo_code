@@ -1,7 +1,7 @@
 #tag Module
 Protected Module RefValues
 	#tag Constant, Name = SyncServAddress, Type = String, Dynamic = False, Default = \"", Scope = Protected
-		#Tag Instance, Platform = Any, Language = Default, Definition  = \"207.246.68.7:8080"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"45.76.230.210:8080"
 	#tag EndConstant
 
 
